@@ -206,6 +206,7 @@ namespace TrainworksModdingTools.Constants
         /// Asset name: SpellMerge_CardDuplicator
         /// </summary>
         public static readonly string SpellDuplicate = "44767239-41a0-47f1-815e-29c4e8573ca3";
+        /// <summary>
         /// Asset name: ZeroCostAnnihilate
         /// </summary>
         public static readonly string UnhingedPower = "4567dc52-8f10-47d8-b7b4-a7ca8af964a8";

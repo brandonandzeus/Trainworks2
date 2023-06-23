@@ -825,6 +825,7 @@ namespace Trainworks.Constants
         /// Asset name: PyreHeart
         /// </summary>
         public static readonly string LastShardofthePyre = "0ff61363-ab58-4873-9a26-18db51eacd46";
+        /// <summary>
         /// Asset name: Boss_Level9_Display
         /// </summary>
         public static readonly string TheLastDivinity = "f048a260-b016-430b-a5ae-7b3af50ac23e";

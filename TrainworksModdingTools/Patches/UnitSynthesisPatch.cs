@@ -7,7 +7,7 @@ using Trainworks.Managers;
 namespace Trainworks.Patches
 {
     /// <summary>
-    /// Supercedes the depreacated ResetUnitSynthesisMapping. A foolproof unit synthesis patch.
+    /// Supercedes the depreacated ResetUnitSynthesisMapping.
     /// </summary>
     [HarmonyPatch(typeof(UnitSynthesisMapping), nameof(UnitSynthesisMapping.GetUpgradeData))]
     public class UnitSynthesisPatch

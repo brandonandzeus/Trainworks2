@@ -27,6 +27,10 @@ namespace Trainworks.Managers
         /// Essential for custom character art. Set during game startup.
         /// </summary>
         public static GameObject TemplateCharacter { get; set; }
+        /// <summary>
+        /// Maps custom characters to their respective synthesis data.
+        /// </summary>
+        public static IDictionary<CharacterData, CardUpgradeData> UnitSynthesisMapping = new Dictionary<CharacterData, CardUpgradeData>();
 
 
         /// <summary>
@@ -118,6 +122,25 @@ namespace Trainworks.Managers
             {
                 Trainworks.Log(LogLevel.Warning, "Failed to load character template");
             }
+        }
+
+        public static void RegisterUnitSynthesis(CharacterData characterData, CardUpgradeData cardUpgrade)
+        {
+            if (UnitSynthesisMapping.ContainsKey(characterData))
+            {
+                Trainworks.Log(LogLevel.Warning, "Attempted to register duplicate synthesis data for character: " + characterData.name);
+                return;
+            }
+            UnitSynthesisMapping.Add(characterData, cardUpgrade);
+        }
+
+        public static CardUpgradeData GetUnitSynthesis(CharacterData characterData)
+        {
+            if (UnitSynthesisMapping.TryGetValue(characterData, out CardUpgradeData value))
+            {
+                return value;
+            }
+            return null;
         }
     }
 }

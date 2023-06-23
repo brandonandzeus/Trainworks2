@@ -171,6 +171,11 @@ namespace Trainworks.Builders
         /// Holds the builder for a unit's synthesis ability.
         /// </summary>
         public CardUpgradeDataBuilder UnitSynthesisBuilder { get; set; }
+        /// <summary>
+        /// Holds the built Unit synthesis Data.
+        /// This is set after the Character is built.
+        /// </summary>
+        public CardUpgradeData UnitSynthesis {  get; private set; }
 
         public CharacterDataBuilder()
         {
@@ -191,6 +196,7 @@ namespace Trainworks.Builders
             this.TriggerBuilders = new List<CharacterTriggerDataBuilder>();
             this.RoomModifierBuilders = new List<RoomModifierDataBuilder>();
             this.PriorityDraw = true;
+            this.UnitSynthesis = null;
 
             var assembly = Assembly.GetCallingAssembly();
             this.BaseAssetPath = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];
@@ -204,12 +210,10 @@ namespace Trainworks.Builders
         public CharacterData BuildAndRegister()
         {
             var characterData = this.Build();
-            CustomCharacterManager.RegisterCustomCharacter(characterData);
-
+            
             // Build the unit's synthesis ability
             if (UnitSynthesisBuilder == null)
             {
-                // If none was provided, build a dummy synthesis ability
                 if (!characterData.IsChampion())
                 {
                     BuildDummyUnitSynthesis(characterData);
@@ -217,15 +221,18 @@ namespace Trainworks.Builders
             }
             else
             {
-                UnitSynthesisBuilder.Build();
+                UnitSynthesis = UnitSynthesisBuilder.Build();
             }
+
+            CustomCharacterManager.RegisterCustomCharacter(characterData);
+            CustomCharacterManager.RegisterUnitSynthesis(characterData, UnitSynthesis);
 
             return characterData;
         }
 
         private void BuildDummyUnitSynthesis(CharacterData characterData)
         {
-            new CardUpgradeDataBuilder()
+            UnitSynthesis = new CardUpgradeDataBuilder()
             {
                 UpgradeTitle = $"Dummy_synth_{characterData.name}",
                 SourceSynthesisUnit = characterData,

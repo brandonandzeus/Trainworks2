@@ -48,7 +48,7 @@ namespace Trainworks.Managers
             if (BundleManager.RuntimeKeyToBundleInfo.ContainsKey(runtimeKey))
             {
                 var bundleInfo = BundleManager.RuntimeKeyToBundleInfo[runtimeKey];
-                Trainworks.Log("Loading " + bundleInfo.FilePath);
+                Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Loading " + bundleInfo.FilePath);
 
                 var assetType = RuntimeKeyToAssetInfo[runtimeKey].AssetType;
                 var assetConstructor = AssetTypeToAssetConstructor[assetType];

@@ -69,9 +69,10 @@ namespace Trainworks.AssetConstructors
             var skeletonData = TrainworksBundle.LoadAsset("assets/PNGTemplate.prefab") as GameObject;
 
             return CreateCharacterGameObject(assetRef, sprite, skeletonData);
-            */
+
 
             Trainworks.Log(BepInEx.Logging.LogLevel.All, "Character Template: " + CustomCharacterManager.TemplateCharacter);
+            */
 
             // Create a new character GameObject by cloning an existing, working character
             var characterGameObject = GameObject.Instantiate(CustomCharacterManager.TemplateCharacter);
@@ -170,7 +171,7 @@ namespace Trainworks.AssetConstructors
             characterUI.GetComponent<SpriteRenderer>().forceRenderingOff = true;
             dest.gameObject.SetActive(false);
 
-            Trainworks.Log("Created spine component for " + characterGameObject.name);
+            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Created spine component for " + characterGameObject.name);
 
             return characterGameObject;
         }
@@ -265,7 +266,7 @@ namespace Trainworks.AssetConstructors
 
         public GameObject Construct(AssetReference assetRef, BundleAssetLoadingInfo bundleInfo)
         {
-            Trainworks.Log("Looking in bundle for... " + bundleInfo.ObjectName);
+            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Looking in bundle for... " + bundleInfo.ObjectName);
 
             // Don't recreate
             if (CharacterPrefabDictionary.ContainsKey(bundleInfo.SpriteName))

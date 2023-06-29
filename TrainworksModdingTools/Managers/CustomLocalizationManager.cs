@@ -41,7 +41,7 @@ namespace Trainworks.Managers
             string CSVstring = "";
 
             var localPath = Path.GetDirectoryName(new Uri(Assembly.GetCallingAssembly().CodeBase).LocalPath);
-            Trainworks.Log(BepInEx.Logging.LogLevel.All, "File: " + Path.Combine(localPath, path));
+            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "File: " + Path.Combine(localPath, path));
 
             try
             {   // Open the text file using a stream reader.
@@ -53,7 +53,7 @@ namespace Trainworks.Managers
             }
             catch (IOException e)
             {
-                Trainworks.Log(LogLevel.Error, "We couldn't read the file at " + Path.Combine(localPath, path));
+                Trainworks.Log(LogLevel.Error, "Couldn't read file: " + Path.Combine(localPath, path));
                 Trainworks.Log(LogLevel.Error, e.Message);
             }
 

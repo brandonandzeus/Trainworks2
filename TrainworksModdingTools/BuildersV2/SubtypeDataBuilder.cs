@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Trainworks.Managers;
 
 namespace Trainworks.BuildersV2
 {
@@ -14,6 +15,13 @@ namespace Trainworks.BuildersV2
         public bool IsTreasureCollector { get; set; }
         public bool IsImp { get; set; }
         public bool IsPyre { get; set; }
+
+        public SubtypeData BuildAndRegister()
+        {
+            SubtypeData subtypeData = Build();
+            CustomCharacterManager.CustomSubtypeData[subtypeData.Key] = subtypeData;
+            return subtypeData;
+        }
 
         /// <summary>
         /// Builds the SubtypeData represented by this builders's parameters;

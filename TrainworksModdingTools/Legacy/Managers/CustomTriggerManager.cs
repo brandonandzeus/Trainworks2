@@ -8,6 +8,7 @@ using System.Linq;
 using UnityEngine;
 using Unity;
 
+/// Deprecated. This class is not necessary for Custom Card/Character Triggers.
 namespace Trainworks.Managers
 {
     public class CustomTriggerManager

@@ -89,6 +89,7 @@ namespace Trainworks.BuildersV2
         public List<CharacterDataBuilder> ParamCharacterDataPoolBuilder { get; set; }
         /// <summary>
         /// RoomData parameter.
+        /// Note: Not useful. All cards in the game specify rooms via their index with ParamInt.
         /// </summary>
         public RoomData ParamRoomData { get; set; }
         /// <summary>

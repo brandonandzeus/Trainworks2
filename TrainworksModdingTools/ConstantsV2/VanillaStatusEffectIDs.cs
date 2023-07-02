@@ -50,6 +50,7 @@
         public static readonly string ShardUpgrade = StatusEffectShardUpgradeState.StatusId;
         public static readonly string Shard = StatusEffectStygianBlessingState.StatusId;
         public static readonly string Phased = StatusEffectUntouchableState.StatusId;
+        public static readonly string Purify = StatusEffectClearDebuffState.StatusId;
 
     }
 }

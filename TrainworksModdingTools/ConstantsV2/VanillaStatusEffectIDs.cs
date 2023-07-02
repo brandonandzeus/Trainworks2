@@ -19,7 +19,7 @@
         public static readonly string Burnout = StatusEffectEphemeralState.StatusId;
         public static readonly string Fragile = StatusEffectFragileState.StatusId;
         public static readonly string Haste = StatusEffectHasteState.StatusId;
-        public static readonly string HealImmunity = StatusEffectHealImmunityState.StatusId;
+        public static readonly string Heartless = StatusEffectHealImmunityState.StatusId;
         public static readonly string HealMultiplier = StatusEffectHealMultiplierState.StatusId;
         public static readonly string Sweep = StatusEffectHunterState.StatusId;
         public static readonly string Immobile = StatusEffectImmobileState.StatusId;

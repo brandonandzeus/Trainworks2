@@ -65,6 +65,9 @@ namespace Trainworks.BuildersV2
         /// Status effects the character starts with when spawned on a floor.
         /// </summary>
         public List<StatusEffectStackData> StartingStatusEffects { get; set; }
+        /// <summary>
+        /// Status Effects this Character is immune to.
+        /// </summary>
         public string[] StatusEffectImmunities { get; set; }
         /// <summary>
         /// The full, absolute path to the asset. Concatenates BaseAssetPath and AssetPath.

@@ -15,32 +15,26 @@ namespace Trainworks.BuildersV2
         /// Chatter ID, this must be a unique id.
         /// </summary>
         public string ChatterID { get; set; }
-
         /// <summary>
         /// The gender of the speaking character.
         /// </summary>
         public CharacterChatterData.Gender Gender { get; set; }
-
         /// <summary>
         /// What the character can say when played.
         /// </summary>
         public List<string> CharacterAddedExpressionKeys { get; set; }
-
         /// <summary>
         /// What the character can say when attacking.
         /// </summary>
         public List<string> CharacterAttackingExpressionKeys { get; set; }
-
         /// <summary>
         /// What the character can say upon being defeated.
         /// </summary>
         public List<string> CharacterSlayedExpressionKeys { get; set; }
-
         /// <summary>
         /// What the character can say during the player's turn.
         /// </summary>
         public List<string> CharacterIdleExpressionKeys { get; set; }
-
         /// <summary>
         /// What the character can say when preforming specific, triggered actions. Each trigger can have its own list of sayings.
         /// </summary>

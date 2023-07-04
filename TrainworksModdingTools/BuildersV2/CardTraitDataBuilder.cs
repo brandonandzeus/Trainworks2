@@ -50,7 +50,15 @@ namespace Trainworks.BuildersV2
         /// Status effect array parameter.
         /// </summary>
         public List<StatusEffectStackData> ParamStatusEffects { get; set; }
+        /// <summary>
+        /// Entry Duration for retrieving a TrackedValue.
+        /// Can be ThisBattle, ThisTurn, or PreviousTurn.
+        /// Note that this isn't always meaningful during on the TrackedValue.
+        /// </summary>
         public CardStatistics.EntryDuration ParamEntryDuration { get; set; }
+        /// <summary>
+        /// Type of TrackedValue to retrieve from CardStatistics.
+        /// </summary>
         public CardStatistics.TrackedValueType ParamTrackedValue { get; set; }
         /// <summary>
         /// Use Scaling Params. This only seems to be set for Scaling Card Traits,
@@ -66,7 +74,14 @@ namespace Trainworks.BuildersV2
         /// Convenience Card Upgrade Data Builder. Overrides ParamCardUpgradeData if set.
         /// </summary>
         public CardUpgradeDataBuilder ParamCardUpgradeDataBuilder { get; set; }
+        /// <summary>
+        /// Allows the trait to be removable.
+        /// </summary>
         public bool TraitIsRemovable { get; set; }
+        /// <summary>
+        /// An Enum that indicates how application of this CardTrait is handled.
+        /// Either it can be ignored or each application increases ParamInt by 1.
+        /// </summary>
         public CardTraitData.StackMode StackMode { get; set; }
 
         public CardTraitDataBuilder()

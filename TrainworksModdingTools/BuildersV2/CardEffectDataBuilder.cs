@@ -84,12 +84,12 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public List<CharacterData> ParamCharacterDataPool { get; set; }
         /// <summary>
-        /// Convenience Builder for CharacterDataPool parameter. This will be append to CharacterDataPool when built.
+        /// Convenience Builder for CharacterDataPool parameter. This will be appended to CharacterDataPool when built.
         /// </summary>
         public List<CharacterDataBuilder> ParamCharacterDataPoolBuilder { get; set; }
         /// <summary>
         /// RoomData parameter.
-        /// Note: Not useful. All cards in the game specify rooms via their index with ParamInt.
+        /// Note: Not useful and not used by any cards. All cards in the game specify rooms via their index with ParamInt.
         /// </summary>
         public RoomData ParamRoomData { get; set; }
         /// <summary>
@@ -112,24 +112,89 @@ namespace Trainworks.BuildersV2
         /// Tooltips displayed when hovering over any game entity this effect is applied to.
         /// </summary>
         public List<AdditionalTooltipData> AdditionalTooltips { get; set; }
+        /// <summary>
+        /// Specifies the Character's animation to play when hit with this CardEFfect.
+        /// </summary>
         public CharacterUI.Anim AnimToPlay { get; set; }
         public VfxAtLoc AppliedToSelfVFX { get; set; }
         public VfxAtLoc AppliedVFX { get; set; }
+        /// <summary>
+        /// Specifies to use a range over ParamInt.
+        /// If set then ParamMinInt and ParamMaxInt needs to be set.
+        /// </summary>
         public bool UseIntRange { get; set; }
+        /// <summary>
+        /// Use Status Effect Stack Multiplier. Indicates that the effect's power should be multiplied by the targets status effect stack count.
+        /// This is not commonly used. The only effect that uses it is Devourer of Death.
+        /// </summary>
         public bool UseStatusEffectStackMultiplier { get; set; }
+        /// <summary>
+        /// Used by CardEffectAddBattleCard and CardEffectAddRunCard
+        /// Allows the cards generated from those effects will copy the modifiers from this card.
+        /// </summary>
         public bool CopyModifiersFromSource { get; set; }
+        /// <summary>
+        /// Only used by CardEffectAddBattleCard.
+        /// Not used by any cards in the base game.
+        /// Appears to filter out Cards from the CardPool specified in the card effect to only those in your Main/Sub clan.
+        /// </summary>
         public bool FilterBasedOnMainSubClass { get; set; }
+        /// <summary>
+        /// Hides the CardEffects tooltips.
+        /// </summary>
         public bool HideTooltip { get; set; }
+        /// <summary>
+        /// Used by CardEffectAddBattleCard and CardEffectAddUpgradedCopy.
+        /// Ignore temporary CardModifiers from this card.
+        /// Appears to not be used by any CardEffects in game.
+        /// </summary>
         public bool IgnoreTemporaryModifiersFromSource { get; set; }
+        /// <summary>
+        /// Indicates if the effect should be tested if it hits a valid target.
+        /// This is needed if the card targets multiple different targets (such as a Character and then the Deck).
+        /// Defaults to true.
+        /// </summary>
         public bool ShouldTest { get; set; }
+        /// <summary>
+        /// Used only by CardEffectRecursion.
+        /// Parameter to CardEffectRecursion to specify what cards are targetted by its effect.
+        /// </summary>
         public CardEffectData.CardSelectionMode TargetCardSelectionMode { get; set; }
+        /// <summary>
+        /// Used to filter out CardEffects that targets cards to a specific card type.
+        /// </summary>
         public CardType TargetCardType { get; set; }
+        /// <summary>
+        /// Used to filter out target characters without the specified subtype.
+        /// </summary>
         public string TargetCharacterSubtype { get; set; }
+        /// <summary>
+        /// Used to indicate that a boss character can't be targetted by this card effect.
+        /// </summary>
         public bool TargetIgnoreBosses { get; set; }
+        /// <summary>
+        /// Specifies that the Pyre can't be targetted by this CardEffect.
+        /// </summary>
         public bool TargetIgnorePyre { get; set; }
+        /// <summary>
+        /// TargetMode, specifies the Target of this CardEffect.
+        /// This along with TargetTeamType specifies Characters to target.
+        /// </summary>
         public TargetMode TargetMode { get; set; }
+        /// <summary>
+        /// Used to filter out targets to just those that matches a health condition.
+        /// </summary>
         public CardEffectData.HealthFilter TargetModeHealthFilter { get; set; }
+        /// <summary>
+        /// Used to filter out targets to just those that have a particular status id.
+        /// Example Lady of the Reformed applying burnout (emphemeral) to burnout units.
+        /// </summary>
         public string[] TargetModeStatusEffectsFilter { get; set; }
+        /// <summary>
+        /// Target Team Type. This along with TargetMode will specify Characters to target.
+        /// Team.Type is an Enum Flag meaning you can specify both Heroes and Monsters by simply using bitwise OR.
+        /// Note that Team.Type.Heroes are the enemies and Team.Type.Monsters are the player's units.
+        /// </summary>
         public Team.Type TargetTeamType { get; set; }
 
         public CardEffectDataBuilder()

@@ -18,7 +18,13 @@ namespace Trainworks.BuildersV2
         /// Note that these are subtype keys required, not the localized name.
         /// </summary>
         public List<string> ExcludedSubtypes { get; set; }
+        /// <summary>
+        /// Status Effect Requirement.
+        /// </summary>
         public List<StatusEffectStackData> RequiredStatusEffects { get; set; }
+        /// <summary>
+        /// Status Effect Exclusion.
+        /// </summary>
         public List<StatusEffectStackData> ExcludedStatusEffects { get; set; }
         /// <summary>
         /// Note if you are checking for a CardTrait in the base game feel free to use the exact class name of it.
@@ -41,32 +47,69 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public List<string> ExcludedCardEffects { get; set; }
         /// <summary>
-        /// If there are any cards in this pool, then only the cards in this pool will be allowed
+        /// If there are any cards in this pool, then only the cards present in the CardPools will be allowed.
         /// </summary>
         public List<CardPool> AllowedCardPools { get; set; }
         /// <summary>
-        /// No cards in this pool will be allowed
+        /// No cards in any of these CardPools will be allowed.
         /// </summary>
         public List<CardPool> DisallowedCardPools { get; set; }
+        /// <summary>
+        /// Size Requirement.
+        /// </summary>
         public List<int> RequiredSizes { get; set; }
+        /// <summary>
+        /// Size Exclusion.
+        /// </summary>
         public List<int> ExcludedSizes { get; set; }
+        /// <summary>
+        /// Cost Range cards whose cost does not fall into this range will be exlcuded.
+        /// </summary>
         public Vector2 CostRange { get; set; }
+        /// <summary>
+        /// Excludes Characters whose getAttack field is set to false.
+        /// </summary>
         public bool ExcludeNonAttackingMonsters { get; set; }
-
         /// <summary>
         /// Operator determines if we require all or at least one
         /// </summary>
         public CardUpgradeMaskDataBuilder.CompareOperator RequiredSubtypesOperator { get; set; }
+        /// <summary>
+        /// Operator determines if we require all or at least one
+        /// </summary>
         public CardUpgradeMaskDataBuilder.CompareOperator ExcludedSubtypesOperator { get; set; }
+        /// <summary>
+        /// Operator determines if we require all or at least one
+        /// </summary>
         public CardUpgradeMaskDataBuilder.CompareOperator RequiredStatusEffectsOperator { get; set; }
+        /// <summary>
+        /// Operator determines if we require all or at least one
+        /// </summary>
         public CardUpgradeMaskDataBuilder.CompareOperator ExcludedStatusEffectsOperator { get; set; }
+        /// <summary>
+        /// Operator determines if we require all or at least one
+        /// </summary>
         public CardUpgradeMaskDataBuilder.CompareOperator RequiredCardTraitsOperator { get; set; }
+        /// <summary>
+        /// Operator determines if we require all or at least one
+        /// </summary>
         public CardUpgradeMaskDataBuilder.CompareOperator ExcludedCardTraitsOperator { get; set; }
+        /// <summary>
+        /// Operator determines if we require all or at least one
+        /// </summary>
         public CardUpgradeMaskDataBuilder.CompareOperator RequiredCardEffectsOperator { get; set; }
+        /// <summary>
+        /// Operator determines if we require all or at least one
+        /// </summary>
         public CardUpgradeMaskDataBuilder.CompareOperator ExcludedCardEffectsOperator { get; set; }
+        /// <summary>
+        /// Allows the upgrade to be only applied to X cost cards.
+        /// </summary>
         public bool RequireXCost { get; set; }
+        /// <summary>
+        /// Disallows X cost cards from receiving the upgrade.
+        /// </summary>
         public bool ExcludeXCost { get; set; }
-
         /// <summary>
         /// This is the reason why a card is filtered away from having this upgrade applied to it
         /// </summary>

@@ -48,6 +48,7 @@ namespace Trainworks.BuildersV2
         public string UpgradeDescription { get; set; }
         /// <summary>
         /// Note that setting this property will set the localization for all languages.
+        /// This doesn't seem to be used by any cards in game. Some cards do have this field set, but there's no localization for the text.
         /// Note if you set this UpgradeNotificationKey must also be set.
         /// </summary>
         public string UpgradeNotification { get; set; }
@@ -63,10 +64,19 @@ namespace Trainworks.BuildersV2
         public string UpgradeDescriptionKey { get; set; }
         /// <summary>
         /// Upgrade Notification Key for localization.
+        /// This doesn't seem to be used by any cards in game. Some cards do have this field set, but there's no localization for the text.
         /// Note this is not set automatically as its uncommon to use this.
         /// </summary>
         public string UpgradeNotificationKey { get; set; }
+        /// <summary>
+        /// Hide the Upgrade Icon on Card.
+        /// This is mainly for permanent upgrades, such as Charged Echoes (Corruption)
+        /// </summary>
         public bool HideUpgradeIconOnCard { get; set; }
+        /// <summary>
+        /// Highlight changes in the card when the upgrade is applied.
+        /// Defaults to true. The use case for setting to false is if the Upgrade is a starting upgrade for a card.
+        /// </summary>
         public bool UseUpgradeHighlightTextTags { get; set; }
         /// <summary>
         /// Bonus Damage for a Card or Unit. Note that this doesn't increase Heal amounts.
@@ -146,12 +156,17 @@ namespace Trainworks.BuildersV2
         public List<CardUpgradeMaskData> Filters { get; set; }
         /// <summary>
         /// Upgrades to remove when this upgrade is applied.
+        /// The only use of this parameter is in Spikedriver Colony and Improved Spikedriver
+        /// to remove the self-duplication from the card.
         /// </summary>
         public List<CardUpgradeData> UpgradesToRemove { get; set; }
         /// <summary>
         /// Indicate that this CardUpgrade is a Synthesis by setting the CharacterData for it.
         /// </summary>
         public CharacterData SourceSynthesisUnit { get; set; }
+        /// <summary>
+        /// Is the Upgrade for a Unit Synthesis for a Character.
+        /// </summary>
         public bool IsUnitSynthesisUpgrade { get => SourceSynthesisUnit != null; }
         /// <summary>
         /// Indicates that the upgrade can only be applied to a card/unit once.
@@ -176,8 +191,6 @@ namespace Trainworks.BuildersV2
 
         public CardUpgradeDataBuilder()
         {
-            UseUpgradeHighlightTextTags = true;
-
             TraitDataUpgradeBuilders = new List<CardTraitDataBuilder>();
             TriggerUpgradeBuilders = new List<CharacterTriggerDataBuilder>();
             CardTriggerUpgradeBuilders = new List<CardTriggerEffectDataBuilder>();
@@ -195,6 +208,7 @@ namespace Trainworks.BuildersV2
             UpgradesToRemove = new List<CardUpgradeData>();
             LinkedPactDuplicateRarity = CollectableRarity.Starter;
             UpgradeNotificationKey = "";
+            UseUpgradeHighlightTextTags = true;
 
             var assembly = Assembly.GetCallingAssembly();
             BaseAssetPath = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];

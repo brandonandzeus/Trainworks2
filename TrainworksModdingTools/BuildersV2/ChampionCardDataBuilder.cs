@@ -8,10 +8,25 @@ namespace Trainworks.BuildersV2
 {
     public class ChampionCardDataBuilder : CardDataBuilder
     {
+        /// <summary>
+        /// Champion CharacterData.
+        /// </summary>
         public CharacterDataBuilder Champion { get; set; }
+        /// <summary>
+        /// Starter Card to pair with the Champion.
+        /// </summary>
         public string StarterCardID { get; set; }
+        /// <summary>
+        /// The UpgradeTree for the Dark Forge.
+        /// </summary>
         public CardUpgradeTreeDataBuilder UpgradeTree { get; set; }
+        /// <summary>
+        /// Icon Path for the Logbook.
+        /// </summary>
         public string ChampionIconPath { get; set; }
+        /// <summary>
+        /// Sound Effect when the champion is selected.
+        /// </summary>
         public string ChampionSelectedCue { get; set; }
 
         public ChampionCardDataBuilder() : base()

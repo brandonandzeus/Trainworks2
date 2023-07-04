@@ -6,7 +6,7 @@ namespace Trainworks.BuildersV2
     public class CardUpgradeTreeDataBuilder
     {
         /// <summary>
-        /// Character Data for a champion/
+        /// Character Data for a champion.
         /// </summary>
         public CharacterData Champion { get; set; }
 

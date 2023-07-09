@@ -133,10 +133,6 @@ namespace Trainworks.BuildersV2
             CostRange = new Vector2(0f, 99f);
         }
 
-        /// <summary>
-        /// Builds the CardUpgradeMaskData represented by this builders's parameters recursively;
-        /// </summary>
-        /// <returns>The newly created CardUpgradeMaskData</returns>
         public CardUpgradeMaskData Build()
         {
             // Not catastrophic enough to throw an Exception, this should be provided though.

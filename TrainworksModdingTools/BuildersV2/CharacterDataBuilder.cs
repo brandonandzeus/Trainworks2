@@ -90,7 +90,7 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public AssetReferenceGameObject CharacterPrefabVariantRef { get; set; }
         /// <summary>
-        /// Set CardArtPrefabVariantRef without reflection. The Build() method recursively builds all nested builders.
+        /// Convenience builder for CharacterPrefabVariantRef.
         /// </summary>
         public Builders.AssetRefBuilder CharacterPrefabVariantRefBuilder { get; set; }
         /// <summary>
@@ -176,6 +176,7 @@ namespace Trainworks.BuildersV2
         public Sprite CharacterSpriteCache { get; set; }
         /// <summary>
         /// Sets whether or not this unit should be considered for being automatically drawn as part of the priority unit draw system for hands.
+        /// This sets the appropriate Subtype (Chosen) for the character.
         /// </summary>
         public bool PriorityDraw { get; set; }
         /// <summary>
@@ -300,7 +301,6 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(CharacterData), "attackDamage").SetValue(characterData, AttackDamage);
             AccessTools.Field(typeof(CharacterData), "attackTeleportsToDefender").SetValue(characterData, AttackTeleportsToDefender);
             AccessTools.Field(typeof(CharacterData), "blockVisualSizeIncrease").SetValue(characterData, BlockVisualSizeIncrease);
-            // TODO this needs a DataBuilder.
             AccessTools.Field(typeof(CharacterData), "bossActionGroups").SetValue(characterData, BossActionGroups);
             AccessTools.Field(typeof(CharacterData), "bossRoomSpellCastVFX").SetValue(characterData, BossRoomSpellCastVFX);
             AccessTools.Field(typeof(CharacterData), "bossSpellCastVFX").SetValue(characterData, BossSpellCastVFX);

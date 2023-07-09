@@ -111,11 +111,6 @@ namespace Trainworks.BuildersV2
             TooltipTitleKey = "";
         }
 
-        /// <summary>
-        /// Builds the RelicEffectData represented by this builder's parameters recursively;
-        /// all Builders represented in this class's various fields will also be built.
-        /// </summary>
-        /// <returns>The newly created RelicEffectData</returns>
         public RelicEffectData Build()
         {
             if (RelicEffectClassType == null)

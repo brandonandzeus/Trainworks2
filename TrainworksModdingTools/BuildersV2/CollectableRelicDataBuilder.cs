@@ -101,11 +101,6 @@ namespace Trainworks.BuildersV2
             BaseAssetPath = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];
         }
 
-        /// <summary>
-        /// Builds the RelicData represented by this builder's parameters recursively
-        /// and registers it and its components with the appropriate managers.
-        /// </summary>
-        /// <returns>The newly registered RelicData</returns>
         public CollectableRelicData BuildAndRegister()
         {
             var relicData = Build();
@@ -113,11 +108,6 @@ namespace Trainworks.BuildersV2
             return relicData;
         }
 
-        /// <summary>
-        /// Builds the RelicData represented by this builder's parameters recursively;
-        /// all Builders represented in this class's various fields will also be built.
-        /// </summary>
-        /// <returns>The newly created RelicData</returns>
         public CollectableRelicData Build()
         {
             if (CollectableRelicID == null)

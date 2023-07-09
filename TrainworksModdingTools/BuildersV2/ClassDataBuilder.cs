@@ -186,11 +186,6 @@ namespace Trainworks.BuildersV2
             BaseAssetPath = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];
         }
 
-        /// <summary>
-        /// Builds the ClassData represented by this builder's parameters recursively
-        /// and registers it and its components with the appropriate managers.
-        /// </summary>
-        /// <returns>The newly registered ClassData</returns>
         public ClassData BuildAndRegister()
         {
             var classData = Build();
@@ -198,11 +193,6 @@ namespace Trainworks.BuildersV2
             return classData;
         }
 
-        /// <summary>
-        /// Builds the ClassData represented by this builder's parameters recursively;
-        /// all Builders represented in this class's various fields will also be built.
-        /// </summary>
-        /// <returns>The newly created ClassData</returns>
         public ClassData Build()
         {
             if (ClassID == null)

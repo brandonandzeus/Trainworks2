@@ -109,7 +109,15 @@ namespace Trainworks.BuildersV2
         /// Whether or not the character is a flying boss.
         /// </summary>
         public bool IsOuterTrainBoss { get; set; }
+        /// <summary>
+        /// Death Slides Backwards. Defaults to true.
+        /// Many units that spawn units on death or explode have this set to false.
+        /// </summary>
         public bool DeathSlidesBackwards { get; set; }
+        /// <summary>
+        /// Only used for Flying Boss Characters controls their actions and how often its repeated.
+        /// Note: No Builder currently exists for ActionGroupData so reflection has to be used.
+        /// </summary>
         public List<ActionGroupData> BossActionGroups { get; set; }
         /// <summary>
         /// Lore tooltip keys. Note that these are localization keys so you will need to Add localization data.
@@ -123,12 +131,23 @@ namespace Trainworks.BuildersV2
         /// RoomModifiers that the Character applies.
         /// </summary>
         public List<RoomModifierData> RoomModifiers { get; set; }
+        /// <summary>
+        /// Defaults to true, Set to false to prevent enemies from ascending the train.
+        /// The uses of this are Characters such as the Collector, and Archus's darkshards.
+        /// </summary>
         public bool AscendsTrainAutomatically { get; set; }
         /// <summary>
         /// When attacking, this character moves next to its target before hitting it.
         /// </summary>
         public bool AttackTeleportsToDefender { get; set; }
+        /// <summary>
+        /// List of Subtypes for the character.
+        /// </summary>
         public List<string> SubtypeKeys { get; set; }
+        /// <summary>
+        /// Sound effects for the Character.
+        /// Note no Builder currently exists for this object. So reflection must be used to create a CharacterSoundData.
+        /// </summary>
         public CharacterSoundData CharacterSoundData { get; set; }
         /// <summary>
         /// Character Chatter Data.
@@ -177,6 +196,7 @@ namespace Trainworks.BuildersV2
             AttackTeleportsToDefender = true;
             CanAttack = true;
             CanBeHealed = true;
+            AscendsTrainAutomatically = true;
             DeathSlidesBackwards = true;
             Triggers = new List<CharacterTriggerData>();
             SubtypeKeys = new List<string>();

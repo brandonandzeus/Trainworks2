@@ -5,10 +5,10 @@ namespace Trainworks.BuildersV2
 {
     public class CardUpgradeTreeDataBuilder
     {
-        /// <summary>
-        /// Character Data for a champion.
-        /// </summary>
-        public CharacterData Champion { get; set; }
+        /// UNUSED.
+        /// Note not useful and unused in the codebase. Default clans for some reason have this set to The Sentient;
+        /// Wurmkin doesn't set it at all.
+        //public CharacterData Champion { get; set; }
 
         /// <summary>
         /// An already built UpgradeTree can be used here. If set overrides UpgradeTrees.
@@ -17,6 +17,11 @@ namespace Trainworks.BuildersV2
 
         /// <summary>
         /// This is a list of lists of CardUpgradeDataBuilders. Base game clans have a 3x3 list.
+        /// Note that the way these Upgrades are applied.
+        /// For instance If I have Primordium and I have Superfood II, only the upgrade corresponding to Superfood II is applied.
+        /// That is when you select an upgraded path, the previous version is removed and the upgraded version is applied.
+        /// If you mix paths then the upgrade corresponding to each split path is applied. That is if I am Superfood II and Aggressive Edible I
+        /// Then the Superfood II upgrade is applied and then the Aggressive Edible I upgrade is applied.
         /// </summary>
         public List<List<CardUpgradeDataBuilder>> UpgradeTrees { get; set; } = new List<List<CardUpgradeDataBuilder>>();
 

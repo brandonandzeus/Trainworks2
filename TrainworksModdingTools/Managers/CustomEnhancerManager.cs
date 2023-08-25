@@ -105,7 +105,7 @@ namespace Trainworks.ManagersV2
                 }
             }
 
-            Trainworks.Log(LogLevel.All, "Couldn't find enhancer: " + enhancerID + " - This will cause crashes.");
+            Trainworks.Log(LogLevel.Warning, "Couldn't find enhancer: " + enhancerID + " - This will cause crashes.");
 
             return null;
         }

@@ -58,7 +58,7 @@ namespace Trainworks.Managers
             var vanillaCard = ProviderManager.SaveManager.GetAllGameData().FindCardData(cardID);
             if (vanillaCard == null)
             {
-                Trainworks.Log(LogLevel.All, "Couldn't find card: " + cardID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Warning, "Couldn't find card: " + cardID + " - This will cause crashes.");
             }
             return vanillaCard;
         }

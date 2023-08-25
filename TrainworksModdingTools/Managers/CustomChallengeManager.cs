@@ -40,7 +40,7 @@ namespace Trainworks.ManagersV2
                 return challenge;
             }
 
-            Trainworks.Log(LogLevel.All, "Couldn't find challenge: " + id + " - This will cause crashes.");
+            Trainworks.Log(LogLevel.Warning, "Couldn't find challenge: " + id + " - This will cause crashes.");
             return null;
 
         }

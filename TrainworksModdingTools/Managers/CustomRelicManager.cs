@@ -59,7 +59,7 @@ namespace Trainworks.Managers
             var vanillaRelic = ProviderManager.SaveManager.GetAllGameData().FindCollectableRelicData(relicID);
             if (vanillaRelic == null)
             {
-                Trainworks.Log(LogLevel.All, "Couldn't find relic: " + relicID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Warning, "Couldn't find relic: " + relicID + " - This will cause crashes.");
             }
             return vanillaRelic;
         }

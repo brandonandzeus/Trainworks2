@@ -50,7 +50,7 @@ namespace Trainworks.ManagersV2
             var vanillaMutator = ProviderManager.SaveManager.GetAllGameData().FindMutatorData(mutatorID);
             if (vanillaMutator == null)
             {
-                Trainworks.Log(LogLevel.All, "Couldn't find mutator: " + mutatorID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Warning, "Couldn't find mutator: " + mutatorID + " - This will cause crashes.");
             }
             return vanillaMutator;
         }

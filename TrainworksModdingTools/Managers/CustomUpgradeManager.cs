@@ -50,7 +50,7 @@ namespace Trainworks.ManagersV2
             var vanillaUpgrade = ProviderManager.SaveManager.GetAllGameData().FindCardUpgradeData(upgradeID);
             if (vanillaUpgrade == null)
             {
-                Trainworks.Log(LogLevel.All, "Couldn't find upgrade: " + upgradeID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Warning, "Couldn't find upgrade: " + upgradeID + " - This will cause crashes.");
             }
             return vanillaUpgrade;
         }

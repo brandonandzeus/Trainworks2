@@ -72,7 +72,7 @@ namespace Trainworks.Managers
             var vanillaClan = ProviderManager.SaveManager.GetAllGameData().FindClassData(classID);
             if (vanillaClan == null)
             {
-                Trainworks.Log(LogLevel.All, "Couldn't find clan: " + classID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Warning, "Couldn't find clan: " + classID + " - This will cause crashes.");
             }
             return vanillaClan;
         }

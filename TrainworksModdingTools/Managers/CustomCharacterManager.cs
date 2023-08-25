@@ -74,7 +74,7 @@ namespace Trainworks.Managers
             });
             if (vanillaChar == null)
             {
-                Trainworks.Log(LogLevel.All, "Couldn't find character: " + characterID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Warning, "Couldn't find character: " + characterID + " - This will cause crashes.");
             }
             return vanillaChar;
         }

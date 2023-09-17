@@ -222,10 +222,10 @@ namespace Trainworks.Builders
             else
             {
                 UnitSynthesis = UnitSynthesisBuilder.Build();
+                CustomCharacterManager.RegisterUnitSynthesis(characterData, UnitSynthesis);
             }
 
-            CustomCharacterManager.RegisterCustomCharacter(characterData);
-            CustomCharacterManager.RegisterUnitSynthesis(characterData, UnitSynthesis);
+            CustomCharacterManager.RegisterCustomCharacter(characterData);            
 
             return characterData;
         }

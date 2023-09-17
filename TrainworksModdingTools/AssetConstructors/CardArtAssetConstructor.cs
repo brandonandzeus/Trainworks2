@@ -59,10 +59,6 @@ namespace Trainworks.AssetConstructors
             var asset = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.SpriteName);
             if (asset.GetType() == typeof(Texture2D))
             {
-                // "Type checking ew"
-                // You're thinking it, I can tell.
-                // Through all the horrible things we've done with this project,
-                // type checking is where you draw the line?
                 var tex = asset as Texture2D;
                 if (tex != null)
                 {

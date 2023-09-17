@@ -24,14 +24,13 @@ namespace Trainworks
     {
         public const string GUID = "tools.modding.trainworks";
         public const string NAME = "Trainworks Modding Tools";
-        public const string VERSION = "1.1.1";
+        public const string VERSION = "2.0.0";
 
         /// <summary>
         /// The framework's logging source.
         /// </summary>
         private static readonly ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource("Trainworks");
 
-        public static AssetBundle TrainworksBundle { get; private set; }
         public static string APIBasePath { get; private set; }
 
         /// <summary>
@@ -60,10 +59,8 @@ namespace Trainworks
         {
             DepInjector.AddClient(new ProviderManager());
 
-            // Load the Trainworks Bundle, which will be used by the framework for templating
             var assembly = this.GetType().Assembly;
             APIBasePath = Path.GetDirectoryName(assembly.Location);
-            TrainworksBundle = AssetBundle.LoadFromFile(Path.Combine(APIBasePath, "trainworks"));
 
             // Register in order to provide dummy synthesis data for compatibility reasons
             PluginManager.RegisterPlugin(this);

@@ -41,7 +41,7 @@ namespace Trainworks.Patches
                 }
                 catch (Exception)
                 {
-                    Trainworks.Log(BepInEx.Logging.LogLevel.Error, "TryGetValue is a dumb function.");
+                    Trainworks.Log(BepInEx.Logging.LogLevel.Error, "TryGetValue failed.");
                 }
             }
         }

@@ -134,13 +134,44 @@ namespace Trainworks.Managers
             UnitSynthesisMapping.Add(characterData, cardUpgrade);
         }
 
+        /// <summary> Gets unit synthesis for a custom character. </summary>
+        /// <param name="characterData"> Custom character data. </param>
+        /// <returns> The unit synthesis if this is a custom character, null otherwise. </returns>
+
         public static CardUpgradeData GetUnitSynthesis(CharacterData characterData)
         {
+            var cardUpgrades = ProviderManager.SaveManager.GetAllGameData().GetAllCardUpgradeData();
+
+            if (!CustomCharacterData.ContainsKey(characterData.GetID()))
+            {
+                //Trainworks.Log("Not a custom character " + characterData);
+                return null;
+            }
+
+            //Trainworks.Log("" + characterData);
+            // New Builders should already have this cached.
             if (UnitSynthesisMapping.TryGetValue(characterData, out CardUpgradeData value))
             {
+                //Trainworks.Log("Synthesis found for unit " + characterData + " " + value);
                 return value;
             }
-            return null;
+            // Legacy Builders need to find and cache the synthesis.
+            // Search in reverse as its most likely at the end ignoring dummy synthesis data if found.
+            else
+            {
+                var synthesis = cardUpgrades.FindLast(u => characterData == u.GetSourceSynthesisUnit() && u.GetUpgradeDescriptionKey() != "Default_dummy_synthesis_description");
+                if (synthesis != null)
+                {
+                    UnitSynthesisMapping.Add(characterData, synthesis);
+                    //Trainworks.Log("Synthesis found for unit " + characterData + " " + synthesis);
+                    return synthesis;
+                }
+            }
+            
+            //Trainworks.Log("No synthesis found for unit " + characterData);
+
+            // Last attempt find the dummy unit synthesis.
+            return cardUpgrades.FindLast(u => characterData == u.GetSourceSynthesisUnit());
         }
     }
 }

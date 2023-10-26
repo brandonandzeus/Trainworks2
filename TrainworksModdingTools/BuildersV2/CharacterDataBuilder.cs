@@ -116,9 +116,12 @@ namespace Trainworks.BuildersV2
         public bool DeathSlidesBackwards { get; set; }
         /// <summary>
         /// Only used for Flying Boss Characters controls their actions and how often its repeated.
-        /// Note: No Builder currently exists for ActionGroupData so reflection has to be used.
         /// </summary>
         public List<ActionGroupData> BossActionGroups { get; set; }
+        /// <summary>
+        /// Convienence builder for BossActionGroups, will be appended to BossActionGroups when built.
+        /// </summary>
+        public List<ActionGroupDataBuilder> BossActionGroupBuilders { get; set; }
         /// <summary>
         /// Lore tooltip keys. Note that these are localization keys so you will need to Add localization data.
         /// </summary>
@@ -202,6 +205,7 @@ namespace Trainworks.BuildersV2
             Triggers = new List<CharacterTriggerData>();
             SubtypeKeys = new List<string>();
             BossActionGroups = new List<ActionGroupData>();
+            BossActionGroupBuilders = new List<ActionGroupDataBuilder>();
             RoomModifiers = new List<RoomModifierData>();
             CharacterLoreTooltipKeys = new List<string>();
             StartingStatusEffects = new List<StatusEffectStackData>();
@@ -294,6 +298,11 @@ namespace Trainworks.BuildersV2
                 subtypeKeys.Add(VanillaSubtypeIDs.Chosen);
             }
 
+            var bossActionGroups = new List<ActionGroupData>();
+            bossActionGroups.AddRange(BossActionGroups);
+            foreach (var actionGroup in BossActionGroupBuilders)
+                bossActionGroups.Add(actionGroup.Build());
+
             var guid = GUIDGenerator.GenerateDeterministicGUID(CharacterID);
             AccessTools.Field(typeof(CharacterData), "id").SetValue(characterData, guid);
             AccessTools.Field(typeof(CharacterData), "animationController").SetValue(characterData, AnimationController);
@@ -301,7 +310,7 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(CharacterData), "attackDamage").SetValue(characterData, AttackDamage);
             AccessTools.Field(typeof(CharacterData), "attackTeleportsToDefender").SetValue(characterData, AttackTeleportsToDefender);
             AccessTools.Field(typeof(CharacterData), "blockVisualSizeIncrease").SetValue(characterData, BlockVisualSizeIncrease);
-            AccessTools.Field(typeof(CharacterData), "bossActionGroups").SetValue(characterData, BossActionGroups);
+            AccessTools.Field(typeof(CharacterData), "bossActionGroups").SetValue(characterData, bossActionGroups);
             AccessTools.Field(typeof(CharacterData), "bossRoomSpellCastVFX").SetValue(characterData, BossRoomSpellCastVFX);
             AccessTools.Field(typeof(CharacterData), "bossSpellCastVFX").SetValue(characterData, BossSpellCastVFX);
             AccessTools.Field(typeof(CharacterData), "bypassPactCrystalsUpgradeDataList").SetValue(characterData, BypassPactCrystalsUpgradeDataList);

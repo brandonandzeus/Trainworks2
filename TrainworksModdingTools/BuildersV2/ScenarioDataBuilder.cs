@@ -72,6 +72,11 @@ namespace Trainworks.BuildersV2
         public string BossIcon { get; set; }
         public string BossPortrait { get; set; }
         /// <summary>
+        /// Custom Map Node for display on the map.
+        /// Seems to be used by Major Bosses (but not divinity).
+        /// </summary>
+        public GameObject MapNodePrefab { get; set; }
+        /// <summary>
         /// Blessings given to enemies for this battle.
         /// </summary>
         public List<RelicData> EnemyBlessingData { get; set; }
@@ -172,6 +177,18 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(ScenarioData), "displayedEnemyOffsets").SetValue(scenarioData, DisplayedEnemyOffsets);
             AccessTools.Field(typeof(ScenarioData), "bossSpawnSFXCue").SetValue(scenarioData, BossSpawnSFXCue);
             AccessTools.Field(typeof(ScenarioData), "backgroundData").SetValue(scenarioData, BackgroundData);
+
+            if (BossIcon != null)
+            {
+                Sprite iconSprite = CustomAssetManager.LoadSpriteFromPath(BaseAssetPath + "/" + BossIcon);
+                AccessTools.Field(typeof(ScenarioData), "bossIcon").SetValue(scenarioData, iconSprite);
+            }
+
+            if (BossPortrait != null)
+            {
+                Sprite iconSprite = CustomAssetManager.LoadSpriteFromPath(BaseAssetPath + "/" + BossIcon);
+                AccessTools.Field(typeof(ScenarioData), "bossPortrait").SetValue(scenarioData, iconSprite);
+            }
 
             // Trial Data setup
             TrialDataList trialDataList = ScriptableObject.CreateInstance<TrialDataList>();

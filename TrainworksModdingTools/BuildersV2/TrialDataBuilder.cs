@@ -46,8 +46,7 @@ namespace Trainworks.BuildersV2
         {
             if (TrialID == null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Warning should provide a TrialID.");
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Stacktrace: " + Environment.StackTrace);
+                throw new BuilderException("TrialID is required");
             }
 
             var trial = ScriptableObject.CreateInstance<TrialData>();

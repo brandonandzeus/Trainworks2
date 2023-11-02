@@ -33,6 +33,13 @@ namespace Trainworks.BuildersV2
         }
 
         /// <summary>
+        /// Required. Distance where the Scenario appears.
+        /// Must be a number 0-8 where 0 is the firet battle.
+        /// and 8 is the divnity fight.
+        /// </summary>
+        public int Distance { get; set; }
+
+        /// <summary>
         /// Localization key for the Battle's name.
         /// Note that setting ScenarioID sets this field automatically.
         /// </summary>
@@ -144,6 +151,7 @@ namespace Trainworks.BuildersV2
             FTUECardDrawData = new List<CardData>();
             DisplayedEnemies = new List<CharacterData>();
             DisplayedEnemyOffsets = new List<Vector2>();
+            Distance = -1;
 
             var assembly = Assembly.GetCallingAssembly();
             BaseAssetPath = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];
@@ -154,6 +162,10 @@ namespace Trainworks.BuildersV2
             if (ScenarioID == null)
             {
                 throw new BuilderException("ScenarioID is required.");
+            }
+            if (Distance <= 0 || Distance > 8)
+            {
+                throw new BuilderException("Distance is requuired and must be non negative and less than 9");
             }
             ScenarioData scenarioData = ScriptableObject.CreateInstance<ScenarioData>();
             scenarioData.name = ScenarioID;
@@ -211,6 +223,13 @@ namespace Trainworks.BuildersV2
             BuilderUtils.ImportStandardLocalization(BattleDescriptionKey, BattleDescription);
 
             return scenarioData;
+        }
+
+        public ScenarioData BuildAndRegister()
+        {
+            ScenarioData data = Build();
+            CustomScenarioManager.RegisterCustomScenario(data, Distance);
+            return data;
         }
     }
 }

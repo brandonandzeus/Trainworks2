@@ -11,15 +11,25 @@ namespace Trainworks.Managers
     {
         public static Dictionary<String, ScenarioData> CustomScenarioData = new Dictionary<String, ScenarioData>();
 
-        public static void RegisterCustomScenario(ScenarioData scenario)
+        public static void RegisterCustomScenario(ScenarioData scenario, int distance)
         {
             if (!CustomScenarioData.ContainsKey(scenario.GetID()))
             {
                 CustomScenarioData.Add(scenario.GetID(), scenario);
+
+                // Add scenario to AllGameData.
                 AllGameData allGameData = ProviderManager.SaveManager.GetAllGameData();
                 List<ScenarioData> scenarios;
                 scenarios = (List<ScenarioData>) AccessTools.Field(typeof(AllGameData), "scenarioDatas").GetValue(allGameData);
                 scenarios.Add(scenario);
+
+                // Add scenario to appear at distance.
+                BalanceData balanceData = allGameData.GetBalanceData();
+                RunData runData = balanceData.GetRunData(false);
+                NodeDistanceData distanceData = runData.GetDistanceData(distance);
+                List<ScenarioData> distanceScenarios;
+                distanceScenarios = (List<ScenarioData>)AccessTools.Field(typeof(NodeDistanceData), "battleDatas").GetValue(distanceData);
+                distanceScenarios.Add(scenario);
             }
             else
             {

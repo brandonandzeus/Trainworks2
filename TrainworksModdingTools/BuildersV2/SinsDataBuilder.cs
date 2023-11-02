@@ -49,12 +49,12 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public string NameKey { get; set; }
         /// <summary>
-        /// Description displayed for the relic.
+        /// Description displayed for the sin.
         /// Note that setting this property will set the localization for all languages.
         /// </summary>
         public string Description { get; set; }
         /// <summary>
-        /// Localization key for the relic's description.
+        /// Localization key for the sin's description.
         /// Note that setting SinsID sets this field to [sinsID]_SinsData_DescriptionKey.
         /// </summary>
         public string DescriptionKey { get; set; }
@@ -99,7 +99,7 @@ namespace Trainworks.BuildersV2
         public SinsData BuildAndRegister()
         {
             var sinsData = Build();
-            CustomSinsManager.RegisterCustomSin(sinsData);
+            CustomScenarioManager.RegisterCustomSin(sinsData);
             return sinsData;
         }
 

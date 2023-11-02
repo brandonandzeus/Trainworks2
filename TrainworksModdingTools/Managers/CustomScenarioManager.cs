@@ -33,7 +33,7 @@ namespace Trainworks.Managers
             }
             else
             {
-                Trainworks.Log(LogLevel.Warning, "Attempted to register duplicate sinsdata with name: " + scenario.name);
+                Trainworks.Log(LogLevel.Warning, "Attempted to register duplicate scenario with name: " + scenario.name);
             }
         }
 

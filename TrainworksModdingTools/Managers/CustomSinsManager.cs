@@ -29,7 +29,7 @@ namespace Trainworks.Managers
             }
             else
             {
-                Trainworks.Log(LogLevel.Warning, "Attempted to register duplicate sinsdata with name: " + sinsData.name);
+                Trainworks.Log(LogLevel.Warning, "Attempted to register duplicate SinsData with name: " + sinsData.name);
             }
         }
 
@@ -51,7 +51,7 @@ namespace Trainworks.Managers
             var vanillaSins = ProviderManager.SaveManager.GetAllGameData().FindEnemySinsData(sinsID);
             if (vanillaSins == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Couldn't find sins: " + sinsID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Warning, "Couldn't find SinsData: " + sinsID + " - This will cause crashes.");
             }
             return vanillaSins;
         }

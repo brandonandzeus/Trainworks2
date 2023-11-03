@@ -10,7 +10,7 @@ namespace Trainworks.BuildersV2
         /// <summary>
         /// Possible Groups of enemies to spawn.
         /// </summary>
-        List<SpawnGroupDataBuilder> PossibleGroups {  get; set; }
+        public List<SpawnGroupDataBuilder> PossibleGroups {  get; set; }
 
         public SpawnGroupPoolDataBuilder()
         {

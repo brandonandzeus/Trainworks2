@@ -84,7 +84,9 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public GameObject MapNodePrefab { get; set; }
         /// <summary>
-        /// Blessings given to enemies for this battle.
+        /// Beneficial effects given to enemies in this scenario.
+        /// These should technically be a SinsData, but the MT Codebase
+        /// allows specifying any type of relic here.
         /// </summary>
         public List<RelicData> EnemyBlessingData { get; set; }
         public string BattleTrackNameData { get; set; }
@@ -101,15 +103,15 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public List<CharacterData> TreasureCharacterPool { get; set; }
         /// <summary>
-        /// Unused parameter.
+        /// Unused parameter by the MT Codebase, left here for futureproofing.
         /// </summary>
         public int MinTraitorUnits { get; set; }
         /// <summary>
-        /// Unused parameter.
+        /// Unused parameter by the MT Codebase, left here for futureproofing.
         /// </summary>
         public int MaxTraitorUnits { get; set; }
         /// <summary>
-        /// Unused parameter.
+        /// Unused parameter by the MT Codebase, left here for futureproofing.
         /// </summary>
         public List<CharacterData> TraitorUnitsPool { get; set; }
         /// <summary>
@@ -163,9 +165,9 @@ namespace Trainworks.BuildersV2
             {
                 throw new BuilderException("ScenarioID is required.");
             }
-            if (Distance <= 0 || Distance > 8)
+            if (Distance < 0 || Distance > 8)
             {
-                throw new BuilderException("Distance is requuired and must be non negative and less than 9");
+                throw new BuilderException("Distance is required and must be non negative and less than 9");
             }
             ScenarioData scenarioData = ScriptableObject.CreateInstance<ScenarioData>();
             scenarioData.name = ScenarioID;
@@ -182,7 +184,7 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(ScenarioData), "treasureCharacterPool").SetValue(scenarioData, TreasureCharacterPool.ToArray());
             AccessTools.Field(typeof(ScenarioData), "minTraitorUnits").SetValue(scenarioData, MinTraitorUnits);
             AccessTools.Field(typeof(ScenarioData), "maxTraitorUnits").SetValue(scenarioData, MaxTraitorUnits);
-            AccessTools.Field(typeof(ScenarioData), "traitorUnitsPool").SetValue(scenarioData, TraitorUnitsPool);
+            AccessTools.Field(typeof(ScenarioData), "traitorUnitsPool").SetValue(scenarioData, TraitorUnitsPool.ToArray());
             AccessTools.Field(typeof(ScenarioData), "battleNameKey").SetValue(scenarioData, BattleNameKey);
             AccessTools.Field(typeof(ScenarioData), "battleDescriptionKey").SetValue(scenarioData, BattleDescriptionKey);
             AccessTools.Field(typeof(ScenarioData), "displayedEnemies").SetValue(scenarioData, DisplayedEnemies);

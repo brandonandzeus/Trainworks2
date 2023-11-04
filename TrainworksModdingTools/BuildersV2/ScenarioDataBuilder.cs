@@ -84,7 +84,7 @@ namespace Trainworks.BuildersV2
         public string BossPortrait { get; set; }
         /// <summary>
         /// Custom Map Node for display on the map.
-        /// Seems to be used by Major Bosses (but not divinity).
+        /// This is not set for normal battles. Customizes the icon on the map display.
         /// </summary>
         public GameObject MapNodePrefab { get; set; }
         /// <summary>
@@ -200,6 +200,7 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(ScenarioData), "displayedEnemyOffsets").SetValue(scenarioData, DisplayedEnemyOffsets);
             AccessTools.Field(typeof(ScenarioData), "bossSpawnSFXCue").SetValue(scenarioData, BossSpawnSFXCue);
             AccessTools.Field(typeof(ScenarioData), "backgroundData").SetValue(scenarioData, BackgroundData);
+            AccessTools.Field(typeof(ScenarioData), "mapNodePrefab").SetValue(scenarioData, MapNodePrefab);
 
             if (BossIcon != null)
             {

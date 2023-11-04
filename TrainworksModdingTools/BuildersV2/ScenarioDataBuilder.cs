@@ -63,7 +63,11 @@ namespace Trainworks.BuildersV2
         /// <summary>
         /// Defines what eneemies are spawned per wave.
         /// </summary>
-        public SpawnPatternDataBuilder SpawnPattern { get; set; }
+        public SpawnPatternData SpawnPattern { get; set; }
+        /// <summary>
+        /// Convienence Builder for SpawnPattern. if set overrides SpawnPattern
+        /// </summary>
+        public SpawnPatternDataBuilder SpawnPatternBuilder { get; set; }
         /// <summary>
         /// List of Boss characters to use.
         /// </summary>
@@ -174,7 +178,12 @@ namespace Trainworks.BuildersV2
 
             AccessTools.Field(typeof(ScenarioData), "id").SetValue(scenarioData, GUIDGenerator.GenerateDeterministicGUID(ScenarioID));
 
-            AccessTools.Field(typeof(ScenarioData), "spawnPattern").SetValue(scenarioData, SpawnPattern.Build());
+
+            var spawnPattern = SpawnPattern;
+            if (SpawnPatternBuilder != null)
+                spawnPattern = SpawnPatternBuilder.Build();
+
+            AccessTools.Field(typeof(ScenarioData), "spawnPattern").SetValue(scenarioData, spawnPattern);
             AccessTools.Field(typeof(ScenarioData), "startingEnergy").SetValue(scenarioData, StartingEnergy);
             AccessTools.Field(typeof(ScenarioData), "difficulty").SetValue(scenarioData, Difficulty);
             AccessTools.Field(typeof(ScenarioData), "enemyBlessingData").SetValue(scenarioData, EnemyBlessingData.ToArray());

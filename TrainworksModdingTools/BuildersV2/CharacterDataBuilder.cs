@@ -187,10 +187,28 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public CardUpgradeDataBuilder UnitSynthesisBuilder { get; set; }
         public bool BlockVisualSizeIncrease { get; set; }
+        /// <summary>
+        /// Upgrades applied to enemies depending on the number of pact shards.
+        /// (Reuse an existing enemies data via this parameter).
+        /// </summary>
         public CharacterData.ReorderableCharacterShardUpgradeList BypassPactCrystalsUpgradeDataList { get; set; }
+        /// <summary>
+        /// Upgrades applied to enemies depending on number of pact shards.
+        /// </summary>
+        public List<CharacterShardUpgradeDataBuilder> BypassPactCrystalsUpgradeDataBuilders { get; set; }
         public int PactCrystalsRequiredCount { get; set; }
+        /// <summary>
+        /// Harder variants of a particular enemy.
+        /// </summary>
         public CharacterData PactCrystalsVariantData { get; set; }
+        /// <summary>
+        /// For flying bosses remove triggers on Relentless.
+        /// </summary>
         public bool RemoveTriggersOnRelentlessChange { get; set; }
+        /// <summary>
+        /// For flying bosses, determines when they are able to attack.
+        /// Defautls to only attacking during Relentless.
+        /// </summary>
         public BossState.AttackPhase ValidBossAttackPhase { get; set; }
 
         public CharacterDataBuilder()
@@ -218,6 +236,7 @@ namespace Trainworks.BuildersV2
             PactCrystalsRequiredCount = -1;
             CharacterChatterDataBuilder = new CharacterChatterDataBuilder();
             BypassPactCrystalsUpgradeDataList = new CharacterData.ReorderableCharacterShardUpgradeList();
+            BypassPactCrystalsUpgradeDataBuilders = new List<CharacterShardUpgradeDataBuilder>();
 
             var assembly = Assembly.GetCallingAssembly();
             BaseAssetPath = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];
@@ -314,7 +333,6 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(CharacterData), "bossActionGroups").SetValue(characterData, bossActionGroups);
             AccessTools.Field(typeof(CharacterData), "bossRoomSpellCastVFX").SetValue(characterData, BossRoomSpellCastVFX);
             AccessTools.Field(typeof(CharacterData), "bossSpellCastVFX").SetValue(characterData, BossSpellCastVFX);
-            AccessTools.Field(typeof(CharacterData), "bypassPactCrystalsUpgradeDataList").SetValue(characterData, BypassPactCrystalsUpgradeDataList);
             AccessTools.Field(typeof(CharacterData), "canAttack").SetValue(characterData, CanAttack);
             AccessTools.Field(typeof(CharacterData), "canBeHealed").SetValue(characterData, CanBeHealed);
             AccessTools.Field(typeof(CharacterData), "characterLoreTooltipKeys").SetValue(characterData, CharacterLoreTooltipKeys);
@@ -336,6 +354,12 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(CharacterData), "startingStatusEffects").SetValue(characterData, StartingStatusEffects.ToArray());
             AccessTools.Field(typeof(CharacterData), "statusEffectImmunities").SetValue(characterData, StatusEffectImmunities);
             AccessTools.Field(typeof(CharacterData), "validBossAttackPhase").SetValue(characterData, ValidBossAttackPhase);
+
+            var list = characterData.GetBypassPactCrystalsUpgradeDataList();
+            foreach (var item in BypassPactCrystalsUpgradeDataList)
+                list.Add(item);
+            foreach (var item in BypassPactCrystalsUpgradeDataBuilders)
+                list.Add(item.Build());
 
             CharacterChatterData chatterData = CharacterChatterData;
             if (CharacterChatterDataBuilder == null)

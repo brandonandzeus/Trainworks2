@@ -116,9 +116,12 @@ namespace Trainworks.BuildersV2
         public bool DeathSlidesBackwards { get; set; }
         /// <summary>
         /// Only used for Flying Boss Characters controls their actions and how often its repeated.
-        /// Note: No Builder currently exists for ActionGroupData so reflection has to be used.
         /// </summary>
         public List<ActionGroupData> BossActionGroups { get; set; }
+        /// <summary>
+        /// Convienence builder for BossActionGroups, will be appended to BossActionGroups when built.
+        /// </summary>
+        public List<ActionGroupDataBuilder> BossActionGroupBuilders { get; set; }
         /// <summary>
         /// Lore tooltip keys. Note that these are localization keys so you will need to Add localization data.
         /// </summary>
@@ -184,10 +187,28 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public CardUpgradeDataBuilder UnitSynthesisBuilder { get; set; }
         public bool BlockVisualSizeIncrease { get; set; }
+        /// <summary>
+        /// Upgrades applied to enemies depending on the number of pact shards.
+        /// (Reuse an existing enemies data via this parameter).
+        /// </summary>
         public CharacterData.ReorderableCharacterShardUpgradeList BypassPactCrystalsUpgradeDataList { get; set; }
+        /// <summary>
+        /// Upgrades applied to enemies depending on number of pact shards.
+        /// </summary>
+        public List<CharacterShardUpgradeDataBuilder> BypassPactCrystalsUpgradeDataBuilders { get; set; }
         public int PactCrystalsRequiredCount { get; set; }
+        /// <summary>
+        /// Harder variants of a particular enemy.
+        /// </summary>
         public CharacterData PactCrystalsVariantData { get; set; }
+        /// <summary>
+        /// For flying bosses remove triggers on Relentless.
+        /// </summary>
         public bool RemoveTriggersOnRelentlessChange { get; set; }
+        /// <summary>
+        /// For flying bosses, determines when they are able to attack.
+        /// Defautls to only attacking during Relentless.
+        /// </summary>
         public BossState.AttackPhase ValidBossAttackPhase { get; set; }
 
         public CharacterDataBuilder()
@@ -202,6 +223,7 @@ namespace Trainworks.BuildersV2
             Triggers = new List<CharacterTriggerData>();
             SubtypeKeys = new List<string>();
             BossActionGroups = new List<ActionGroupData>();
+            BossActionGroupBuilders = new List<ActionGroupDataBuilder>();
             RoomModifiers = new List<RoomModifierData>();
             CharacterLoreTooltipKeys = new List<string>();
             StartingStatusEffects = new List<StatusEffectStackData>();
@@ -213,6 +235,8 @@ namespace Trainworks.BuildersV2
             ValidBossAttackPhase = BossState.AttackPhase.Relentless;
             PactCrystalsRequiredCount = -1;
             CharacterChatterDataBuilder = new CharacterChatterDataBuilder();
+            BypassPactCrystalsUpgradeDataList = new CharacterData.ReorderableCharacterShardUpgradeList();
+            BypassPactCrystalsUpgradeDataBuilders = new List<CharacterShardUpgradeDataBuilder>();
 
             var assembly = Assembly.GetCallingAssembly();
             BaseAssetPath = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];
@@ -294,6 +318,11 @@ namespace Trainworks.BuildersV2
                 subtypeKeys.Add(VanillaSubtypeIDs.Chosen);
             }
 
+            var bossActionGroups = new List<ActionGroupData>();
+            bossActionGroups.AddRange(BossActionGroups);
+            foreach (var actionGroup in BossActionGroupBuilders)
+                bossActionGroups.Add(actionGroup.Build());
+
             var guid = GUIDGenerator.GenerateDeterministicGUID(CharacterID);
             AccessTools.Field(typeof(CharacterData), "id").SetValue(characterData, guid);
             AccessTools.Field(typeof(CharacterData), "animationController").SetValue(characterData, AnimationController);
@@ -301,10 +330,9 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(CharacterData), "attackDamage").SetValue(characterData, AttackDamage);
             AccessTools.Field(typeof(CharacterData), "attackTeleportsToDefender").SetValue(characterData, AttackTeleportsToDefender);
             AccessTools.Field(typeof(CharacterData), "blockVisualSizeIncrease").SetValue(characterData, BlockVisualSizeIncrease);
-            AccessTools.Field(typeof(CharacterData), "bossActionGroups").SetValue(characterData, BossActionGroups);
+            AccessTools.Field(typeof(CharacterData), "bossActionGroups").SetValue(characterData, bossActionGroups);
             AccessTools.Field(typeof(CharacterData), "bossRoomSpellCastVFX").SetValue(characterData, BossRoomSpellCastVFX);
             AccessTools.Field(typeof(CharacterData), "bossSpellCastVFX").SetValue(characterData, BossSpellCastVFX);
-            AccessTools.Field(typeof(CharacterData), "bypassPactCrystalsUpgradeDataList").SetValue(characterData, BypassPactCrystalsUpgradeDataList);
             AccessTools.Field(typeof(CharacterData), "canAttack").SetValue(characterData, CanAttack);
             AccessTools.Field(typeof(CharacterData), "canBeHealed").SetValue(characterData, CanBeHealed);
             AccessTools.Field(typeof(CharacterData), "characterLoreTooltipKeys").SetValue(characterData, CharacterLoreTooltipKeys);
@@ -326,6 +354,12 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(CharacterData), "startingStatusEffects").SetValue(characterData, StartingStatusEffects.ToArray());
             AccessTools.Field(typeof(CharacterData), "statusEffectImmunities").SetValue(characterData, StatusEffectImmunities);
             AccessTools.Field(typeof(CharacterData), "validBossAttackPhase").SetValue(characterData, ValidBossAttackPhase);
+
+            var list = characterData.GetBypassPactCrystalsUpgradeDataList();
+            foreach (var item in BypassPactCrystalsUpgradeDataList)
+                list.Add(item);
+            foreach (var item in BypassPactCrystalsUpgradeDataBuilders)
+                list.Add(item.Build());
 
             CharacterChatterData chatterData = CharacterChatterData;
             if (CharacterChatterDataBuilder == null)

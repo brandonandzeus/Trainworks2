@@ -68,5 +68,15 @@ namespace Trainworks.Managers
             }
             return vanillaStory;
         }
+
+        public static bool AddInkStory(String knotName, String json)
+        {
+            return false;
+        }
+
+        public static bool AddInkGlobalVariable(String name, int value)
+        {
+            return false;
+        }
     }
 }

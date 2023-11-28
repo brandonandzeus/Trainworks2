@@ -16,6 +16,8 @@ namespace Trainworks.BuildersV2
     ///	
     /// Note that this class isn't enough to build a cavern event.
     /// The text and choices in a cavern event are handled by Ink.
+    /// 
+    /// Inky editor for ink: https://github.com/inkle/inky/releases/tag/0.11.0
     /// </summary>
     public class StoryEventDataBuilder
     {

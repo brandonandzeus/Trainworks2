@@ -50,30 +50,6 @@ namespace Trainworks.AssetConstructors
         /// <returns>The GameObject for the character</returns>
         private static GameObject CreateCharacterGameObject(AssetReference assetRef, Sprite sprite)
         {
-            /*
-            // This code attempts to construct a Spine Object with no animations to match the imported PNG file. This gives us better outlining, draw order, and highlighting.
-
-            GameObject skeletonData = new GameObject();
-            skeletonData.name = sprite.name;
-            var s = skeletonData.AddComponent<SkeletonAnimation>();
-
-            // All we need is a complete and valid SkeletonDataAsset... does that include the atlas primarymaterial, atlas data, skeletonjson, state, and skeleton?
-            s.skeletonDataAsset = new SkeletonDataAsset();
-            s.skeletonDataAsset.skeletonJSON = new TextAsset("{\"skeleton\":{\"spine\":\"3.6.0.7-beta\",\"width\":" + sprite.rect.width + ",\"height\":" + sprite.rect.height + ",\"fps\":24,\"hash\":\" \",\"name\":\"Armature\"},\"bones\":[{\"name\":\"root\"}],\"slots\":[{\"name\":\"Unit\",\"bone\":\"root\",\"attachment\":\"Unit\"}],\"skins\":{\"default\":{\"Unit\":{\"Unit\":{\"name\":\"Unit\",\"width\":" + sprite.rect.width + ",\"height\":" + sprite.rect.height + ",\"y\":" + sprite.rect.width + "}}}}}");
-            s.skeletonDataAsset.atlasAssets.AddToArray<AtlasAssetBase>(new SpineAtlasAsset());
-            s.skeletonDataAsset.atlasAssets[0].
-            */
-
-            /*
-            Trainworks.Log(BepInEx.Logging.LogLevel.All, "We're doing the code!");
-            var skeletonData = TrainworksBundle.LoadAsset("assets/PNGTemplate.prefab") as GameObject;
-
-            return CreateCharacterGameObject(assetRef, sprite, skeletonData);
-
-
-            Trainworks.Log(BepInEx.Logging.LogLevel.All, "Character Template: " + CustomCharacterManager.TemplateCharacter);
-            */
-
             // Create a new character GameObject by cloning an existing, working character
             var characterGameObject = GameObject.Instantiate(CustomCharacterManager.TemplateCharacter);
 
@@ -97,15 +73,12 @@ namespace Trainworks.AssetConstructors
             spine.gameObject.SetActive(false);
 
             // Set states in the CharacterState and CharacterUI to the sprite to show it ingame
-            Traverse.Create(characterState).Field<Sprite>("sprite").Value = sprite;
+            AccessTools.Field(typeof(CharacterState), "sprite").SetValue(characterState, sprite);
             characterUI.GetSpriteRenderer().sprite = sprite;
 
             // Set up the outline Sprite - well, seems like there will be problems here
             var outlineMesh = characterGameObject.GetComponentInChildren<CharacterUIOutlineMesh>(true);
-            //Traverse.Create(outlineMesh).Field("outlineData").Field<Texture2D>("characterTexture").Value = sprite.texture;
-            //Traverse.Create(outlineMesh).Field("outlineData").Field<Texture2D>("outlineTexture").Value = sprite.texture;
-            Traverse.Create(outlineMesh).Field<CharacterOutlineData>("outlineData").Value = null; //CharacterOutlineData.Create(sprite.texture);
-            //Traverse.Create(outlineMesh).Field("outlineData").Field<Texture2D>("outlineTexture").Value = sprite.texture;
+            AccessTools.Field(typeof(CharacterUIOutlineMesh), "outlineData").SetValue(outlineMesh, null);
 
             return characterGameObject;
         }
@@ -164,8 +137,8 @@ namespace Trainworks.AssetConstructors
             GameObject.Destroy(spineMeshes.transform.GetChild(1).gameObject);
             GameObject.Destroy(spineMeshes.transform.GetChild(2).gameObject);
 
-            // Set googly eye positions
-            // Add in visual effects such as particles
+            // TODO Set googly eye positions
+            // TODO Add in visual effects such as particles
 
             // Remove our friends
             characterUI.GetComponent<SpriteRenderer>().forceRenderingOff = true;

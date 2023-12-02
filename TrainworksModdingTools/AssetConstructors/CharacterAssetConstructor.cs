@@ -50,12 +50,16 @@ namespace Trainworks.AssetConstructors
         /// <returns>The GameObject for the character</returns>
         private static GameObject CreateCharacterGameObject(AssetReference assetRef, Sprite sprite)
         {
+            // TODO this code is fishy... Shouldn't the Character be drawn using the MeshRenderer?
+
             // Create a new character GameObject by cloning an existing, working character
-            var characterGameObject = GameObject.Instantiate(CustomCharacterManager.TemplateCharacter);
+            // Moving the created game object to be LOUDER if something goes wrong.
+            var characterGameObject = GameObject.Instantiate(CustomCharacterManager.TemplateCharacter, new Vector3(5, 5, 0), new Quaternion());
 
             // Set aside its CharacterState and CharacterUI components for later use
             var characterState = characterGameObject.GetComponentInChildren<CharacterState>();
             var characterUI = characterGameObject.GetComponentInChildren<CharacterUI>();
+            var characterUIMesh = characterGameObject.GetComponentInChildren<CharacterUIMesh>(true);
 
             // Set the name, and hide the UI
             characterUI.HideDetails();
@@ -75,6 +79,13 @@ namespace Trainworks.AssetConstructors
             // Set states in the CharacterState and CharacterUI to the sprite to show it ingame
             AccessTools.Field(typeof(CharacterState), "sprite").SetValue(characterState, sprite);
             characterUI.GetSpriteRenderer().sprite = sprite;
+
+            // Disable the meshRenderer otherwise the templateCharacter will be displayed.
+            characterUIMesh.meshRenderer.forceRenderingOff = true;
+            characterUIMesh.meshRenderer.material = null;
+            characterUIMesh.meshRenderer.sharedMaterial = null;
+            characterUIMesh.meshRenderer.materials = Array.Empty<Material>();
+            characterUIMesh.meshRenderer.sharedMaterials = Array.Empty<Material>();
 
             // Set up the outline Sprite - well, seems like there will be problems here
             var outlineMesh = characterGameObject.GetComponentInChildren<CharacterUIOutlineMesh>(true);

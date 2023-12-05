@@ -162,13 +162,17 @@ namespace Trainworks.BuildersV2
         /// </summary>}
         public string SubclassDescriptionLoc { get; set; }
         /// <summary>
-        /// Unused currently. Sets the Character ID to display in the Clan Select Screen
+        /// Sets the Character ID to display in the Clan Select Screen
         /// when the clan is selected as main.
+        /// Optimally you should create a new CharacterData with an upscaled model of your champion.
+        /// Otherwise it will appear tiny. The base game does this with separate versions of the CharacterData
+        /// used for the Clan Select Screen.
         /// </summary>
         public string[] ClassSelectScreenCharacterIDsMain { get; set; }
         /// <summary>
-        /// Unused currently. Sets the Character ID to display in the Clan Select Screen
+        /// Sets the Character ID to display in the Clan Select Screen
         /// when the clan is selected as secondary.
+        /// This could be set to any normal unit of your clan.
         /// </summary>
         public string[] ClassSelectScreenCharacterIDsSub { get; set; }
 

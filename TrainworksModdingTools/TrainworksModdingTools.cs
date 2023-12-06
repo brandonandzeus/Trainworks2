@@ -24,7 +24,7 @@ namespace Trainworks
     {
         public const string GUID = "tools.modding.trainworks";
         public const string NAME = "Trainworks Modding Tools";
-        public const string VERSION = "2.1.0";
+        public const string VERSION = "2.1.1";
 
         /// <summary>
         /// The framework's logging source.
@@ -40,7 +40,7 @@ namespace Trainworks
         /// <param name="msg">The message to log</param>
         public static void Log(LogLevel lvl, string msg)
         {
-            logger.Log(lvl, msg);
+            logger.Log(lvl, string.Format("[{0}] {1}", DateTime.UtcNow.ToString("HH:mm:ss.ffffff"), msg));
         }
 
         /// <summary>

@@ -17,6 +17,11 @@ namespace Trainworks.AssetConstructors
 {
     public class CharacterAssetConstructor : Interfaces.IAssetConstructor
     {
+        // Empty material used for static images for characters.
+        // Can't set to null directly or will get a ton of nasty warning messages each time its rendered.
+        // Can't disable the meshrenderer because its involved in rendering the characters.
+        public static Material NullMaterial = new Material(Shader.Find("Shiny Shoe/Character Spine Shader"));
+
         public GameObject Construct(AssetReference assetRef)
         {
             return CreateCharacterGameObject(assetRef);
@@ -115,10 +120,10 @@ namespace Trainworks.AssetConstructors
 
             // Disable the meshRenderer otherwise the templateCharacter will be displayed.
             characterUIMesh.meshRenderer.forceRenderingOff = true;
-            characterUIMesh.meshRenderer.material = null;
-            characterUIMesh.meshRenderer.sharedMaterial = null;
-            characterUIMesh.meshRenderer.materials = Array.Empty<Material>();
-            characterUIMesh.meshRenderer.sharedMaterials = Array.Empty<Material>();
+            characterUIMesh.meshRenderer.material = NullMaterial; 
+            characterUIMesh.meshRenderer.sharedMaterial = NullMaterial;
+            characterUIMesh.meshRenderer.materials = new Material[] { NullMaterial };
+            characterUIMesh.meshRenderer.sharedMaterials = new Material[] { NullMaterial };
 
             // Set up the outline Sprite - well, seems like there will be problems here
             var outlineMesh = characterGameObject.GetComponentInChildren<CharacterUIOutlineMesh>(true);

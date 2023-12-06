@@ -226,8 +226,7 @@ namespace Trainworks.Patches
             AccessTools.Field(typeof(CharacterUIOutlineMesh), "outlineData").SetValue(outlineMesh, null);
         }
 
-        static void Postfix(ref bool __state, ref ClassSelectCharacterDisplay[] ___characterDisplays, ClassSelectionIconUI ___mainClassSelectionUI,
-            ClassSelectionIconUI ___subClassSelectionUI, Transform ___charactersRoot, ClassSelectionScreen __instance)
+        static void Postfix(ref bool __state, ref ClassSelectCharacterDisplay[] ___characterDisplays, Transform ___charactersRoot)
         {
             if (!__state)
                 return;
@@ -286,7 +285,6 @@ namespace Trainworks.Patches
                     AccessTools.Field(typeof(ClassSelectCharacterDisplay), "characters").SetValue(customMainCharacterDisplay, null);
                 }
 
-
                 var subCharacterIDs = CustomClassManager.CustomClassSelectScreenCharacterIDsSub[customClassData.GetID()];
                 var customSubCharacterDisplay = GameObject.Instantiate(characterDisplaySub, ___charactersRoot);
                 customSubCharacterDisplay.name = customClassData.name + " sub";
@@ -308,7 +306,6 @@ namespace Trainworks.Patches
                     UpdateCharacterGameObject(characterState, assetRef);
                     AccessTools.Field(typeof(ClassSelectCharacterDisplay), "characters").SetValue(customSubCharacterDisplay, null);
                 }
-
 
                 j++;
             }

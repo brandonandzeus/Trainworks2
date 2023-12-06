@@ -60,4 +60,63 @@ namespace Trainworks.Patches
             return true;
         }
     }
+
+    [HarmonyPatch(typeof(AssetLoadingManager), "Unload")]
+    class CustomAssetUnloadingPatch
+    {
+        static MethodInfo setAssetInfoAssetMethod;
+
+        public static bool Prefix(
+            ref AssetLoadingManager __instance,
+            ref AssetReference assetRef,
+            IAddressableAssetOwner assetOwner,
+            bool simulate,
+            ref Dictionary<Hash128, AssetLoadingManager.AssetInfo> ____assetsLoaded,
+            ref bool __result
+            )
+        {
+            if (CustomAssetManager.RuntimeKeyToAssetInfo.ContainsKey(assetRef.RuntimeKey))
+            {
+                ____assetsLoaded.TryGetValue(assetRef.RuntimeKey, out AssetLoadingManager.AssetInfo info);
+                if (info == null)
+                {
+                    Trainworks.Log(LogLevel.Debug, $"No asset entry for asset being unloaded {assetRef}");
+                    __result = true;
+                    return false;
+                }
+                if (info.Failed || info.Loading)
+                {
+                    Trainworks.Log(LogLevel.Debug, $"Trying to unload an asset that has failed to load or loading {assetRef}");
+                    __result = true;
+                    return false;
+                }
+                info.ownerCount--;
+                if (info.ownerCount < 0)
+                {
+                    info.ownerCount = 0;
+                }
+                if (info.ownerCount == 0)
+                {
+                    if (info.instCount > 0)
+                    {
+                        Trainworks.Log(LogLevel.Warning, string.Format("Unloading asset {1} failed.  It has {0} instances in scene.  We expect that soon this instance will be destroyed so that this asset unloads.", info.instCount, assetRef.DebugName));
+                        __result = false;
+                        return false;
+                    }
+
+                    if (setAssetInfoAssetMethod == null)
+                    {
+                        setAssetInfoAssetMethod = AccessTools.Method(typeof(AssetLoadingManager), "SetAssetInfoAsset");
+                    }
+
+                    UnityEngine.Object.Destroy(info.asset);
+                    setAssetInfoAssetMethod.Invoke(__instance, new object[] { info, null });
+                    ____assetsLoaded.Remove(info.runtimeKey);
+                    __result = true;
+                }
+                return false;
+            }
+            return true;
+        }
+    }
 }

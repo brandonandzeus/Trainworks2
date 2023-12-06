@@ -29,7 +29,7 @@ namespace Trainworks.AssetConstructors
             // Create a new card GameObject from scratch
             // Cards are simple enough that we can get away with doing this
             GameObject cardGameObject = new GameObject();
-            cardGameObject.name = assetRef.RuntimeKey.ToString();
+            cardGameObject.name = "Card_" + sprite.name;
             Image newImage = cardGameObject.AddComponent<Image>();
             newImage.sprite = sprite;
 

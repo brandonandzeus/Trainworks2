@@ -17,7 +17,10 @@ namespace Trainworks.AssetConstructors
 {
     public class CharacterAssetConstructor : Interfaces.IAssetConstructor
     {
-        public Dictionary<string, GameObject> CharacterPrefabDictionary = new Dictionary<string, GameObject>();
+        // Empty material used for static images for characters.
+        // Can't set to null directly or will get a ton of nasty warning messages each time its rendered.
+        // Can't disable the meshrenderer because its involved in rendering the characters.
+        public static Material NullMaterial = new Material(Shader.Find("Shiny Shoe/Character Spine Shader"));
 
         public GameObject Construct(AssetReference assetRef)
         {
@@ -33,13 +36,48 @@ namespace Trainworks.AssetConstructors
         public static GameObject CreateCharacterGameObject(AssetReference assetRef)
         {
             Sprite sprite = CustomAssetManager.LoadSpriteFromRuntimeKey(assetRef.RuntimeKey);
-            if (sprite != null)
+            if (sprite == null)
+            {
+                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Could not find sprite with asset runtime key: " + assetRef.RuntimeKey);
+                return null;
+            }
+            var charObj = CreateCharacterGameObject(assetRef, sprite);
+            GameObject.DontDestroyOnLoad(charObj);
+            return charObj;
+        }
+
+        public GameObject Construct(AssetReference assetRef, BundleAssetLoadingInfo bundleInfo)
+        {
+            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Looking in bundle for... " + bundleInfo.ObjectName);
+
+            var tex = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.SpriteName) as Texture2D;
+            if (tex == null)
+            {
+                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Invalid sprite name when loading asset: " + bundleInfo.SpriteName);
+                return null;
+            }
+
+            Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 128f);
+            sprite.name = "Sprite_" + bundleInfo.SpriteName.Replace("assets/", "").Replace(".png", "");
+            // Sprite asset, but its not a spine animation
+            if (bundleInfo.ObjectName == null)
             {
                 var charObj = CreateCharacterGameObject(assetRef, sprite);
                 GameObject.DontDestroyOnLoad(charObj);
                 return charObj;
             }
-            return null;
+            // Animated sprite asset with spine animation.
+            GameObject gameObject = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.ObjectName) as GameObject;
+            if (gameObject == null)
+            {
+                Trainworks.Log("Could not load spine animations for bundle object: " + bundleInfo.ObjectName);
+                var charObj = CreateCharacterGameObject(assetRef, sprite);
+                GameObject.DontDestroyOnLoad(charObj);
+                return charObj;
+            }
+            var spineObj = CreateCharacterGameObject(assetRef, sprite, gameObject);
+            GameObject.DontDestroyOnLoad(spineObj);
+            return spineObj;
         }
 
         /// <summary>
@@ -50,36 +88,16 @@ namespace Trainworks.AssetConstructors
         /// <returns>The GameObject for the character</returns>
         private static GameObject CreateCharacterGameObject(AssetReference assetRef, Sprite sprite)
         {
-            /*
-            // This code attempts to construct a Spine Object with no animations to match the imported PNG file. This gives us better outlining, draw order, and highlighting.
-
-            GameObject skeletonData = new GameObject();
-            skeletonData.name = sprite.name;
-            var s = skeletonData.AddComponent<SkeletonAnimation>();
-
-            // All we need is a complete and valid SkeletonDataAsset... does that include the atlas primarymaterial, atlas data, skeletonjson, state, and skeleton?
-            s.skeletonDataAsset = new SkeletonDataAsset();
-            s.skeletonDataAsset.skeletonJSON = new TextAsset("{\"skeleton\":{\"spine\":\"3.6.0.7-beta\",\"width\":" + sprite.rect.width + ",\"height\":" + sprite.rect.height + ",\"fps\":24,\"hash\":\" \",\"name\":\"Armature\"},\"bones\":[{\"name\":\"root\"}],\"slots\":[{\"name\":\"Unit\",\"bone\":\"root\",\"attachment\":\"Unit\"}],\"skins\":{\"default\":{\"Unit\":{\"Unit\":{\"name\":\"Unit\",\"width\":" + sprite.rect.width + ",\"height\":" + sprite.rect.height + ",\"y\":" + sprite.rect.width + "}}}}}");
-            s.skeletonDataAsset.atlasAssets.AddToArray<AtlasAssetBase>(new SpineAtlasAsset());
-            s.skeletonDataAsset.atlasAssets[0].
-            */
-
-            /*
-            Trainworks.Log(BepInEx.Logging.LogLevel.All, "We're doing the code!");
-            var skeletonData = TrainworksBundle.LoadAsset("assets/PNGTemplate.prefab") as GameObject;
-
-            return CreateCharacterGameObject(assetRef, sprite, skeletonData);
-
-
-            Trainworks.Log(BepInEx.Logging.LogLevel.All, "Character Template: " + CustomCharacterManager.TemplateCharacter);
-            */
+            // TODO this code is fishy... Shouldn't the Character be drawn using the MeshRenderer?
 
             // Create a new character GameObject by cloning an existing, working character
-            var characterGameObject = GameObject.Instantiate(CustomCharacterManager.TemplateCharacter);
+            // Moving the created game object to be LOUDER if something goes wrong.
+            var characterGameObject = GameObject.Instantiate(CustomCharacterManager.TemplateCharacter, new Vector3(5, 5, 0), new Quaternion());
 
             // Set aside its CharacterState and CharacterUI components for later use
             var characterState = characterGameObject.GetComponentInChildren<CharacterState>();
             var characterUI = characterGameObject.GetComponentInChildren<CharacterUI>();
+            var characterUIMesh = characterGameObject.GetComponentInChildren<CharacterUIMesh>(true);
 
             // Set the name, and hide the UI
             characterUI.HideDetails();
@@ -97,15 +115,19 @@ namespace Trainworks.AssetConstructors
             spine.gameObject.SetActive(false);
 
             // Set states in the CharacterState and CharacterUI to the sprite to show it ingame
-            Traverse.Create(characterState).Field<Sprite>("sprite").Value = sprite;
+            AccessTools.Field(typeof(CharacterState), "sprite").SetValue(characterState, sprite);
             characterUI.GetSpriteRenderer().sprite = sprite;
+
+            // Disable the meshRenderer otherwise the templateCharacter will be displayed.
+            characterUIMesh.meshRenderer.forceRenderingOff = true;
+            characterUIMesh.meshRenderer.material = NullMaterial; 
+            characterUIMesh.meshRenderer.sharedMaterial = NullMaterial;
+            characterUIMesh.meshRenderer.materials = new Material[] { NullMaterial };
+            characterUIMesh.meshRenderer.sharedMaterials = new Material[] { NullMaterial };
 
             // Set up the outline Sprite - well, seems like there will be problems here
             var outlineMesh = characterGameObject.GetComponentInChildren<CharacterUIOutlineMesh>(true);
-            //Traverse.Create(outlineMesh).Field("outlineData").Field<Texture2D>("characterTexture").Value = sprite.texture;
-            //Traverse.Create(outlineMesh).Field("outlineData").Field<Texture2D>("outlineTexture").Value = sprite.texture;
-            Traverse.Create(outlineMesh).Field<CharacterOutlineData>("outlineData").Value = null; //CharacterOutlineData.Create(sprite.texture);
-            //Traverse.Create(outlineMesh).Field("outlineData").Field<Texture2D>("outlineTexture").Value = sprite.texture;
+            AccessTools.Field(typeof(CharacterUIOutlineMesh), "outlineData").SetValue(outlineMesh, null);
 
             return characterGameObject;
         }
@@ -157,15 +179,12 @@ namespace Trainworks.AssetConstructors
 
             dest.skeletonDataAsset = source.skeletonDataAsset;
 
-            // Destroy the evidence
-            GameObject.Destroy(skeletonData.gameObject);
-
             // Now delete the pre-existing animations
             GameObject.Destroy(spineMeshes.transform.GetChild(1).gameObject);
             GameObject.Destroy(spineMeshes.transform.GetChild(2).gameObject);
 
-            // Set googly eye positions
-            // Add in visual effects such as particles
+            // TODO Set googly eye positions
+            // TODO Add in visual effects such as particles
 
             // Remove our friends
             characterUI.GetComponent<SpriteRenderer>().forceRenderingOff = true;
@@ -232,8 +251,9 @@ namespace Trainworks.AssetConstructors
             }
         };
 
+        // TODO why is this here what is it's purpose.
         [HarmonyPatch(typeof(CharacterUIMeshSpine), "CreateAnimInfo")]
-        class DebugStupidShitB
+        class FixAnimationState
         {
             static void Prefix(CharacterUIMeshSpine __instance, CharacterUI.Anim animType)
             {
@@ -262,47 +282,6 @@ namespace Trainworks.AssetConstructors
                 }
                 return;
             }
-        }
-
-        public GameObject Construct(AssetReference assetRef, BundleAssetLoadingInfo bundleInfo)
-        {
-            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Looking in bundle for... " + bundleInfo.ObjectName);
-
-            // Don't recreate
-            if (CharacterPrefabDictionary.ContainsKey(bundleInfo.SpriteName))
-            {
-                return CharacterPrefabDictionary[bundleInfo.SpriteName];
-            }
-
-            if (CharacterPrefabDictionary.ContainsKey(bundleInfo.ObjectName))
-            {
-                return CharacterPrefabDictionary[bundleInfo.ObjectName];
-            }
-
-            // Create a new one if one doesn't exist already
-            var tex = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.SpriteName) as Texture2D;
-            if (tex != null)
-            {
-                Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 128f);
-                sprite.name = "Sprite_" + bundleInfo.SpriteName.Replace("assets/", "").Replace(".png", "");
-                if (bundleInfo.ObjectName != null)
-                {
-                    GameObject gameObject = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.ObjectName) as GameObject;
-                    if (gameObject != null)
-                    {
-                        var spineObj = CreateCharacterGameObject(assetRef, sprite, gameObject);
-                        GameObject.DontDestroyOnLoad(spineObj);
-                        CharacterPrefabDictionary.Add(bundleInfo.ObjectName, spineObj);
-                        return spineObj;
-                    }
-                }
-                var charObj = CreateCharacterGameObject(assetRef, sprite);
-                GameObject.DontDestroyOnLoad(charObj);
-                CharacterPrefabDictionary.Add(bundleInfo.SpriteName, charObj);
-                return charObj;
-            }
-            Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Invalid sprite name when loading asset: " + bundleInfo.SpriteName);
-            return null;
         }
     }
 }

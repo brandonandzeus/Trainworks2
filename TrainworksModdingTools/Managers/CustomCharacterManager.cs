@@ -110,7 +110,6 @@ namespace Trainworks.Managers
         public static void LoadTemplateCharacter(SaveManager saveManager)
         {
             var characterData = saveManager.GetAllGameData().GetAllCharacterData()[0];
-            //var characterData = new CharacterData();
             var loadOperation = characterData.characterPrefabVariantRef.LoadAsset<GameObject>();
             loadOperation.Completed += TemplateCharacterLoadingComplete;
         }

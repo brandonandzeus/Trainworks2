@@ -17,8 +17,6 @@ namespace Trainworks.AssetConstructors
 {
     public class CharacterAssetConstructor : Interfaces.IAssetConstructor
     {
-        public Dictionary<string, GameObject> CharacterPrefabDictionary = new Dictionary<string, GameObject>();
-
         public GameObject Construct(AssetReference assetRef)
         {
             return CreateCharacterGameObject(assetRef);
@@ -33,13 +31,48 @@ namespace Trainworks.AssetConstructors
         public static GameObject CreateCharacterGameObject(AssetReference assetRef)
         {
             Sprite sprite = CustomAssetManager.LoadSpriteFromRuntimeKey(assetRef.RuntimeKey);
-            if (sprite != null)
+            if (sprite == null)
+            {
+                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Could not find sprite with asset runtime key: " + assetRef.RuntimeKey);
+                return null;
+            }
+            var charObj = CreateCharacterGameObject(assetRef, sprite);
+            GameObject.DontDestroyOnLoad(charObj);
+            return charObj;
+        }
+
+        public GameObject Construct(AssetReference assetRef, BundleAssetLoadingInfo bundleInfo)
+        {
+            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Looking in bundle for... " + bundleInfo.ObjectName);
+
+            var tex = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.SpriteName) as Texture2D;
+            if (tex == null)
+            {
+                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Invalid sprite name when loading asset: " + bundleInfo.SpriteName);
+                return null;
+            }
+
+            Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 128f);
+            sprite.name = "Sprite_" + bundleInfo.SpriteName.Replace("assets/", "").Replace(".png", "");
+            // Sprite asset, but its not a spine animation
+            if (bundleInfo.ObjectName == null)
             {
                 var charObj = CreateCharacterGameObject(assetRef, sprite);
                 GameObject.DontDestroyOnLoad(charObj);
                 return charObj;
             }
-            return null;
+            // Animated sprite asset with spine animation.
+            GameObject gameObject = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.ObjectName) as GameObject;
+            if (gameObject == null)
+            {
+                Trainworks.Log("Could not load spine animations for bundle object: " + bundleInfo.ObjectName);
+                var charObj = CreateCharacterGameObject(assetRef, sprite);
+                GameObject.DontDestroyOnLoad(charObj);
+                return charObj;
+            }
+            var spineObj = CreateCharacterGameObject(assetRef, sprite, gameObject);
+            GameObject.DontDestroyOnLoad(spineObj);
+            return spineObj;
         }
 
         /// <summary>
@@ -141,9 +174,6 @@ namespace Trainworks.AssetConstructors
 
             dest.skeletonDataAsset = source.skeletonDataAsset;
 
-            // Destroy the evidence
-            GameObject.Destroy(skeletonData.gameObject);
-
             // Now delete the pre-existing animations
             GameObject.Destroy(spineMeshes.transform.GetChild(1).gameObject);
             GameObject.Destroy(spineMeshes.transform.GetChild(2).gameObject);
@@ -216,8 +246,9 @@ namespace Trainworks.AssetConstructors
             }
         };
 
+        // TODO why is this here what is it's purpose.
         [HarmonyPatch(typeof(CharacterUIMeshSpine), "CreateAnimInfo")]
-        class DebugStupidShitB
+        class FixAnimationState
         {
             static void Prefix(CharacterUIMeshSpine __instance, CharacterUI.Anim animType)
             {
@@ -246,47 +277,6 @@ namespace Trainworks.AssetConstructors
                 }
                 return;
             }
-        }
-
-        public GameObject Construct(AssetReference assetRef, BundleAssetLoadingInfo bundleInfo)
-        {
-            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Looking in bundle for... " + bundleInfo.ObjectName);
-
-            // Don't recreate
-            if (CharacterPrefabDictionary.ContainsKey(bundleInfo.SpriteName))
-            {
-                return CharacterPrefabDictionary[bundleInfo.SpriteName];
-            }
-
-            if (CharacterPrefabDictionary.ContainsKey(bundleInfo.ObjectName))
-            {
-                return CharacterPrefabDictionary[bundleInfo.ObjectName];
-            }
-
-            // Create a new one if one doesn't exist already
-            var tex = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.SpriteName) as Texture2D;
-            if (tex != null)
-            {
-                Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 128f);
-                sprite.name = "Sprite_" + bundleInfo.SpriteName.Replace("assets/", "").Replace(".png", "");
-                if (bundleInfo.ObjectName != null)
-                {
-                    GameObject gameObject = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.ObjectName) as GameObject;
-                    if (gameObject != null)
-                    {
-                        var spineObj = CreateCharacterGameObject(assetRef, sprite, gameObject);
-                        GameObject.DontDestroyOnLoad(spineObj);
-                        CharacterPrefabDictionary.Add(bundleInfo.ObjectName, spineObj);
-                        return spineObj;
-                    }
-                }
-                var charObj = CreateCharacterGameObject(assetRef, sprite);
-                GameObject.DontDestroyOnLoad(charObj);
-                CharacterPrefabDictionary.Add(bundleInfo.SpriteName, charObj);
-                return charObj;
-            }
-            Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Invalid sprite name when loading asset: " + bundleInfo.SpriteName);
-            return null;
         }
     }
 }

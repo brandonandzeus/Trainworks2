@@ -29,12 +29,11 @@ namespace Trainworks.Patches
                 __state = true;
             }
         }
-
-
         
         private static GameObject UpdateCharacterGameObject(CharacterState characterState, AssetReference assetRef)
         {
             var runtimeKey = assetRef.RuntimeKey;
+            // AssetBundle
             if (BundleManager.RuntimeKeyToBundleInfo.ContainsKey(runtimeKey))
             {
                 var bundleInfo = BundleManager.RuntimeKeyToBundleInfo[runtimeKey];
@@ -59,10 +58,9 @@ namespace Trainworks.Patches
                     UpdateCharacterDisplayGameObject(characterState, sprite);
                     return null;
                 }
-
-                gameObject = GameObject.Instantiate(gameObject);
                 UpdateCharacterDisplayGameObject(characterState, sprite, gameObject);
             }
+            // Static image
             else if (CustomAssetManager.RuntimeKeyToAssetInfo.ContainsKey(runtimeKey))
             {
                 var sprite = CustomAssetManager.LoadSpriteFromRuntimeKey(runtimeKey);
@@ -121,8 +119,6 @@ namespace Trainworks.Patches
             // Set up the outline Sprite - well, seems like there will be problems here
             var outlineMesh = characterState.GetComponentInChildren<CharacterUIOutlineMesh>(true);
             AccessTools.Field(typeof(CharacterUIOutlineMesh), "outlineData").SetValue(outlineMesh, null);
-
-            return;
         }
 
         private static void UpdateCharacterDisplayGameObject(CharacterState characterState, Sprite sprite, GameObject skeletonData)
@@ -164,10 +160,7 @@ namespace Trainworks.Patches
 
 
             dest.skeletonDataAsset = source.skeletonDataAsset;
-            
 
-            // Destroy the evidence
-            GameObject.Destroy(skeletonData.gameObject);
 
             // Now delete the pre-existing animations
             GameObject.Destroy(spineMeshes.transform.GetChild(1).gameObject);
@@ -191,6 +184,46 @@ namespace Trainworks.Patches
             dest.gameObject.SetActive(false);
 
             //Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Created spine component for " + characterGameObject.name);
+        }
+
+        static void DisableCharacterDisplayGameObject(CharacterState characterState)
+        {
+            var characterUI = characterState.GetComponentInChildren<CharacterUI>();
+            var characterUIMesh = characterState.GetComponentInChildren<CharacterUIMesh>(true);
+
+            // Set the name, and hide the UI
+            characterUI.HideDetails();
+
+            // Delete all the spine anims
+            var spine = characterState.GetComponentInChildren<ShinyShoe.CharacterUIMeshSpine>(true);
+            foreach (Transform child in spine.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+            spine.gameObject.SetActive(false);
+
+            characterUI.GetSpriteRenderer().enabled = false;
+
+            // Disable the meshRenderer otherwise the templateCharacter will be displayed.
+            characterUIMesh.meshRenderer.forceRenderingOff = true;
+            characterUIMesh.meshRenderer.enabled = false;
+            characterUIMesh.meshRenderer.material = null;
+            characterUIMesh.meshRenderer.sharedMaterial = null;
+            characterUIMesh.meshRenderer.materials = Array.Empty<Material>();
+            characterUIMesh.meshRenderer.sharedMaterials = Array.Empty<Material>();
+
+            // Remove Extra GameObjects that are specific to cloned Champions.
+            // The Sentient's hair glow effects, and others really.
+            foreach (Transform c in characterUI.transform)
+            {
+                if (ObjectsToRemove.Contains(c.gameObject.name))
+                {
+                    GameObject.Destroy(c.gameObject);
+                }
+            }
+
+            var outlineMesh = characterState.GetComponentInChildren<CharacterUIOutlineMesh>(true);
+            AccessTools.Field(typeof(CharacterUIOutlineMesh), "outlineData").SetValue(outlineMesh, null);
         }
 
         static void Postfix(ref bool __state, ref ClassSelectCharacterDisplay[] ___characterDisplays, ClassSelectionIconUI ___mainClassSelectionUI,
@@ -230,51 +263,52 @@ namespace Trainworks.Patches
             {
                 int clanIndex = vanillaClassCount + j;
 
+                var mainCharacterIDs = CustomClassManager.CustomClassSelectScreenCharacterIDsMain[customClassData.GetID()];
+
                 var customMainCharacterDisplay = GameObject.Instantiate(characterDisplayMain, ___charactersRoot);
                 customMainCharacterDisplay.name = customClassData.name + " main";
                 characterDisplaysNew[clanIndex] = customMainCharacterDisplay;
                 AccessTools.Field(typeof(ClassSelectCharacterDisplay), "clanIndex").SetValue(characterDisplaysNew[clanIndex], clanIndex + 1);
 
-                var customSubCharacterDisplay = GameObject.Instantiate(characterDisplaySub, ___charactersRoot);
-                customSubCharacterDisplay.name = customClassData.name + " sub";
-                characterDisplaysNew[clanIndex + totalClassCount + 1] = customSubCharacterDisplay;
-                AccessTools.Field(typeof(ClassSelectCharacterDisplay), "clanIndex").SetValue(characterDisplaysNew[clanIndex + totalClassCount + 1], clanIndex + 1);
-
-                var mainCharacterIDs = CustomClassManager.CustomClassSelectScreenCharacterIDsMain[customClassData.GetID()];
                 CharacterState[] characterStates = customMainCharacterDisplay.GetComponentsInChildren<CharacterState>(true);
                 for (int k = 0; k < characterStates.Length; k++)
                 {
                     var characterState = characterStates[k];
                     if (mainCharacterIDs == null || k >= mainCharacterIDs.Length)
                     {
-                        characterState.gameObject.SetActive(false);
+                        DisableCharacterDisplayGameObject(characterState);
                         continue;
                     }
-                        
-                    var mainCharacterData = CustomCharacterManager.GetCharacterDataByID(mainCharacterIDs[k]);
 
+                    var mainCharacterData = CustomCharacterManager.GetCharacterDataByID(mainCharacterIDs[k]);
                     var assetRef = mainCharacterData.characterPrefabVariantRef;
                     UpdateCharacterGameObject(characterState, assetRef);
                     AccessTools.Field(typeof(ClassSelectCharacterDisplay), "characters").SetValue(customMainCharacterDisplay, null);
                 }
 
+
                 var subCharacterIDs = CustomClassManager.CustomClassSelectScreenCharacterIDsSub[customClassData.GetID()];
+                var customSubCharacterDisplay = GameObject.Instantiate(characterDisplaySub, ___charactersRoot);
+                customSubCharacterDisplay.name = customClassData.name + " sub";
+                characterDisplaysNew[clanIndex + totalClassCount + 1] = customSubCharacterDisplay;
+                AccessTools.Field(typeof(ClassSelectCharacterDisplay), "clanIndex").SetValue(characterDisplaysNew[clanIndex + totalClassCount + 1], clanIndex + 1);
+
                 characterStates = customSubCharacterDisplay.GetComponentsInChildren<CharacterState>(true);
                 for (int k = 0; k < characterStates.Length; k++)
                 {
                     var characterState = characterStates[k];
                     if (subCharacterIDs == null || k >= subCharacterIDs.Length)
                     {
-                        characterState.gameObject.SetActive(false);
+                        DisableCharacterDisplayGameObject(characterState);
                         continue;
                     }
 
                     var subCharacterData = CustomCharacterManager.GetCharacterDataByID(subCharacterIDs[k]);
-
                     var assetRef = subCharacterData.characterPrefabVariantRef;
                     UpdateCharacterGameObject(characterState, assetRef);
-                    AccessTools.Field(typeof(ClassSelectCharacterDisplay), "characters").SetValue(customMainCharacterDisplay, null);
+                    AccessTools.Field(typeof(ClassSelectCharacterDisplay), "characters").SetValue(customSubCharacterDisplay, null);
                 }
+
 
                 j++;
             }

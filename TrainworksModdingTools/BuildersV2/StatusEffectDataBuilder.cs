@@ -204,7 +204,7 @@ namespace Trainworks.BuildersV2
             {
                 Sprite sprite = CustomAssetManager.LoadSpriteFromPath(FullAssetPath);
                 AccessTools.Field(typeof(StatusEffectData), "icon").SetValue(statusEffect, sprite);
-                TMP_SpriteAssetUtils.AddTextIcon(FullAssetPath, sprite.name);
+                _ = TMP_SpriteAssetUtils.AddTextIcon(FullAssetPath, sprite.name);
             }
 
             StatusEffectManager manager = GameObject.FindObjectOfType<StatusEffectManager>() as StatusEffectManager;

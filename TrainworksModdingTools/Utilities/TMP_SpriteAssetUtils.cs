@@ -27,6 +27,8 @@ namespace Trainworks.Utilities
         /// <summary>
         /// Add a custom text icon. The icon needs to be 24x24 exactly.
         /// If using BuildersV2.StatusEffectDataBuilder the status effect icon is added automatically.
+        /// 
+        /// To use add the html tag with name sprite and property name="iconname" within your card text or tooltip text.
         /// </summary>
         /// <param name="fullpath">Full path to the asset to add.</param>
         /// <param name="name">Optional name, if not given the filename is used. </param>
@@ -65,7 +67,11 @@ namespace Trainworks.Utilities
         /// </summary>
         internal static void Build()
         {
+            if (Icons.Count <= 0)
+                return;
+
             CustomSpriteAtlas = new Texture2D(MAX_TEXTURE_SIZE, MAX_TEXTURE_SIZE);
+
             Texture2D[] textures = Icons.Values.ToArray();
             Rect[] rects = CustomSpriteAtlas.PackTextures(Icons.Values.ToArray(), 0);
 

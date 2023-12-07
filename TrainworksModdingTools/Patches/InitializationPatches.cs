@@ -5,6 +5,7 @@ using HarmonyLib;
 using Trainworks.Managers;
 using Trainworks.Interfaces;
 using System.Linq;
+using Trainworks.Utilities;
 
 namespace Trainworks.Patches
 {
@@ -36,6 +37,8 @@ namespace Trainworks.Patches
                     .Select((plugin) => (plugin as IInitializable))
                     .ToList();
             initializables.ForEach((initializable) => initializable.Initialize());
+
+            TMP_SpriteAssetUtils.Build();
         }
     }
 }

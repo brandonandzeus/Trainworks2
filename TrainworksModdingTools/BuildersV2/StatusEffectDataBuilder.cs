@@ -144,10 +144,14 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public string BaseAssetPath { get; set; }
         /// <summary>
-        /// Path relative to the plugin's file path for the icon.
-        /// Note the icon should be a black and white image sized 24x24.
+        /// Path relative to the plugin's file path for the icon used in the Character Display UI.
         /// </summary>
         public string IconPath { get; set; }
+        /// <summary>
+        /// Path relative to the plugin's file path for the icon used for tooltips.
+        /// Note the icon should be a black and white image sized 24x24.
+        /// </summary>
+        public string TooltipIconPath { get; set; }
 
         public StatusEffectDataBuilder()
         {
@@ -204,7 +208,7 @@ namespace Trainworks.BuildersV2
             {
                 Sprite sprite = CustomAssetManager.LoadSpriteFromPath(FullAssetPath);
                 AccessTools.Field(typeof(StatusEffectData), "icon").SetValue(statusEffect, sprite);
-                _ = TMP_SpriteAssetUtils.AddTextIcon(FullAssetPath, sprite.name);
+                _ = TMP_SpriteAssetUtils.AddTextIcon(BaseAssetPath + "/" + TooltipIconPath, sprite.name);
             }
 
             StatusEffectManager manager = GameObject.FindObjectOfType<StatusEffectManager>() as StatusEffectManager;

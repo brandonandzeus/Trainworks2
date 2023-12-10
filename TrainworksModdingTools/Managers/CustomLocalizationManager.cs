@@ -17,6 +17,7 @@ namespace Trainworks.Managers
     /// </summary>
     public class CustomLocalizationManager
     {
+        private static readonly HashSet<String> CSVFilesLoaded = new HashSet<String>();
 
         // Required because the library just chokes. When we need plural support, we can reimplement this.
         // The existing issue was that LocalizationUtil.GetPluralsUsedByLanguages() returns one less than mTerm.Languages.Length
@@ -25,7 +26,6 @@ namespace Trainworks.Managers
         [HarmonyPatch(typeof(LanguageSourceData), "SimplifyPlurals")]
         class SkipBrokenLibraryFunction
         {
-            // Creates and registers card data for each card class
             static bool Prefix(ref LanguageSourceData __instance)
             {
                 return true;
@@ -38,10 +38,18 @@ namespace Trainworks.Managers
         /// </summary>
         public static void ImportCSV(string path, char Separator = ',')
         {
+            if (CSVFilesLoaded.Contains(path))
+            {
+                Trainworks.Log(LogLevel.Error, "CSV localization file: " + path + " has already been imported. Ignoring...");
+                return;
+            }
+
+            CSVFilesLoaded.Add(path);
+
             string CSVstring = "";
 
             var localPath = Path.GetDirectoryName(new Uri(Assembly.GetCallingAssembly().CodeBase).LocalPath);
-            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "File: " + Path.Combine(localPath, path));
+            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Loading Localization CSV File: " + Path.Combine(localPath, path));
 
             try
             {   // Open the text file using a stream reader.
@@ -61,6 +69,7 @@ namespace Trainworks.Managers
             foreach (string Category in categories)
                 LocalizationManager.Sources[0].Import_CSV(Category, CSVstring, eSpreadsheetUpdateMode.AddNewTerms, Separator);
         }
+
         /// <summary>
         /// Appends a Single Localization to the Localization Manager
         /// </summary>
@@ -79,6 +88,9 @@ namespace Trainworks.Managers
         public static void ImportSingleLocalization(string key, string type, string desc, string plural, string group, string descriptions, string english, string french = null, string german = null, string russian = null, string portuguese = null, string chinese = null)
         {
             if (string.IsNullOrEmpty(key)) return;
+            LanguageSourceData I2Languages = I2.Loc.LocalizationManager.Sources[0];
+            if (I2Languages.ContainsTerm($"Default\\{key}"))
+                return;
             if (!key.HasTranslation())
             {
                 if (french == null) french = english;
@@ -87,26 +99,14 @@ namespace Trainworks.Managers
                 if (portuguese == null) portuguese = english;
                 if (chinese == null) chinese = english;
 
-                var miniCSVBuilder = new System.Text.StringBuilder();
-                miniCSVBuilder.Append("Key;Type;Desc;Plural;Group;Descriptions;English [en-US];French [fr-FR];German [de-DE];Russian;Portuguese (Brazil);Chinese [zh-CN]\n");
-                miniCSVBuilder.Append(key + ";");
-                miniCSVBuilder.Append(type + ";");
-                miniCSVBuilder.Append(desc + ";");
-                miniCSVBuilder.Append(plural + ";");
-                miniCSVBuilder.Append(group + ";");
-                miniCSVBuilder.Append(descriptions + ";");
-                miniCSVBuilder.Append(english + ";");
-                miniCSVBuilder.Append(french + ";");
-                miniCSVBuilder.Append(german + ";");
-                miniCSVBuilder.Append(russian + ";");
-                miniCSVBuilder.Append(portuguese + ";");
-                miniCSVBuilder.Append(chinese);
-
-                List<string> categories = LocalizationManager.Sources[0].GetCategories(true, (List<string>)null);
-                foreach (string Category in categories)
-                {
-                    LocalizationManager.Sources[0].Import_CSV(Category, miniCSVBuilder.ToString(), eSpreadsheetUpdateMode.AddNewTerms, ';');
-                }
+                TermData data = I2Languages.AddTerm($"Default\\{key}", eTermType.Text, false);
+                data.Languages[I2Languages.GetLanguageIndex("English")] = english;
+                data.Languages[I2Languages.GetLanguageIndex("French")] = french;
+                data.Languages[I2Languages.GetLanguageIndex("German")] = german;
+                data.Languages[I2Languages.GetLanguageIndex("Russian")] = russian;
+                data.Languages[I2Languages.GetLanguageIndex("Portuguese (Brazil)")] = portuguese;
+                data.Languages[I2Languages.GetLanguageIndex("Chinese")] = chinese;
+                I2Languages.UpdateDictionary(true);
             }
         }
 

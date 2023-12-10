@@ -6,6 +6,7 @@ using Trainworks.Managers;
 using Trainworks.Interfaces;
 using System.Linq;
 using Trainworks.Utilities;
+using ShinyShoe.Loading;
 
 namespace Trainworks.Patches
 {
@@ -15,7 +16,7 @@ namespace Trainworks.Patches
     [HarmonyPatch(typeof(SaveManager), "Initialize")]
     class SaveManagerInitializationPatch
     {
-        static void Postfix(SaveManager __instance)
+        public static void Postfix(SaveManager __instance)
         {
             CustomCharacterManager.LoadTemplateCharacter(__instance);
             CustomAssetManager.InitializeAssetConstructors();
@@ -29,7 +30,7 @@ namespace Trainworks.Patches
     [HarmonyPatch(typeof(AssetLoadingManager), "Start")]
     class AssetLoadingManagerInitializationPatch
     {
-        static void Postfix()
+        public static void Postfix()
         {
             List<IInitializable> initializables =
                 PluginManager.Plugins.Values.ToList()
@@ -37,8 +38,23 @@ namespace Trainworks.Patches
                     .Select((plugin) => (plugin as IInitializable))
                     .ToList();
             initializables.ForEach((initializable) => initializable.Initialize());
+        }
+    }
 
-            TMP_SpriteAssetUtils.Build();
+    [HarmonyPatch(typeof(LoadingScreen), "FadeOutFullScreen")]
+    class SpriteAssetInitializationPatch
+    {
+        private static bool HasBuiltSpriteAssets = false;
+        public static void Postfix()
+        {
+            // Here because not all clans Initialize via their Initialize.
+            // Note for later, Not everything is guaranteed to be loaded by clans.
+            // Not until the MainMenu screen is up.
+            if (!HasBuiltSpriteAssets)
+            {
+                TMP_SpriteAssetUtils.Build();
+                HasBuiltSpriteAssets = true;
+            }
         }
     }
 }

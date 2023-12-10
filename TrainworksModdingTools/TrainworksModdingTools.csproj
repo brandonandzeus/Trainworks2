@@ -8,11 +8,10 @@
     <FileVersion>2.0.0.0</FileVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutDir>..\..\..\..\workshop\content\1102190\TrainworksModdingTools\plugins</OutDir>
-    <DocumentationFile>C:\Program Files (x86)\Steam\steamapps\common\Monster Train\TrainworksModdingTools\TrainworksModdingTools.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Program Files (x86)\Steam\steamapps\workshop\content\1102190\2205086946\plugins\TrainworksModdingTools.xml</DocumentationFile>
     <NoWarn>1701;1702;1591</NoWarn>
-    <OutputPath>C:\Program Files (x86)\Steam\steamapps\workshop\content\1102190\TrainworksModdingTools\</OutputPath>
+    <OutDir>C:\Program Files (x86)\Steam\steamapps\workshop\content\1102190\2205086946\plugins</OutDir>
   </PropertyGroup>
 
   <ItemGroup>

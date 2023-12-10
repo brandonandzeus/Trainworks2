@@ -73,7 +73,6 @@ namespace Trainworks.Managers
         public void NewProviderAvailable(IProvider newProvider)
         {
             ProviderDictionary[newProvider.GetType()] = (false, newProvider);
-            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, newProvider.GetType().AssemblyQualifiedName + " Was Registered to ProviderManager");
         }
 
         /// <summary>

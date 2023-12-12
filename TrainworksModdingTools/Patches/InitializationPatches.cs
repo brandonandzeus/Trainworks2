@@ -32,10 +32,18 @@ namespace Trainworks.Patches
     {
         public static void Postfix()
         {
-            List<IInitializable> initializables =
+            // Initialize replacement string dict by grabbing a reference to LocalizationGlobalParameterHandle.
+            // Should be safe the object exists in memory at runtime as a static reference.
+            LanguageManager manager;
+            ProviderManager.TryGetProvider<LanguageManager>(out manager);
+            var handler = AccessTools.Field(typeof(LanguageManager), "_paramHandler").GetValue(manager);
+            var dict = AccessTools.Field(typeof(LocalizationGlobalParameterHandler), "_replacements").GetValue(handler);
+            CustomLocalizationManager.ReplacementStrings = (Dictionary<string, ReplacementStringData>)dict;
+
+            List <IInitializable> initializables =
                 PluginManager.Plugins.Values.ToList()
-                    .Where((plugin) => (plugin is IInitializable))
-                    .Select((plugin) => (plugin as IInitializable))
+                    .Where((plugin) => plugin is IInitializable)
+                    .Select((plugin) => plugin as IInitializable)
                     .ToList();
             initializables.ForEach((initializable) => initializable.Initialize());
         }

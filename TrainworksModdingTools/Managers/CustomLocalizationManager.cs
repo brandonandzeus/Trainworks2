@@ -18,6 +18,8 @@ namespace Trainworks.Managers
     public class CustomLocalizationManager
     {
         private static readonly HashSet<String> CSVFilesLoaded = new HashSet<String>();
+        // Replacement strings currently in use
+        internal static Dictionary<string, ReplacementStringData> ReplacementStrings;
 
         // Required because the library just chokes. When we need plural support, we can reimplement this.
         // The existing issue was that LocalizationUtil.GetPluralsUsedByLanguages() returns one less than mTerm.Languages.Length
@@ -118,6 +120,27 @@ namespace Trainworks.Managers
                 ret += LocalizationManager.Sources[0].Export_CSV(Category);
             
             return ret;
+        }
+
+        /// <summary>
+        /// Adds a ReplacementString with key and replacement.
+        /// When used in tooltips and CardText will replace [keyword] with replacement.Localize().
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <param name="replacement">Localized text key for replacement</param>
+        /// <returns></returns>
+        public static bool AddReplacementString(string keyword, string replacement)
+        {
+            if (ReplacementStrings.ContainsKey(keyword))
+            {
+                Trainworks.Log("Attempt to add duplicate Replacement String Keyword: " + keyword);
+                return false;
+            }
+            ReplacementStringData replacementStringData = new ReplacementStringData();
+            AccessTools.Field(typeof(ReplacementStringData), "_keyword").SetValue(replacementStringData, keyword);
+            AccessTools.Field(typeof(ReplacementStringData), "_replacement").SetValue(replacementStringData, replacement);
+            ReplacementStrings.Add(keyword, replacementStringData);
+            return true;
         }
     }
 }

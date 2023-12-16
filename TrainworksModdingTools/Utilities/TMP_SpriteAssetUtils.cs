@@ -48,7 +48,7 @@ namespace Trainworks.Utilities
             UnityEngine.ImageConversion.LoadImage(texture, data);
             if (Icons.ContainsKey(texture.name))
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Error, "Icon with name: " + texture.name + " has already added to texture atlas.");
+                Trainworks.Log(BepInEx.Logging.LogLevel.Error, "Icon with name: " + texture.name + " has already been added to texture atlas.");
                 return false;
             }
             if (texture.width != 24 || texture.height != 24)

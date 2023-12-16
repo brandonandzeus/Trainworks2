@@ -44,5 +44,14 @@ namespace Trainworks.BuildersV2
             }
             return aqn;
         }
+
+        /// <summary>
+        /// Determines if the type is from the Base Game or modded content.
+        /// </summary>
+        public static bool IsFromBaseGame(Type type)
+        {
+            string aqn = type.AssemblyQualifiedName;
+            return aqn.Contains("Assembly-CSharp");
+        }
     }
 }

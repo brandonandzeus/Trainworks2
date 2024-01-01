@@ -10,6 +10,8 @@ using ShinyShoe;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Trainworks.Utilities;
+using System.Reflection;
+using static RotaryHeart.Lib.DataBaseExample;
 
 namespace Trainworks.Managers
 {
@@ -31,6 +33,10 @@ namespace Trainworks.Managers
         /// Maps custom characters to their respective synthesis data.
         /// </summary>
         public static IDictionary<CharacterData, CardUpgradeData> UnitSynthesisMapping = new Dictionary<CharacterData, CardUpgradeData>();
+        /// <summary>
+        /// Maps RoomModifierClassName to the custom sprite.
+        /// </summary>
+        public static IDictionary<string, Sprite> CustomRoomModifierIcons = new Dictionary<string, Sprite>();
 
 
         /// <summary>
@@ -171,6 +177,73 @@ namespace Trainworks.Managers
 
             // Last attempt find the dummy unit synthesis.
             return cardUpgrades.FindLast(u => characterData == u.GetSourceSynthesisUnit());
+        }
+
+        /// <summary>
+        /// Setup a Custom Room Modifier Icon sprite
+        /// Note that each instance of a RoomModifierData with the same RoomModifierClassType will share the icon. 
+        /// </summary>
+        /// <param name="RoomModifierClassType">Type inheriting from RoomStateModifierBase</param>
+        /// <param name="icon_path">Relative path to an icon to use for the CharacterUI.</param>
+        /// <param name="tooltip_icon_path">Ignored if icon_path is 24x24. Icon for use in tooltips must be 24x24</param>
+        public static void AddCustomRoomModifierIcon(Type RoomModifierClassType, string icon_path, string tooltip_icon_path = null)
+        {
+            // This prevents mutating original game data, if you change the icon for one Room Modifier
+            // it will change them all. Probably not what you want.
+            if (BuildersV2.BuilderUtils.IsFromBaseGame(RoomModifierClassType))
+            {
+                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Room Modifier Class Type: " + RoomModifierClassType.FullName + " is a base game Room Modifier. Ignoring.");
+                return;
+            }
+
+            var assembly = Assembly.GetCallingAssembly();
+            var base_path = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];
+
+            var full_icon_path = base_path + "/" + icon_path;
+
+            var class_name = BuildersV2.BuilderUtils.GetEffectClassName(RoomModifierClassType);
+            Sprite sprite = CustomAssetManager.LoadSpriteFromPath(full_icon_path);
+            CustomRoomModifierIcons.Add(class_name, sprite);
+
+            if (sprite.texture.width == 24 && sprite.texture.height == 24 && tooltip_icon_path == null)
+            {
+                _ = TMP_SpriteAssetUtils.AddTextIcon(full_icon_path, sprite.name);
+            }
+            else if (tooltip_icon_path != null)
+            {
+                _ = TMP_SpriteAssetUtils.AddTextIcon(base_path + "/" + tooltip_icon_path, sprite.name);
+            }
+        }
+
+        /// <summary>
+        /// Setup a custom Icon for Character Triggers.
+        /// Modifies the internal Trigger Sprite Dictionary.
+        /// </summary>
+        /// <param name="trigger">Trigger Type, should be a custom Trigger</param>
+        /// <param name="icon_path">Relative path to an icon to use for the CharacterUI.</param>
+        /// <param name="tooltip_icon_path">Ignored if icon_path is 24x24. Icon for use in tooltips must be 24x24</param>
+        public static void AddCustomTriggerIcon(CharacterTriggerData.Trigger trigger, string icon_path, string tooltip_icon_path = null)
+        {
+            var statusManager = StatusEffectManager.Instance;
+            var displayData = (StatusEffectsDisplayData)AccessTools.Field(typeof(StatusEffectManager), "displayData").GetValue(statusManager);
+            var triggerIcons = (StatusEffectsDisplayData.TriggerSpriteDict)AccessTools.Field(typeof(StatusEffectsDisplayData), "triggerIcons").GetValue(displayData);
+
+            var assembly = Assembly.GetCallingAssembly();
+            var base_path = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];
+
+            var full_icon_path = base_path + "/" + icon_path;
+
+            Sprite sprite = CustomAssetManager.LoadSpriteFromPath(full_icon_path);
+            triggerIcons.Add(trigger, sprite);
+
+            if (sprite.texture.width == 24 && sprite.texture.height == 24 && tooltip_icon_path == null)
+            {
+                _ = TMP_SpriteAssetUtils.AddTextIcon(full_icon_path, sprite.name);
+            }
+            else if (tooltip_icon_path != null)
+            {
+                _ = TMP_SpriteAssetUtils.AddTextIcon(base_path + "/" + tooltip_icon_path, sprite.name);
+            }
         }
     }
 }

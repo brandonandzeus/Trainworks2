@@ -142,5 +142,18 @@ namespace Trainworks.Managers
             ReplacementStrings.Add(keyword, replacementStringData);
             return true;
         }
+
+        /// <summary>
+        /// Marks a Custom Card Trait class as one that has a tooltip
+        /// </summary>
+        /// <param name="cardTraitClass"></param>
+        public static void AllowCustomCardTraitTooltips(Type cardTraitClass)
+        {
+            var traits = (List<string>) AccessTools.Field(typeof(TooltipContainer), "TraitsSupportedInTooltips").GetValue(null);
+            // Have to add both the name and qualified name as the checks for this could be from CardTraitData.TraitStateName or CardTraitState.GetType().Name
+            // The first will always be the fully qualified assembly name the second since it is direct access will be the class name.
+            traits.Add(cardTraitClass.Name);
+            traits.Add(cardTraitClass.AssemblyQualifiedName);
+        }
     }
 }

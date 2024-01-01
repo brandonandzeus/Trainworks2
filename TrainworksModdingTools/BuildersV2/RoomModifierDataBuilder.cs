@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Trainworks.ConstantsV2;
 using Trainworks.Managers;
+using Trainworks.Utilities;
 using UnityEngine;
 
 namespace Trainworks.BuildersV2
@@ -105,8 +106,9 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public string BaseAssetPath { get; set; }
         /// <summary>
-        /// Path relative to the plugin's file path for the icon.
-        /// Note the icon should be a black and white image sized 24x24.
+        /// Do not use. Setting this will not allow setting a custom icon if used as part of a Character's abilities.
+        /// To set a custom icon call CustomCharacterManager.AddRoomModifierIcon which sets the Icon.
+        /// RoomModifier icons are controlled by RoomStateModifiersData and can't be overriden easily.
         /// </summary>
         public string IconPath { get; set; }
 
@@ -156,6 +158,7 @@ namespace Trainworks.BuildersV2
             }
 
             AccessTools.Field(typeof(RoomModifierData), "paramCardUpgardeData" /* sic */).SetValue(roomModifierData, upgrade);
+
             if (IconPath != null)
             {
                 Sprite sprite = CustomAssetManager.LoadSpriteFromPath(FullAssetPath);

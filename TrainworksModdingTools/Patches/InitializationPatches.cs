@@ -30,8 +30,15 @@ namespace Trainworks.Patches
     [HarmonyPatch(typeof(AssetLoadingManager), "Start")]
     class AssetLoadingManagerInitializationPatch
     {
-        public static void Postfix()
+        public static void Postfix(AssetLoadingData ____assetLoadingData)
         {
+            // Ensure that unlockable cards are loaded, otherwise they will never be loaded.
+            // (UnlockScreen doesn't have a call to LoadAdditionalCards).
+            // All others are OK since in DraftRewardData the assets are loaded right then.
+            // Loading all assets is quite time intensive increasing the load time by 200%
+            // For other preloaded assets see CustomCardPoolManager.MarkCardPoolForPreloading.
+            ____assetLoadingData.CardPoolsAll.Add(CustomCardManager.UnlockableCustomCardsPool);
+
             // Initialize replacement string dict by grabbing a reference to LocalizationGlobalParameterHandle.
             // Should be safe the object exists in memory at runtime as a static reference.
             LanguageManager manager;

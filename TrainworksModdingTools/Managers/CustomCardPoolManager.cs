@@ -153,5 +153,56 @@ namespace Trainworks.Managers
             Trainworks.Log(LogLevel.Warning, "Could not find card pool: " + cardPoolID);
             return null;
         }
+
+        /// <summary>
+        /// Marks a custom card pool for preloading when a run starts.
+        /// This is necessary if for instance you have an artifact that has the RelicEffectAddBattleCard or RelicEffectSpawnRandomUnitStartOfCombat
+        /// Custom Assets are only loaded when they are needed (in contrast with standard assets which are all loaded only if the clan is selected at the start of a run).
+        /// So if you somehow get a card or spawn a character outside of a card draft it will not be loaded due to how the codebase works.
+        ///
+        /// You don't need to call this function for card unlocks, these are done automatically. Card Unlocks also aren't preloaded.
+        /// 
+        /// Note it doesn't make sense to set both game_assets and clan_assets to true.
+        /// </summary>
+        /// <param name="cardPoolID">The card pool ID</param>
+        /// <param name="clan_assets">Mark the card pool as one containing clan assets. These cards will only be loaded if the clan is selected for a run.</param>
+        /// <param name="game_assets">Mark the card pool as one containing general game assets. These cards will always be loaded (Useful for things like Custom Blights or Scourges).</param>
+        public static void MarkCardPoolForPreloading(string cardPoolID, bool clan_assets = true, bool game_assets = false)
+        {
+            MarkCardPoolForPreloading(CustomCardPools[cardPoolID], clan_assets, game_assets);
+        }
+
+        /// <summary>
+        /// Marks a custom card pool for preloading when a run starts.
+        /// This is necessary if for instance you have an artifact that has the RelicEffectAddBattleCard or RelicEffectSpawnRandomUnitStartOfCombat
+        /// Custom Assets are only loaded when they are needed (in contrast with standard assets which are all loaded only if the clan is selected at the start of a run).
+        /// So if you somehow get a card or spawn a character outside of a card draft it will not be loaded due to how the codebase works.
+        ///
+        /// You don't need to call this function for card unlocks, these are done automatically. Card Unlocks also aren't preloaded.
+        /// 
+        /// Note it doesn't make sense to set both game_assets and clan_assets to true.
+        /// </summary>
+        /// <param name="cardPool">The card pool</param>
+        /// <param name="clan_assets">Mark the card pool as one containing clan assets. These cards will only be loaded if the clan is selected for a run.</param>
+        /// <param name="game_assets">Mark the card pool as one containing general game assets. These cards will always be loaded (Useful for things like Custom Blights or Scourges).</param>
+        public static void MarkCardPoolForPreloading(CardPool cardPool, bool clan_assets = true, bool game_assets = false)
+        {
+            if (cardPool == null)
+            {
+                Trainworks.Log(LogLevel.Warning, "Attempted to mark a null CardPool for preloading");
+                return;
+            }
+
+            var assetLoadingManager = AssetLoadingManager.GetInst();
+            var assetLoadingData = (AssetLoadingData)AccessTools.Field(typeof(AssetLoadingManager), "_assetLoadingData").GetValue(assetLoadingManager);
+            if (game_assets)
+            {
+                assetLoadingData.CardPoolsAlwaysLoad.Add(cardPool);
+            }
+            else if (clan_assets)
+            {
+                assetLoadingData.CardPoolsAll.Add(cardPool);
+            }
+        }
     }
 }

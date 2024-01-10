@@ -43,7 +43,9 @@ namespace Trainworks.Patches
                     info.status = AssetLoadingManager.AssetStatus.Loading;
                     ____numLoadingTasksRunning++;
 
-                    // TODO: asynchronize this load
+                    // This load should be done asynchronously, but it isn't hurting anything.
+                    // The overall loading action is done asynchronously through either LoadClassAssets
+                    // for preloaded assets, or through DraftRewardData LoadAdditionalCards task.
                     var asset = CustomAssetManager.LoadGameObjectFromAssetRef(assetRef);
 
                     ____numLoadingTasksRunning--;

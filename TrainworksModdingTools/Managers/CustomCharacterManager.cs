@@ -139,10 +139,41 @@ namespace Trainworks.Managers
             UnitSynthesisMapping.Add(characterData, cardUpgrade);
         }
 
+        /// <summary>
+        /// Marks a CharacterData to be preloaded always.
+        /// This is only necessary for custom enemies and characters not spawned by a card.
+        /// 
+        /// You don't need to call this function if the associated spawner card is already marked for preloading.
+        /// </summary>
+        /// <param name="characterID">Character ID</param>
+        public static void MarkCharacterForPreloading(string characterID)
+        {
+            MarkCharacterForPreloading(CustomCharacterData[characterID]);
+        }
+
+        /// <summary>
+        /// Marks a CharacterData to be preloaded always.
+        /// This is only necessary for custom enemies and characters not spawned by a card.
+        /// 
+        /// You don't need to call this function if the associated spawner card is already marked for preloading.
+        /// </summary>
+        /// <param name="character">CharacterData to mark for preloading</param>
+        public static void MarkCharacterForPreloading(CharacterData character)
+        {
+            if (character == null)
+            {
+                Trainworks.Log(LogLevel.Warning, "Attempted to mark a null CharacterData for preloading ignoring.");
+                return;
+            }
+
+            var assetLoadingManager = AssetLoadingManager.GetInst();
+            var assetLoadingData = (AssetLoadingData)AccessTools.Field(typeof(AssetLoadingManager), "_assetLoadingData").GetValue(assetLoadingManager);
+            assetLoadingData.CharactersAlwaysLoad.Add(character);
+        }
+
         /// <summary> Gets unit synthesis for a custom character. </summary>
         /// <param name="characterData"> Custom character data. </param>
         /// <returns> The unit synthesis if this is a custom character, null otherwise. </returns>
-
         public static CardUpgradeData GetUnitSynthesis(CharacterData characterData)
         {
             var cardUpgrades = ProviderManager.SaveManager.GetAllGameData().GetAllCardUpgradeData();

@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using Trainworks.Utilities;
+using Malee;
 
 namespace Trainworks.Managers
 {
@@ -21,6 +22,26 @@ namespace Trainworks.Managers
         public static IDictionary<string, CardData> CustomCardData { get; } = new Dictionary<string, CardData>();
 
         /// <summary>
+        /// CardPool containing all unlockable custom cards.
+        /// Necessary to add to preloaded assets at start of run.
+        /// Otherwise they will not be loaded ever.
+        /// </summary>
+        internal static CardPool UnlockableCustomCardsPool = new CardPool();
+        internal static ReorderableArray<CardData> customCardPoolDataList = null;
+        /// <summary>
+        /// Reference to UnlockableCustomCardsPool.cardDataList.
+        /// </summary>
+        internal static ReorderableArray<CardData> UnlockableCustomCardPoolDataList 
+        { 
+            get
+            {
+                if (customCardPoolDataList == null)
+                    customCardPoolDataList = (ReorderableArray<CardData>)AccessTools.Field(typeof(CardPool), "cardDataList").GetValue(UnlockableCustomCardsPool);
+                return customCardPoolDataList;
+            }
+        }
+
+        /// <summary>
         /// Register a custom card with the manager, allowing it to show up in game
         /// both in the logbook and whenever cards are chosen from the specified pools.
         /// </summary>
@@ -33,6 +54,10 @@ namespace Trainworks.Managers
                 CustomCardData.Add(cardData.GetID(), cardData);
                 CustomCardPoolManager.AddCardToPools(cardData, cardPoolData);
                 ProviderManager.SaveManager.GetAllGameData().GetAllCardData().Add(cardData);
+                if (cardData.GetUnlockLevel() > 1) 
+                {
+                    UnlockableCustomCardPoolDataList.Add(cardData);
+                }
             }
             else
             {

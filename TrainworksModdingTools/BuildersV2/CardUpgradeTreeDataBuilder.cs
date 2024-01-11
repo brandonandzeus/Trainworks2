@@ -5,9 +5,9 @@ namespace Trainworks.BuildersV2
 {
     public class CardUpgradeTreeDataBuilder
     {
-        /// UNUSED.
-        /// Note not useful and unused in the codebase. Default clans for some reason have this set to The Sentient;
-        /// Wurmkin doesn't set it at all.
+        // UNUSED.
+        // Note not useful and unused in the codebase. Default clans for some reason have this set to The Sentient;
+        // Wurmkin doesn't set it at all.
         //public CharacterData Champion { get; set; }
 
         /// <summary>

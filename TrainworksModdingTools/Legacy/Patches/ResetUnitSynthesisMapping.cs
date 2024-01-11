@@ -2,8 +2,8 @@
 using Trainworks.Managers;
 using System;
 
-/// Only here for backwards compatibility. This used to recompute the internal unit synthesis mapping dictionary.
-/// But it was an inefficient solution requiring it to be called per Plugin which recomputes them all every time.
+// Only here for backwards compatibility. This used to recompute the internal unit synthesis mapping dictionary.
+// But it was an inefficient solution requiring it to be called per Plugin which recomputes them all every time.
 namespace Trainworks.Patches
 {
     public class AccessUnitSynthesisMapping

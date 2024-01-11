@@ -101,7 +101,7 @@ namespace Trainworks.BuildersV2
         public List<CardTraitDataBuilder> TraitBuilders { get; set; }
         /// <summary>
         /// Convenience Builder for Triggers. Will be appended to this list of new character triggers.
-        /// <see cref=">EffectTriggers"/>Effect Triggers are not used by any Cards in Monster Train.
+        /// <see cref="EffectTriggers"/>Effect Triggers are not used by any Cards in Monster Train.
         /// </summary>
         public List<CharacterTriggerDataBuilder> EffectTriggerBuilders { get; set; }
         /// <summary>

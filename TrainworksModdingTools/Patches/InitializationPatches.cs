@@ -33,6 +33,7 @@ namespace Trainworks.Patches
     {
         public static void Postfix(AssetLoadingData ____assetLoadingData)
         {
+            Trainworks.Log("[START] Loading all Trainworks Plugins");
             // Ensure that unlockable cards are loaded, otherwise they will never be loaded.
             // (UnlockScreen doesn't have a call to LoadAdditionalCards).
             // All others are OK since in DraftRewardData the assets are loaded right then.
@@ -71,6 +72,7 @@ namespace Trainworks.Patches
                 TMP_SpriteAssetUtils.Build();
                 CustomLocalizationManager.ImportLocalizationData();
                 HasBuiltSpriteAssets = true;
+                Trainworks.Log("[END] All Trainworks Plugins are loaded.");
             }
             // Do not any code here, as this function is called multiple times.
         }

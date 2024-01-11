@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-/// This patch fixes ClassData#starterCardUpgrade and ClassData#StarterRelics
-/// Unfortunately these two fields are only used by Wurmkin, and the devs did not handle the case
-/// where the other clan selected also have these fields set.
+// This patch fixes ClassData#starterCardUpgrade and ClassData#StarterRelics
+// Unfortunately these two fields are only used by Wurmkin, and the devs did not handle the case
+// where the other clan selected also have these fields set.
 namespace Trainworks.Patches
 {
     // This fixes starter cards for covenant disabled.

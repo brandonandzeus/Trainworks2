@@ -17,9 +17,12 @@ namespace Trainworks.Managers
     /// </summary>
     public class CustomLocalizationManager
     {
-        private static readonly HashSet<String> CSVFilesLoaded = new HashSet<String>();
+        // Separator to CSV File Path.
+        private static Dictionary<char, HashSet<String>> SeparatorsToCsvFiles = new Dictionary<char, HashSet<String>>();
         // Replacement strings currently in use
         internal static Dictionary<string, ReplacementStringData> ReplacementStrings;
+        // Single localization lines added.
+        private static readonly Dictionary<string, string> CSVLineStrings = new Dictionary<string, string>();
 
         // Required because the library just chokes. When we need plural support, we can reimplement this.
         // The existing issue was that LocalizationUtil.GetPluralsUsedByLanguages() returns one less than mTerm.Languages.Length
@@ -38,38 +41,23 @@ namespace Trainworks.Managers
         /// Imports new data to the English Localization from a CSV string with separators ';'.
         /// Required columns are 'Keys', 'Type', 'Plural', 'Group', 'Desc', 'Descriptions'
         /// </summary>
-        public static void ImportCSV(string path, char Separator = ',')
+        public static void ImportCSV(string path, char separator = ',')
         {
-            if (CSVFilesLoaded.Contains(path))
+            if (separator != ',')
             {
-                Trainworks.Log(LogLevel.Error, "CSV localization file: " + path + " has already been imported. Ignoring...");
-                return;
+                Trainworks.Log(LogLevel.Warning, "CSV file with a different separator found, please convert to a CSV file that is comma separated. Importing may cause issues.");
             }
-
-            CSVFilesLoaded.Add(path);
-
-            string CSVstring = "";
-
+            if (!SeparatorsToCsvFiles.ContainsKey(separator))
+            {
+                SeparatorsToCsvFiles.Add(separator, new HashSet<String>());
+            }
             var localPath = Path.GetDirectoryName(new Uri(Assembly.GetCallingAssembly().CodeBase).LocalPath);
-            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Loading Localization CSV File: " + Path.Combine(localPath, path));
-
-            try
-            {   // Open the text file using a stream reader.
-                using (StreamReader sr = new StreamReader(Path.Combine(localPath, path)))
-                {
-                    // Read the stream to a string, and write the string to the console.
-                    CSVstring = sr.ReadToEnd();
-                }
-            }
-            catch (IOException e)
+            var fullPath = Path.Combine(localPath, path);
+            if (SeparatorsToCsvFiles[separator].Contains(fullPath))
             {
-                Trainworks.Log(LogLevel.Error, "Couldn't read file: " + Path.Combine(localPath, path));
-                Trainworks.Log(LogLevel.Error, e.Message);
+                Trainworks.Log(LogLevel.Error, "Attempt to Import CSV file: " + fullPath + " multiple times. Please only call this function once in your Plugin's Initialize");
             }
-
-            List<string> categories = LocalizationManager.Sources[0].GetCategories(true, (List<string>)null);
-            foreach (string Category in categories)
-                LocalizationManager.Sources[0].Import_CSV(Category, CSVstring, eSpreadsheetUpdateMode.AddNewTerms, Separator);
+            SeparatorsToCsvFiles[separator].Add(fullPath);
         }
 
         /// <summary>
@@ -90,10 +78,7 @@ namespace Trainworks.Managers
         public static void ImportSingleLocalization(string key, string type, string desc, string plural, string group, string descriptions, string english, string french = null, string german = null, string russian = null, string portuguese = null, string chinese = null)
         {
             if (string.IsNullOrEmpty(key)) return;
-            LanguageSourceData I2Languages = I2.Loc.LocalizationManager.Sources[0];
-            if (I2Languages.ContainsTerm($"Default\\{key}"))
-                return;
-            if (!key.HasTranslation())
+            if (!key.HasTranslation() && !CSVLineStrings.ContainsKey(key))
             {
                 if (french == null) french = english;
                 if (german == null) german = english;
@@ -101,16 +86,86 @@ namespace Trainworks.Managers
                 if (portuguese == null) portuguese = english;
                 if (chinese == null) chinese = english;
 
-                TermData data = I2Languages.AddTerm($"Default\\{key}", eTermType.Text, false);
-                data.Languages[I2Languages.GetLanguageIndex("English")] = english;
-                data.Languages[I2Languages.GetLanguageIndex("French")] = french;
-                data.Languages[I2Languages.GetLanguageIndex("German")] = german;
-                data.Languages[I2Languages.GetLanguageIndex("Russian")] = russian;
-                data.Languages[I2Languages.GetLanguageIndex("Portuguese (Brazil)")] = portuguese;
-                data.Languages[I2Languages.GetLanguageIndex("Chinese")] = chinese;
-                I2Languages.UpdateDictionary(true);
+                var miniCSVBuilder = new System.Text.StringBuilder();
+                miniCSVBuilder.Append(key + ",");
+                miniCSVBuilder.Append(type + ",");
+                miniCSVBuilder.Append(desc + ",");
+                miniCSVBuilder.Append(plural + ",");
+                miniCSVBuilder.Append(group + ",");
+                miniCSVBuilder.Append(descriptions + ",");
+                miniCSVBuilder.Append(english + ",");
+                miniCSVBuilder.Append(french + ",");
+                miniCSVBuilder.Append(german + ",");
+                miniCSVBuilder.Append(russian + ",");
+                miniCSVBuilder.Append(portuguese + ",");
+                miniCSVBuilder.Append(chinese);
+
+                CSVLineStrings.Add(key, miniCSVBuilder.ToString());
             }
         }
+
+        /// <summary>
+        /// Do not call this function. It is called once all Plugin's Initialize function has been called.
+        /// Calling this function incurs a huge overhead.
+        /// </summary>
+        internal static void ImportLocalizationData()
+        {
+            var miniCSVBuilder = new System.Text.StringBuilder();
+            String header = "Key,Type,Desc,Plural,Group,Descriptions,English [en-US],French [fr-FR],German [de-DE],Russian,Portuguese (Brazil),Chinese [zh-CN]";
+            miniCSVBuilder.AppendLine(header);
+
+            foreach (var sep_path in SeparatorsToCsvFiles)
+            {
+                var separator = sep_path.Key;
+                var files = sep_path.Value;
+
+                // Ensure a valid header is present.
+                String valid_header = header;
+                if (separator != ',')
+                    valid_header = header.Replace(',', separator);
+
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        using (StreamReader sr = new StreamReader(file))
+                        {
+                            String file_header = sr.ReadLine();
+                            if (file_header != valid_header)
+                            {
+                                Trainworks.Log(LogLevel.Error, "Incorrect header format found for csv file: " + file);
+                                Trainworks.Log(LogLevel.Error, "Found header: " + file_header);
+                                Trainworks.Log(LogLevel.Error, "Expected header: " + header);
+                                continue;
+                            }
+
+                            String data = sr.ReadToEnd();
+                            // This is safe, the only non CSV csv file is Arcadian and works when the ;'s are replaced.
+                            if (separator != ',')
+                            {
+                                data = data.Replace(separator, ',');
+                            }
+                            miniCSVBuilder.Append(data);
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        Trainworks.Log(LogLevel.Error, "Couldn't read CSV file: " + file);
+                        Trainworks.Log(LogLevel.Error, e.Message);
+                    }
+                }
+            }
+
+            foreach (var line in CSVLineStrings.Values)
+            {
+                miniCSVBuilder.AppendLine(line);
+            }
+
+            List<string> categories = LocalizationManager.Sources[0].GetCategories(true, (List<string>)null);
+            foreach (string Category in categories)
+                LocalizationManager.Sources[0].Import_CSV(Category, miniCSVBuilder.ToString(), eSpreadsheetUpdateMode.AddNewTerms, ',');
+        }
+
 
         public static string ExportCSV(int language=0)
         {

@@ -7,6 +7,7 @@ using Trainworks.Interfaces;
 using System.Linq;
 using Trainworks.Utilities;
 using ShinyShoe.Loading;
+using I2.Loc;
 
 namespace Trainworks.Patches
 {
@@ -68,8 +69,10 @@ namespace Trainworks.Patches
             if (!HasBuiltSpriteAssets)
             {
                 TMP_SpriteAssetUtils.Build();
+                CustomLocalizationManager.ImportLocalizationData();
                 HasBuiltSpriteAssets = true;
             }
+            // Do not any code here, as this function is called multiple times.
         }
     }
 }

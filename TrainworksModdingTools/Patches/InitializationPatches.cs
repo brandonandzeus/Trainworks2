@@ -64,8 +64,8 @@ namespace Trainworks.Patches
         private static bool HasBuiltSpriteAssets = false;
         public static void Postfix()
         {
-            // Here because not all clans Initialize via their Initialize.
-            // Note for later, Not everything is guaranteed to be loaded by clans.
+            // Here because not all clans Initialize via their Initialize (Equestrian)
+            // Note for later, Not every custom GameData object is guaranteed to be loaded by clans.
             // Not until the MainMenu screen is up.
             if (!HasBuiltSpriteAssets)
             {
@@ -74,7 +74,7 @@ namespace Trainworks.Patches
                 HasBuiltSpriteAssets = true;
                 Trainworks.Log("[END] All Trainworks Plugins are loaded.");
             }
-            // Do not any code here, as this function is called multiple times.
+            // Do not add any code here, as this function is called multiple times in diiffrent locations.
         }
     }
 }

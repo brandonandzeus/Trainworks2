@@ -7,6 +7,7 @@ using Trainworks.Interfaces;
 using System.Linq;
 using Trainworks.Utilities;
 using ShinyShoe.Loading;
+using I2.Loc;
 
 namespace Trainworks.Patches
 {
@@ -32,6 +33,7 @@ namespace Trainworks.Patches
     {
         public static void Postfix(AssetLoadingData ____assetLoadingData)
         {
+            Trainworks.Log("[START] Loading all Trainworks Plugins");
             // Ensure that unlockable cards are loaded, otherwise they will never be loaded.
             // (UnlockScreen doesn't have a call to LoadAdditionalCards).
             // All others are OK since in DraftRewardData the assets are loaded right then.
@@ -62,14 +64,17 @@ namespace Trainworks.Patches
         private static bool HasBuiltSpriteAssets = false;
         public static void Postfix()
         {
-            // Here because not all clans Initialize via their Initialize.
-            // Note for later, Not everything is guaranteed to be loaded by clans.
+            // Here because not all clans Initialize via their Initialize (Equestrian)
+            // Note for later, Not every custom GameData object is guaranteed to be loaded by clans.
             // Not until the MainMenu screen is up.
             if (!HasBuiltSpriteAssets)
             {
                 TMP_SpriteAssetUtils.Build();
+                CustomLocalizationManager.ImportLocalizationData();
                 HasBuiltSpriteAssets = true;
+                Trainworks.Log("[END] All Trainworks Plugins are loaded.");
             }
+            // Do not add any code here, as this function is called multiple times in diiffrent locations.
         }
     }
 }

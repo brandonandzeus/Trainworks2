@@ -7,8 +7,8 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
-/// Deprecated in favor of Trainworks.BuildersV2.EnhancerDataBuilder and Trainworks.Managers.CustomEnhancerManager
-/// This class has a bug in that it doesn't add the Enhancers to AllGameData.
+// Deprecated in favor of Trainworks.BuildersV2.EnhancerDataBuilder and Trainworks.Managers.CustomEnhancerManager
+// This class has a bug in that it doesn't add the Enhancers to AllGameData.
 namespace Trainworks.Managers
 {
     public class CustomEnhancerPoolManager

@@ -80,6 +80,9 @@ namespace Trainworks.Managers
             if (string.IsNullOrEmpty(key)) return;
             if (!key.HasTranslation() && !CSVLineStrings.ContainsKey(key))
             {
+                if (!english.StartsWith("\"") && english.Contains(","))
+                    english = string.Format("\"{0}\"", english);
+
                 if (french == null) french = english;
                 if (german == null) german = english;
                 if (russian == null) russian = english;

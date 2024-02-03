@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using BepInEx.Logging;
 using HarmonyLib;
 using I2.Loc;
@@ -146,7 +147,24 @@ namespace Trainworks.Managers
                             // This is safe, the only non CSV csv file is Arcadian and works when the ;'s are replaced.
                             if (separator != ',')
                             {
-                                data = data.Replace(separator, ',');
+                                var builder = new StringBuilder();
+                                var lines = data.Split(separator);
+                                for (int i = 0; i < lines.Length; i++)
+                                {
+                                    if (lines[i].Contains(","))
+                                    {
+                                        builder.Append(string.Format("\"{0}\"", lines[i]));
+                                    }
+                                    else
+                                    {
+                                        builder.Append(lines[i]);
+                                    }
+                                    if (i != lines.Length - 1)
+                                    {
+                                        builder.Append(',');
+                                    }
+                                }
+                                data = builder.ToString();
                             }
                             miniCSVBuilder.Append(data);
                         }

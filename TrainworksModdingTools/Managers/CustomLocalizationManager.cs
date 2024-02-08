@@ -166,7 +166,7 @@ namespace Trainworks.Managers
                                 }
                                 data = builder.ToString();
                             }
-                            miniCSVBuilder.Append(data);
+                            miniCSVBuilder.AppendLine(data);
                         }
                     }
                     catch (IOException e)

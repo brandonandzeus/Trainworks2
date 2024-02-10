@@ -61,7 +61,7 @@ namespace Trainworks.Patches
                     }
 
                     // Handle the case where FullClanMod is installed ignore if the classes are the same.
-                    if (classData == classData2)
+                    if (classData != classData2)
                     {
                         cardUpgradeData = classData2.GetStarterCardUpgrade();
                         if (cardUpgradeData != null)

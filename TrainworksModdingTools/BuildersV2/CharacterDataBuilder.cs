@@ -210,6 +210,14 @@ namespace Trainworks.BuildersV2
         /// Defautls to only attacking during Relentless.
         /// </summary>
         public BossState.AttackPhase ValidBossAttackPhase { get; set; }
+        /// <summary>
+        /// [Unused] Googly Eye Offsets.
+        /// </summary>
+        public Vector3 GooglyEyeOffsets { get; set; }
+        /// <summary>
+        /// [Unused] Googly Eye Spacing.
+        /// </summary>
+        public float GooglyEyeSpacing { get; set; }
 
         public CharacterDataBuilder()
         {
@@ -237,6 +245,8 @@ namespace Trainworks.BuildersV2
             CharacterChatterDataBuilder = new CharacterChatterDataBuilder();
             BypassPactCrystalsUpgradeDataList = new CharacterData.ReorderableCharacterShardUpgradeList();
             BypassPactCrystalsUpgradeDataBuilders = new List<CharacterShardUpgradeDataBuilder>();
+            GooglyEyeOffsets = Vector3.zero;
+            GooglyEyeSpacing = 0.7f;
 
             var assembly = Assembly.GetCallingAssembly();
             BaseAssetPath = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];
@@ -251,6 +261,7 @@ namespace Trainworks.BuildersV2
         {
             var characterData = Build();
             CustomCharacterManager.RegisterCustomCharacter(characterData);
+            CustomCharacterManager.SetGooglyEyesOffset(characterData.GetID(), GooglyEyeOffsets);
 
             if (!characterData.IsChampion())
             {

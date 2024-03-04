@@ -37,6 +37,10 @@ namespace Trainworks.Managers
         /// Maps RoomModifierClassName to the custom sprite.
         /// </summary>
         public static IDictionary<string, Sprite> CustomRoomModifierIcons = new Dictionary<string, Sprite>();
+        /// <summary>
+        /// Googly Eye Offsets per character.
+        /// </summary>
+        public static IDictionary<string, Vector3> GooglyEyeOffsets = new Dictionary<string, Vector3>();
 
 
         /// <summary>
@@ -275,6 +279,38 @@ namespace Trainworks.Managers
             {
                 _ = TMP_SpriteAssetUtils.AddTextIcon(base_path + "/" + tooltip_icon_path, sprite.name);
             }
+        }
+
+        public static bool IsCustomCharacter(CharacterState characterState)
+        {
+            if (characterState == null) return false;
+            return IsCustomCharacter(characterState.GetSourceCharacterData());
+        }
+
+        public static bool IsCustomCharacter(CharacterData characterData)
+        {
+            if (characterData == null) return false;
+            return CustomCharacterData.ContainsKey(characterData.GetID());
+        }
+
+        public static Vector3 GetGooglyEyesOffset(CharacterState characterState)
+        {
+            if (characterState == null) return Vector3.zero;
+            return GetGooglyEyesOffset(characterState.GetSourceCharacterData());
+        }
+
+        public static Vector3 GetGooglyEyesOffset(CharacterData characterData)
+        {
+            if (characterData != null && GooglyEyeOffsets.ContainsKey(characterData.GetID()))
+            {
+                return GooglyEyeOffsets[characterData.GetID()];
+            }
+            return Vector3.zero;
+        }
+
+        public static void SetGooglyEyesOffset(string id, Vector3 offset)
+        {
+            GooglyEyeOffsets.Add(id, offset);
         }
     }
 }

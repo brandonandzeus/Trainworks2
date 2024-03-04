@@ -8,6 +8,7 @@ using Trainworks.ConstantsV2;
 using Trainworks.Managers;
 using Trainworks.Utilities;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Trainworks.BuildersV2
 {
@@ -80,13 +81,42 @@ namespace Trainworks.BuildersV2
         /// Scenario Difficulty.
         /// </summary>
         public ScenarioDifficulty Difficulty { get; set; }
+        /// <summary>
+        /// Icon as shown on the top HUD
+        /// </summary>
         public string BossIcon { get; set; }
+        /// <summary>
+        /// Icon as shown on the run start screen.
+        /// </summary>
         public string BossPortrait { get; set; }
         /// <summary>
         /// Custom Map Node for display on the map.
         /// This is not set for normal battles. Customizes the icon on the map display.
+        /// 
+        /// To use this either set this directly or use XXXSpritePath and the framework will form the proper object.
         /// </summary>
         public GameObject MapNodePrefab { get; set; }
+        /// <summary>
+        /// Node icon after the scenario was won.
+        /// This is typically an image with the icon cracked into pieces.
+        /// If set then MapNodePrefab must not be set and the other SpritePath properties must be set.
+        /// </summary>
+        public string CompletedSpritePath { get; set; }
+        /// <summary>
+        /// Node icon when the sprite is inactive (when you hadn't reach its ring yet).
+        /// If set then MapNodePrefab must not be set and the other SpritePath properties must be set.
+        /// </summary>
+        public string InactiveSpritePath { get; set; }
+        /// <summary>
+        /// Node icon when the sprite is active (you have reached the ring where the scenario lives).
+        /// If set then MapNodePrefab must not be set and the other SpritePath properties must be set.
+        /// </summary>
+        public string ActiveSpritePath { get; set; }
+        /// <summary>
+        /// Additional sprite to show when the icon is in focus or moused over. Just an outline over the sprite.
+        /// If set then MapNodePrefab must not be set and the other SpritePath properties must be set.
+        /// </summary>
+        public string HighlightSpritePath { get; set; }
         /// <summary>
         /// Beneficial effects given to enemies in this scenario.
         /// These should technically be a SinsData, but the MT Codebase
@@ -183,6 +213,10 @@ namespace Trainworks.BuildersV2
             if (SpawnPatternBuilder != null)
                 spawnPattern = SpawnPatternBuilder.Build();
 
+            if (MapNodePrefab == null && (CompletedSpritePath != null && InactiveSpritePath != null && ActiveSpritePath != null && HighlightSpritePath != null))
+            {
+                MakeBattleIconPrefab();
+            }
             AccessTools.Field(typeof(ScenarioData), "spawnPattern").SetValue(scenarioData, spawnPattern);
             AccessTools.Field(typeof(ScenarioData), "startingEnergy").SetValue(scenarioData, StartingEnergy);
             AccessTools.Field(typeof(ScenarioData), "difficulty").SetValue(scenarioData, Difficulty);
@@ -210,7 +244,7 @@ namespace Trainworks.BuildersV2
 
             if (BossPortrait != null)
             {
-                Sprite iconSprite = CustomAssetManager.LoadSpriteFromPath(BaseAssetPath + "/" + BossIcon);
+                Sprite iconSprite = CustomAssetManager.LoadSpriteFromPath(BaseAssetPath + "/" + BossPortrait);
                 AccessTools.Field(typeof(ScenarioData), "bossPortrait").SetValue(scenarioData, iconSprite);
             }
 
@@ -242,6 +276,36 @@ namespace Trainworks.BuildersV2
             ScenarioData data = Build();
             CustomScenarioManager.RegisterCustomScenario(data, Distance);
             return data;
+        }
+
+        private void MakeBattleIconPrefab()
+        {
+            // These are too complicated to create from scratch, so by default we copy from an existing game banner and apply our sprites to it
+            // Must be a flying boss as those have a MapNodePreab
+            ScenarioData copyScenario = ProviderManager.SaveManager.GetAllGameData().FindScenarioData(VanillaScenarioIDs.TalosDaze);
+            MapNodePrefab = GameObject.Instantiate(copyScenario.GetMapNodePrefab());
+            MapNodePrefab.transform.parent = null;
+            MapNodePrefab.name = ScenarioID;
+            GameObject.DontDestroyOnLoad(MapNodePrefab);
+            var ArtRoot = MapNodePrefab.transform.Find("Art root");
+            var images = ArtRoot.GetComponentsInChildren<Image>(true);
+            List<string> spritePaths = new List<string>
+            { 
+                // This is the order they're listed on the prefab
+                CompletedSpritePath,
+                InactiveSpritePath,
+                ActiveSpritePath,
+                HighlightSpritePath,
+            };
+            for (int i = 0; i < images.Length; i++)
+            {
+                var sprite = CustomAssetManager.LoadSpriteFromPath(BaseAssetPath + "/" + spritePaths[i]);
+                if (sprite != null)
+                {
+                    images[i].sprite = sprite;
+                    images[i].material = null;
+                }
+            }
         }
     }
 }

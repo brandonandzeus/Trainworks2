@@ -12,6 +12,7 @@ using Spine;
 using System.Linq;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using ShinyShoe;
+using System.IO;
 
 namespace Trainworks.AssetConstructors
 {
@@ -48,8 +49,6 @@ namespace Trainworks.AssetConstructors
 
         public GameObject Construct(AssetReference assetRef, BundleAssetLoadingInfo bundleInfo)
         {
-            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Looking in bundle for... " + bundleInfo.ObjectName);
-
             var tex = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.SpriteName) as Texture2D;
             if (tex == null)
             {
@@ -58,26 +57,59 @@ namespace Trainworks.AssetConstructors
             }
 
             Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 128f);
-            sprite.name = "Sprite_" + bundleInfo.SpriteName.Replace("assets/", "").Replace(".png", "");
+            
+            sprite.name = "Sprite_" + Path.GetFileNameWithoutExtension(bundleInfo.SpriteName);
+
+            // Animated sprite asset with multiple spine animations
+            if (bundleInfo.SpineAnimationDict != null && bundleInfo.SpineAnimationDict.Count > 0)
+            {
+                Dictionary<CharacterUI.Anim, GameObject> loadedAnims = new Dictionary<CharacterUI.Anim, GameObject>();
+                foreach (var anim_path in bundleInfo.SpineAnimationDict)
+                {
+                    Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Looking in bundle for... " + anim_path.Value);
+                    GameObject gameObject = BundleManager.LoadAssetFromBundle(bundleInfo, anim_path.Value) as GameObject;
+                    if (gameObject == null)
+                    {
+                        Trainworks.Log("Could not load spine animation anim: " + anim_path.Key + " path: " + anim_path.Value);
+                        continue;
+                    }
+                    loadedAnims.Add(anim_path.Key, gameObject);
+                }
+                if (loadedAnims.IsNullOrEmpty())
+                {
+                    Trainworks.Log("Failed to load any animations for " + bundleInfo.SpriteName);
+                    var charObj = CreateCharacterGameObject(assetRef, sprite);
+                    GameObject.DontDestroyOnLoad(charObj);
+                    return charObj;
+                }
+                var spineObj = CreateCharacterGameObject(assetRef, sprite, loadedAnims, bundleInfo.BaseName);
+                GameObject.DontDestroyOnLoad(spineObj);
+                return spineObj;
+            }
+            // Legacy. Animated sprite asset with a single spine animation.
+            else if (bundleInfo.ObjectName != null)
+            {
+                Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Looking in bundle for... " + bundleInfo.ObjectName);
+                GameObject gameObject = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.ObjectName) as GameObject;
+                if (gameObject == null)
+                {
+                    Trainworks.Log("Could not load spine animations for bundle object: " + bundleInfo.ObjectName);
+                    var charObj = CreateCharacterGameObject(assetRef, sprite);
+                    GameObject.DontDestroyOnLoad(charObj);
+                    return charObj;
+                }
+                var spineObj = CreateCharacterGameObject(assetRef, sprite, gameObject);
+                GameObject.DontDestroyOnLoad(spineObj);
+                return spineObj;
+            }
             // Sprite asset, but its not a spine animation
-            if (bundleInfo.ObjectName == null)
+            else
             {
                 var charObj = CreateCharacterGameObject(assetRef, sprite);
                 GameObject.DontDestroyOnLoad(charObj);
                 return charObj;
             }
-            // Animated sprite asset with spine animation.
-            GameObject gameObject = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.ObjectName) as GameObject;
-            if (gameObject == null)
-            {
-                Trainworks.Log("Could not load spine animations for bundle object: " + bundleInfo.ObjectName);
-                var charObj = CreateCharacterGameObject(assetRef, sprite);
-                GameObject.DontDestroyOnLoad(charObj);
-                return charObj;
-            }
-            var spineObj = CreateCharacterGameObject(assetRef, sprite, gameObject);
-            GameObject.DontDestroyOnLoad(spineObj);
-            return spineObj;
+
         }
 
         /// <summary>
@@ -133,7 +165,7 @@ namespace Trainworks.AssetConstructors
         }
 
         /// <summary>
-        /// Create a GameObject for the custom character with the AssetReference and Sprite
+        /// Create a GameObject for the custom character with the AssetReference, Sprite, and single SkeletonData
         /// </summary>
         /// <param name="assetRef">Reference containing the asset information</param>
         /// <param name="sprite">Sprite to create character with</param>
@@ -189,6 +221,85 @@ namespace Trainworks.AssetConstructors
             // Remove our friends
             characterUI.GetComponent<SpriteRenderer>().forceRenderingOff = true;
             dest.gameObject.SetActive(false);
+
+            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Created spine component for " + characterGameObject.name);
+
+            return characterGameObject;
+        }
+
+        private static CharacterUI.Anim[] Anims = new CharacterUI.Anim[] { CharacterUI.Anim.Idle, CharacterUI.Anim.Attack, CharacterUI.Anim.HitReact, CharacterUI.Anim.Idle_Relentless, CharacterUI.Anim.Attack_Spell, CharacterUI.Anim.Death };
+
+        /// <summary>
+        /// Create a GameObject for the custom character with the AssetReference, Sprite, and multiple SkeletonData objects.
+        /// </summary>
+        /// <param name="assetRef">Reference containing the asset information</param>
+        /// <param name="sprite">Sprite to create character with</param>
+        /// <param name="animations">Dictionary of Spine Animation GameObjects</param>
+        /// <param name="name">Base name to give the newly created GameObjects</param>
+        /// <returns>The GameObject for the character</returns>
+        private static GameObject CreateCharacterGameObject(AssetReference assetRef, Sprite sprite, IDictionary<CharacterUI.Anim, GameObject> animations, string name)
+        {
+            // Create a new character GameObject by cloning an existing, working character
+            var characterGameObject = GameObject.Instantiate(CustomCharacterManager.TemplateCharacter);
+
+            // Set aside its CharacterState and CharacterUI components for later use
+            var characterState = characterGameObject.GetComponentInChildren<CharacterState>();
+            var characterUI = characterGameObject.GetComponentInChildren<CharacterUI>();
+
+            // Hide the UI
+            characterUI.HideDetails();
+            characterGameObject.name = "Character_" + name;
+
+            // Hide the quad, ensure the Spine mesh is shown (it should be by default)           
+            var Quad = characterGameObject.GetComponentInChildren<ShinyShoe.CharacterUIMesh>(true).gameObject;
+            Quad.SetActive(false);
+
+            // Set the sprite for the preview
+            Traverse.Create(characterState).Field<Sprite>("sprite").Value = sprite;
+            characterUI.GetSpriteRenderer().sprite = sprite;
+
+            foreach (var pair in animations)
+            {
+                // Set the shader
+                pair.Value.GetComponent<SkeletonAnimation>().addNormals = true;
+                pair.Value.GetComponent<SkeletonAnimation>().skeletonDataAsset.atlasAssets[0].PrimaryMaterial.shader = Shader.Find("Shiny Shoe/Character Spine Shader");
+            }
+
+            // Activate the SpineMesh
+            var spineMeshes = characterGameObject.GetComponentInChildren<ShinyShoe.CharacterUIMeshSpine>(true);
+            spineMeshes.gameObject.SetActive(true);
+            //Bounds bounds;
+            //spineMeshes.Setup(sprite, true, 0f, characterGameObject.name, out bounds);
+
+            // Delete the pre-existing animations
+            GameObject.Destroy(spineMeshes.transform.GetChild(1).gameObject);
+            GameObject.Destroy(spineMeshes.transform.GetChild(2).gameObject);
+
+
+            var originalObject = characterGameObject.GetComponentInChildren<SkeletonAnimation>().gameObject;
+            foreach (var anim in Anims)
+            {
+                if (!animations.ContainsKey(anim))
+                {
+                    continue;
+                }
+                var skeletonData = animations[anim];
+                // Skeleton cloning produces superior effects
+                var clonedObject = GameObject.Instantiate(originalObject.transform, originalObject.transform.parent);
+                clonedObject.name = "Spine GameObject (" + characterGameObject.name + " " + anim.ToString() + ")";
+
+                var dest = clonedObject.GetComponentInChildren<SkeletonAnimation>();
+                var source = skeletonData.GetComponentInChildren<SkeletonAnimation>();
+
+                dest.skeletonDataAsset = source.skeletonDataAsset;
+
+                // Remove our friends
+                characterUI.GetComponent<SpriteRenderer>().forceRenderingOff = true;
+                dest.gameObject.SetActive(false);
+            }
+
+            GameObject.Destroy(originalObject);
+
 
             Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Created spine component for " + characterGameObject.name);
 

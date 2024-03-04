@@ -61,5 +61,13 @@ namespace Trainworks.Managers
             PluginGUIDToPath[plugin.Info.Metadata.GUID] = path;
             AssemblyNameToPluginGUID[assembly.FullName] = plugin.Info.Metadata.GUID;
         }
+        /// <summary>
+        /// Test if a BepinEx mod is available.
+        /// </summary>
+        /// <param name="guid">The Mod's GUID string</param>
+        public static bool PluginExists(string guid)
+        {
+            return PluginGUIDToPath.ContainsKey(guid);
+        }
     }
 }

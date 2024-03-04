@@ -43,6 +43,12 @@ namespace Trainworks.Utilities
         public ISettings ImportSettings { get; set; }
 
         /// <summary>
+        /// Base name of the asset. Defaults to the SpriteName's filename without extension.
+        /// This should be set for easier debugging with the Runtime Unity editor
+        /// </summary>
+        public string BaseName { get; set; }
+
+        /// <summary>
         /// Path to the asset sprite in the bundle.
         /// Even if you're making a spine character, you *must* set this for the preview sprite.
         /// </summary>
@@ -50,7 +56,15 @@ namespace Trainworks.Utilities
 
         /// <summary>
         /// Optional path to the spine skeleton data in the bundle.
+        /// Deprecated in favor of SpineAnimationDict, since this property only specifies a singular SkeletonAnimation GameObject.
+        /// This should be only used by the Arcadian Clan
         /// </summary>
         public string ObjectName { get; set; }
+
+        /// <summary>
+        /// Optional paths mapping the Animation to the Spine Skeleton Data in the bundle.
+        /// This is preferred over ObjectName as you can specify all 6 SkeletonAnimations for your character with this property.
+        /// </summary>
+        public IDictionary<CharacterUI.Anim, string> SpineAnimationDict { get; set; }
     }
 }

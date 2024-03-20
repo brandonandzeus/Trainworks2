@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Trainworks.BuildersV2
 {
-    public class DraftRewardDataBuilder : IRewardDataBuilder
+    public class DraftRewardDataBuilder : GrantableRewardDataBuilderBase, IRewardDataBuilder
     {
         private string draftRewardID;
 
@@ -26,29 +26,12 @@ namespace Trainworks.BuildersV2
                 }
                 if (DescriptionKey == null)
                 {
-                    DescriptionKey = DraftRewardID + "DraftRewardData_DescriptionKey";
+                    DescriptionKey = DraftRewardID + "_DraftRewardData_DescriptionKey";
                 }
             }
         }
 
-        /// <summary>
-        /// Name of the reward data
-        /// Note if this is set it will set the localization across all languages to this.
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// Description of the reward data
-        /// Note if this is set it will set the localization across all languages to this.
-        /// </summary>
-        public string Description { get; set; }
-        /// <summary>
-        /// Name title key, this shouldn't need to be set as its set by DraftRewardID.
-        /// </summary>
-        public string NameKey { get; set; }
-        /// <summary>
-        /// Description title key, this shouldn't need to be set as its set by DraftRewardID.
-        /// </summary>
-        public string DescriptionKey { get; set; }
+
         public ClassData ClassDataOverride { get; set; }
         public RunState.ClassType ClassType { get; set; }
         public bool ClassTypeOverride { get; set; }
@@ -63,28 +46,6 @@ namespace Trainworks.BuildersV2
         public bool GrantSingleCard { get; set; }
         public CollectableRarity RarityFloorOverride { get; set; }
         public bool UseRunRarityFloors { get; set; }
-        public bool CanBeSkippedOverride { get; set; }
-        public bool ForceContentUnlocked { get; set; }
-        public int[] Costs { get; set; }
-        public int Crystals { get; set; }
-        public bool ShowRewardAnimationInEvent { get; set; }
-        public string CollectSFXCueName { get; set; }
-        public bool IsServiceMerchantReward { get; set; }
-        public bool ShowCancelOverride { get; set; }
-        public bool ShowRewardFlowInEvent { get; set; }
-        public int MerchantServiceIndex { get; set; }
-        /// <summary>
-        /// The full, absolute path to the asset.
-        /// </summary>
-        public string FullAssetPath => BaseAssetPath + "/" + AssetPath;
-        /// <summary>
-        /// Set automatically in the constructor. Base asset path, usually the plugin directory.
-        /// </summary>
-        public string BaseAssetPath { get; set; }
-        /// <summary>
-        /// Custom asset path to load from relative to the plugin's path
-        /// </summary>
-        public string AssetPath { get; set; }
 
         public DraftRewardDataBuilder()
         {
@@ -97,7 +58,7 @@ namespace Trainworks.BuildersV2
         public RewardData BuildAndRegister()
         {
             RewardData data = Build(false);
-            CustomRewardManager.RegisterCustomReward(data as GrantableRewardData);
+            CustomRewardManager.RegisterCustomReward(data);
             return data;
         }
 
@@ -114,28 +75,9 @@ namespace Trainworks.BuildersV2
             }
 
             DraftRewardData rewardData = ScriptableObject.CreateInstance<DraftRewardData>();
-            var guid = GUIDGenerator.GenerateDeterministicGUID(DraftRewardID);
-            AccessTools.Field(typeof(GameData), "id").SetValue(rewardData, guid);
             rewardData.name = DraftRewardID;
 
-
-            AccessTools.Field(typeof(RewardData), "costs").SetValue(rewardData, Costs);
-            AccessTools.Field(typeof(RewardData), "crystals").SetValue(rewardData, Crystals);
-            AccessTools.Field(typeof(RewardData), "ShowRewardAnimationInEvent").SetValue(rewardData, ShowRewardAnimationInEvent);
-            AccessTools.Field(typeof(RewardData), "_collectSFXCueName").SetValue(rewardData, CollectSFXCueName);
-            AccessTools.Field(typeof(RewardData), "_rewardDescriptionKey").SetValue(rewardData, DescriptionKey);
-            AccessTools.Field(typeof(RewardData), "_rewardTitleKey").SetValue(rewardData, NameKey);
-            AccessTools.Field(typeof(RewardData), "_showCancelOverride").SetValue(rewardData, ShowCancelOverride);
-            AccessTools.Field(typeof(RewardData), "_showRewardFlowInEvent").SetValue(rewardData, ShowRewardFlowInEvent);
-            if (AssetPath != null)
-            {
-                AccessTools.Field(typeof(RewardData), "_rewardSprite").SetValue(rewardData, CustomAssetManager.LoadSpriteFromPath(FullAssetPath));
-            }
-
-            AccessTools.Field(typeof(GrantableRewardData), "CanBeSkippedOverride").SetValue(rewardData, CanBeSkippedOverride);
-            AccessTools.Field(typeof(GrantableRewardData), "ForceContentUnlocked").SetValue(rewardData, ForceContentUnlocked);
-            AccessTools.Field(typeof(GrantableRewardData), "_isServiceMerchantReward").SetValue(rewardData, IsServiceMerchantReward);
-            AccessTools.Field(typeof(GrantableRewardData), "_merchantServiceIndex").SetValue(rewardData, MerchantServiceIndex);
+            Construct(rewardData);
 
             AccessTools.Field(typeof(DraftRewardData), "classDataOverride").SetValue(rewardData, ClassDataOverride);
             AccessTools.Field(typeof(DraftRewardData), "classType").SetValue(rewardData, ClassType);
@@ -145,9 +87,6 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(DraftRewardData), "grantSingleCard").SetValue(rewardData, GrantSingleCard);
             AccessTools.Field(typeof(DraftRewardData), "rarityFloorOverride").SetValue(rewardData, RarityFloorOverride);
             AccessTools.Field(typeof(DraftRewardData), "useRunRarityFloors").SetValue(rewardData, UseRunRarityFloors);
-
-            BuilderUtils.ImportStandardLocalization(NameKey, Name);
-            BuilderUtils.ImportStandardLocalization(DescriptionKey, Description);
 
             if (register)
             {

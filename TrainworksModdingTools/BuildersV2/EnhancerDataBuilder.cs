@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Trainworks.ConstantsV2;
@@ -81,6 +82,10 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public int UnlockLevel { get; set; }
         /// <summary>
+        /// Number of Cards shown in Upgrade Screen.
+        /// </summary>
+        public int NumCardsShwonInUpgradeScreen { get; set; }
+        /// <summary>
         /// The full, absolute path to the asset.
         /// </summary>
         public string FullAssetPath => BaseAssetPath + "/" + IconPath;
@@ -92,12 +97,20 @@ namespace Trainworks.BuildersV2
         /// Custom asset path to load art from. 76x76 image.
         /// </summary>
         public string IconPath { get; set; }
+        /// <summary>
+        /// ADVANCED. Override Enhancer Relic Effect.
+        /// Necessary for Special Enhancers like GenericDuplicator.
+        /// Note this can be set to RelicEffectCardDuplicator.
+        /// Don't set to anything else unless you know what you are doing.
+        /// </summary>
+        public RelicEffectDataBuilder OverrideEffectBuilder { get; set; }
 
         public EnhancerDataBuilder()
         {
             var assembly = Assembly.GetCallingAssembly();
             BaseAssetPath = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];
             EnhancerPoolIDs = new List<string>();
+            NumCardsShwonInUpgradeScreen = -1;
         }
 
         /// <summary>
@@ -137,15 +150,22 @@ namespace Trainworks.BuildersV2
                 upgrade = UpgradeBuilder.Build();
             }
 
+            var relicEffect = new RelicEffectDataBuilder
+            {
+                RelicEffectClassType = typeof(RelicEffectCardUpgrade),
+                ParamCardUpgradeData = upgrade,
+                ParamCardType = CardType,
+                ParamCharacterSubtype = VanillaSubtypeIDs.None,
+            };
+
+            if (OverrideEffectBuilder != null)
+            {
+                relicEffect = OverrideEffectBuilder;
+            }
+
             List<RelicEffectData> Effects = new List<RelicEffectData>
             {
-                new RelicEffectDataBuilder
-                {
-                    RelicEffectClassType = typeof(RelicEffectCardUpgrade),
-                    ParamCardUpgradeData = upgrade,
-                    ParamCardType = CardType,
-                    ParamCharacterSubtype = VanillaSubtypeIDs.None,
-                }.Build()
+                relicEffect.Build()
             };
             AccessTools.Field(typeof(RelicData), "effects").SetValue(enhancerData, Effects);
 
@@ -155,6 +175,7 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(EnhancerData), "linkedClass").SetValue(enhancerData, linkedClass);
             AccessTools.Field(typeof(EnhancerData), "rarity").SetValue(enhancerData, Rarity);
             AccessTools.Field(typeof(EnhancerData), "unlockLevel").SetValue(enhancerData, UnlockLevel);
+            AccessTools.Field(typeof(EnhancerData), "numCardsToShowInUpgradeScreen").SetValue(enhancerData, NumCardsShwonInUpgradeScreen);
 
             if (IconPath != null)
             {

@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using BepInEx.Logging;
 using HarmonyLib;
 using Trainworks.Builders;
+using Trainworks.ConstantsV2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
@@ -22,6 +23,17 @@ namespace Trainworks.Managers
         /// Maps custom card pool IDs to their actual CardPool instances.
         /// </summary>
         public static IDictionary<string, CardPool> CustomCardPools { get; } = new Dictionary<string, CardPool>();
+
+        public static CardPool GetMegaPool()
+        {
+            var reward = ProviderManager.SaveManager.GetAllGameData().FindRewardData(VanillaRewardIDs.CardDraftMainClassReward) as DraftRewardData;
+            if (reward != null)
+            {
+                return reward.GetDraftPool();
+            }
+            Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Could not get MegaPool Instance");
+            return null;
+        }
 
         public static void RegisterCustomCardPool(CardPool cardPool)
         {

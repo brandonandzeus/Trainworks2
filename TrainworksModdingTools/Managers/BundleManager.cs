@@ -33,6 +33,13 @@ namespace Trainworks.Managers
 
         public static void RegisterBundle(string assetGUID, BundleAssetLoadingInfo bundleInfo)
         {
+            RegisterBundle(bundleInfo);
+            var runtimeKey = Hash128.Parse(assetGUID);
+            RuntimeKeyToBundleInfo[runtimeKey] = bundleInfo;
+        }
+
+        public static void RegisterBundle(BundleAssetLoadingInfo bundleInfo)
+        {
             string path = bundleInfo.FullPath;
             if (!LoadedAssetBundles.ContainsKey(path))
             {
@@ -45,8 +52,6 @@ namespace Trainworks.Managers
                     Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Custom asset bundle failed to load from path: " + path);
                 }
             }
-            var runtimeKey = Hash128.Parse(assetGUID);
-            RuntimeKeyToBundleInfo[runtimeKey] = bundleInfo;
         }
 
         public static void ApplyImportSettings<T>(BundleAssetLoadingInfo info, ref T @asset) where T : UnityEngine.Object

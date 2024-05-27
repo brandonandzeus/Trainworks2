@@ -55,6 +55,10 @@ namespace Trainworks.BuildersV2
         public RandomChampionPoolBuilder ParamRandomChampionPoolBuilder { get; set; }
         public CollectableRelicData ParamRelic { get; set; }
         public RewardData ParamReward { get; set; }
+        /// <summary>
+        /// Convenience builder for ParamReward. If set overrides ParamReward.
+        /// </summary>
+        public IRewardDataBuilder ParamRewardBuilder { get; set; }
         public RoomData ParamRoomData { get; set; }
         public Team.Type ParamSourceTeam { get; set; }
         public SpecialCharacterType ParamSpecialCharacterType { get; set; }
@@ -152,6 +156,12 @@ namespace Trainworks.BuildersV2
                 excludedTraits.Add(builder.Build());
             }
 
+            var paramReward = ParamReward;
+            if (ParamRewardBuilder != null)
+            {
+                paramReward = ParamRewardBuilder.Build();
+            }
+
             AccessTools.Field(typeof(RelicEffectData), "additionalTooltips").SetValue(relicEffectData, AdditionalTooltips.ToArray());
             AccessTools.Field(typeof(RelicEffectData), "appliedVfx").SetValue(relicEffectData, AppliedVfx);
             AccessTools.Field(typeof(RelicEffectData), "paramBool").SetValue(relicEffectData, ParamBool);
@@ -166,7 +176,7 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(RelicEffectData), "paramMaxInt").SetValue(relicEffectData, ParamMaxInt);
             AccessTools.Field(typeof(RelicEffectData), "paramMinInt").SetValue(relicEffectData, ParamMinInt);
             AccessTools.Field(typeof(RelicEffectData), "paramRelic").SetValue(relicEffectData, ParamRelic);
-            AccessTools.Field(typeof(RelicEffectData), "paramReward").SetValue(relicEffectData, ParamReward);
+            AccessTools.Field(typeof(RelicEffectData), "paramReward").SetValue(relicEffectData, paramReward);
             AccessTools.Field(typeof(RelicEffectData), "paramRoomData").SetValue(relicEffectData, ParamRoomData);
             AccessTools.Field(typeof(RelicEffectData), "paramSourceTeam").SetValue(relicEffectData, ParamSourceTeam);
             AccessTools.Field(typeof(RelicEffectData), "paramSpecialCharacterType").SetValue(relicEffectData, ParamSpecialCharacterType);

@@ -177,6 +177,9 @@ namespace Trainworks.BuildersV2
         public bool IsUnique { get; set; }
         /// <summary>
         /// Specifies how much pact shards should be gained for duplicating the card.
+        /// Common for the Left Divine Temple Upgrade (+5 Pact Shards).
+        /// Uncommon for the Right Divine Temple Upgrade (+10 Pact Shards).
+        /// Rare for Unit Essences (+15 Pact Shards).
         /// </summary>
         public CollectableRarity LinkedPactDuplicateRarity { get; set; }
         /// <summary>

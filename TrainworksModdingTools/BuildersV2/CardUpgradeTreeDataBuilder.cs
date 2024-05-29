@@ -24,6 +24,10 @@ namespace Trainworks.BuildersV2
         /// Then the Superfood II upgrade is applied and then the Aggressive Edible I upgrade is applied.
         /// </summary>
         public List<List<CardUpgradeDataBuilder>> UpgradeTrees { get; set; } = new List<List<CardUpgradeDataBuilder>>();
+        /// <summary>
+        /// Alternative list of lists of CardUpgradeDatas. UpgradeTrees will be merged with these lists.
+        /// </summary>
+        public List<List<CardUpgradeData>> UpgradesTreeDatas { get; set; }
 
         public CardUpgradeTreeData Build()
         {
@@ -33,17 +37,30 @@ namespace Trainworks.BuildersV2
             {
                 List<CardUpgradeTreeData.UpgradeTree> upgradeTrees = cardUpgradeTreeData.GetUpgradeTrees();
 
-                foreach (List<CardUpgradeDataBuilder> branch in UpgradeTrees)
+                if (!UpgradesTreeDatas.IsNullOrEmpty())
                 {
-                    CardUpgradeTreeData.UpgradeTree newBranch = new CardUpgradeTreeData.UpgradeTree();
-                    List<CardUpgradeData> newbranchlist = newBranch.GetCardUpgrades();
-
-                    foreach (CardUpgradeDataBuilder leaf in branch)
+                    foreach (List<CardUpgradeData> branch in UpgradesTreeDatas)
                     {
-                        newbranchlist.Add(leaf.Build());
+                        CardUpgradeTreeData.UpgradeTree newBranch = new CardUpgradeTreeData.UpgradeTree();
+                        List<CardUpgradeData> newbranchlist = newBranch.GetCardUpgrades();
+                        newbranchlist.AddRange(branch);
+                        upgradeTrees.Add(newBranch);
                     }
+                }
+                if (!UpgradeTrees.IsNullOrEmpty())
+                {
+                    foreach (List<CardUpgradeDataBuilder> branch in UpgradeTrees)
+                    {
+                        CardUpgradeTreeData.UpgradeTree newBranch = new CardUpgradeTreeData.UpgradeTree();
+                        List<CardUpgradeData> newbranchlist = newBranch.GetCardUpgrades();
 
-                    upgradeTrees.Add(newBranch);
+                        foreach (CardUpgradeDataBuilder leaf in branch)
+                        {
+                            newbranchlist.Add(leaf.Build());
+                        }
+
+                        upgradeTrees.Add(newBranch);
+                    }
                 }
             }
             else

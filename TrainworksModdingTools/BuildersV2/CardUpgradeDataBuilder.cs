@@ -156,11 +156,14 @@ namespace Trainworks.BuildersV2
         public List<CardUpgradeMaskData> Filters { get; set; }
         /// <summary>
         /// Upgrades to remove when this upgrade is applied.
-        /// Not commonly used. The main use case in the MT codebase is to remove a startingUpgrade from a card.
+        /// Not commonly used. The most common use case in the MT codebase is to remove a startingUpgrade from a card.
         /// The only use of this parameter is in the upgraded Spikedriver Colony and Improved Spikedriver
         /// to remove the self-duplication from the card.
         /// With primordium's superfood upgrade path, it removes the startingUpgrade from the card which
         /// effectively replaces the OnEaten effect to include the Stats and the Status Effects.
+        /// Rarely, this is used to remove a previous champion upgrade. If your Champion Upgrade includes a CardTrait
+        /// or CardTriggerUpgrade which are upgrades applied to the Card, then you will need to use this to remove
+        /// said CardTrait or CardTriggerUpgrade since these aren't removed automatically. (See: LittleFade's Spikes Path).
         /// </summary>
         public List<CardUpgradeData> UpgradesToRemove { get; set; }
         /// <summary>

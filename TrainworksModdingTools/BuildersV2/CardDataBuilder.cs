@@ -188,6 +188,7 @@ namespace Trainworks.BuildersV2
             Traits = new List<CardTraitData>();
             EffectTriggers = new List<CharacterTriggerData>();
             Triggers = new List<CardTriggerEffectData>();
+            SharedDiscoveryCards = new List<CardData>();
             SharedMasteryCards = new List<CardData>();
             StartingUpgrades = new List<CardUpgradeData>();
             StartingUpgradeBuilders = new List<CardUpgradeDataBuilder>();

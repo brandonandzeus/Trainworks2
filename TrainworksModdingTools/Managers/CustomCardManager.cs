@@ -26,7 +26,7 @@ namespace Trainworks.Managers
         /// Necessary to add to preloaded assets at start of run.
         /// Otherwise they will not be loaded ever.
         /// </summary>
-        internal static CardPool UnlockableCustomCardsPool = new CardPool();
+        internal static CardPool UnlockableCustomCardsPool = ScriptableObject.CreateInstance<CardPool>();
         internal static ReorderableArray<CardData> customCardPoolDataList = null;
         /// <summary>
         /// Reference to UnlockableCustomCardsPool.cardDataList.

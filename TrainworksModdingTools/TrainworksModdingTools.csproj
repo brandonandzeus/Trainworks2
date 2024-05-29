@@ -73,4 +73,9 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Custom\RelicEffects\" />
+    <Folder Include="Custom\CardTraits\" />
+  </ItemGroup>
+
 </Project>

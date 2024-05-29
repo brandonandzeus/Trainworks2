@@ -55,8 +55,11 @@ namespace Trainworks.Utilities
         public string SpriteName { get; set; }
 
         /// <summary>
-        /// Optional path to the spine skeleton data in the bundle.
-        /// Deprecated in favor of SpineAnimationDict, since this property only specifies a singular SkeletonAnimation GameObject.
+        /// Optional path to a singular spine skeleton data in the bundle.
+        /// 
+        /// This should be set for Custom MerchantCharacterData.
+        /// 
+        /// Deprecated for uses in Custom CharacterData in favor of SpineAnimationDict, since this property only specifies a singular SkeletonAnimation GameObject.
         /// This should be only used by the Arcadian Clan
         /// </summary>
         public string ObjectName { get; set; }

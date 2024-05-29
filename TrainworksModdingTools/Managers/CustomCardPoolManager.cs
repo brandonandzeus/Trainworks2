@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using BepInEx.Logging;
 using HarmonyLib;
 using Trainworks.Builders;
+using Trainworks.ConstantsV2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
@@ -22,6 +23,35 @@ namespace Trainworks.Managers
         /// Maps custom card pool IDs to their actual CardPool instances.
         /// </summary>
         public static IDictionary<string, CardPool> CustomCardPools { get; } = new Dictionary<string, CardPool>();
+
+        /// <summary>
+        /// Gets the Card MegaPool instance which contains every card in the game.
+        /// </summary>
+        public static CardPool GetMegaPool()
+        {
+            var reward = ProviderManager.SaveManager.GetAllGameData().FindRewardData(VanillaRewardIDs.CardDraftMainClassReward) as DraftRewardData;
+            if (reward != null)
+            {
+                return reward.GetDraftPool();
+            }
+            Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Could not get MegaPool Instance");
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the Constriction Unit Pool used by the Conscription Notice artifact.
+        /// </summary>
+        /// <returns></returns>
+        public static CardPool GetConscriptUnitPool()
+        {
+            var relic = ProviderManager.SaveManager.GetAllGameData().FindCollectableRelicData(VanillaCollectableRelicIDs.ConscriptionNotice);
+            if (relic == null)
+            {
+                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Could not get ConscriptionPool");
+                return null;
+            }
+            return relic.GetFirstRelicEffectData<RelicEffectAddBattleCardToHandOnUnitTrigger>().GetParamCardPool();
+        }
 
         public static void RegisterCustomCardPool(CardPool cardPool)
         {

@@ -8,7 +8,7 @@ namespace Trainworks.ManagersV2
 {
     public static class CustomChallengeManager
     {
-        private static Dictionary<string, SpChallengeData> CustomChallengeData = new Dictionary<string, SpChallengeData>();
+        private static readonly Dictionary<string, SpChallengeData> CustomChallengeData = new Dictionary<string, SpChallengeData>();
 
         public static void RegisterCustomChallenge(SpChallengeData challengeData)
         {
@@ -43,6 +43,15 @@ namespace Trainworks.ManagersV2
             Trainworks.Log(LogLevel.Warning, "Couldn't find challenge: " + id + " - This will cause crashes.");
             return null;
 
+        }
+
+        /// <summary>
+        /// Given a GUID or ChallengeID (from SpChallengeDataBuilder) determines if the id is a custom challenge.
+        /// </summary>
+        /// <param name="id">GUID, note this is the SpChallengeData's id not the ChallengeID passed to SpChallengeDataBuilder.</param>
+        public static bool IsCustomChallenge(string id)
+        {
+            return CustomChallengeData.ContainsKey(id) || CustomChallengeData.ContainsKey(GUIDGenerator.GenerateDeterministicGUID(id));
         }
     }
 }

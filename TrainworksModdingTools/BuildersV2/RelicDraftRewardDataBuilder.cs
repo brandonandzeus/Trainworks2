@@ -6,51 +6,48 @@ using UnityEngine;
 
 namespace Trainworks.BuildersV2
 {
-    public class DraftRewardDataBuilder : GrantableRewardDataBuilderBase, IRewardDataBuilder
+    public class RelicDraftRewardDataBuilder : GrantableRewardDataBuilderBase, IRewardDataBuilder
     {
-        private string draftRewardID;
+        private string rewardID;
 
         /// <summary>
         /// Unique string used to store and retrieve the draft reward data.
         /// Implicitly sets NameKey and DescriptionKey if null
         /// </summary>
-        public string DraftRewardID
+        public string RewardID
         {
-            get { return draftRewardID; }
+            get { return RewardID; }
             set
             {
-                draftRewardID = value;
+                rewardID = value;
                 if (NameKey == null)
                 {
-                    NameKey = DraftRewardID + "_DraftRewardData_NameKey";
+                    NameKey = RewardID + "_RelicDraftRewardData_NameKey";
                 }
                 if (DescriptionKey == null)
                 {
-                    DescriptionKey = DraftRewardID + "_DraftRewardData_DescriptionKey";
+                    DescriptionKey = RewardID + "_RelicDraftRewardData_DescriptionKey";
                 }
             }
         }
 
 
-        public ClassData ClassDataOverride { get; set; }
         public RunState.ClassType ClassType { get; set; }
-        public bool ClassTypeOverride { get; set; }
+       
         /// <summary>
         /// Number of cards the banner offers
         /// </summary>
         public uint DraftOptionsCount { get; set; }
         /// <summary>
-        /// Card pool the banner pulls from
+        /// Relic pool to draft relics from.
         /// </summary>
-        public CardPool DraftPool { get; set; }
-        public bool GrantSingleCard { get; set; }
-        public CollectableRarity RarityFloorOverride { get; set; }
-        public bool UseRunRarityFloors { get; set; }
+        public RelicPool DraftPool { get; set; }
+        public bool RandomizeOrder { get; set; }
 
-        public DraftRewardDataBuilder()
+        public RelicDraftRewardDataBuilder()
         {
-            Costs = System.Array.Empty<int>();
             DraftOptionsCount = 3;
+            RandomizeOrder = true;
             var assembly = Assembly.GetCallingAssembly();
             BaseAssetPath = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];
         }
@@ -69,24 +66,20 @@ namespace Trainworks.BuildersV2
         /// <returns>The newly created RewardData</returns>
         public RewardData Build(bool register = true)
         {
-            if (DraftRewardID == null)
+            if (RewardID == null)
             {
-                throw new BuilderException("DraftRewardID is required");
+                throw new BuilderException("RewardID is required");
             }
 
             DraftRewardData rewardData = ScriptableObject.CreateInstance<DraftRewardData>();
-            rewardData.name = DraftRewardID;
+            rewardData.name = RewardID;
 
             Construct(rewardData);
 
-            AccessTools.Field(typeof(DraftRewardData), "classDataOverride").SetValue(rewardData, ClassDataOverride);
             AccessTools.Field(typeof(DraftRewardData), "classType").SetValue(rewardData, ClassType);
-            AccessTools.Field(typeof(DraftRewardData), "classTypeOverride").SetValue(rewardData, ClassTypeOverride);
             AccessTools.Field(typeof(DraftRewardData), "draftOptionsCount").SetValue(rewardData, DraftOptionsCount);
             AccessTools.Field(typeof(DraftRewardData), "draftPool").SetValue(rewardData, DraftPool);
-            AccessTools.Field(typeof(DraftRewardData), "grantSingleCard").SetValue(rewardData, GrantSingleCard);
-            AccessTools.Field(typeof(DraftRewardData), "rarityFloorOverride").SetValue(rewardData, RarityFloorOverride);
-            AccessTools.Field(typeof(DraftRewardData), "useRunRarityFloors").SetValue(rewardData, UseRunRarityFloors);
+            AccessTools.Field(typeof(DraftRewardData), "randomizeOrder").SetValue(rewardData, RandomizeOrder);
 
             if (register)
             {

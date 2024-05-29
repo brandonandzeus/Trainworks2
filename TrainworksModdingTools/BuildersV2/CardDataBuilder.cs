@@ -162,6 +162,7 @@ namespace Trainworks.BuildersV2
         /// Level at which the card is unlocked.
         /// </summary>
         public int UnlockLevel { get; set; }
+        public List<CardData> SharedDiscoveryCards { get; set; }
         public List<CardData> SharedMasteryCards { get; set; }
         public CardData LinkedMasteryCard { get; set; }
         /// <summary>
@@ -260,6 +261,10 @@ namespace Trainworks.BuildersV2
             {
                 startingUpgrades.Add(builder.Build());
             }
+            var sharedMastery = cardData.GetSharedMasteryCards();
+            sharedMastery.AddRange(SharedMasteryCards);
+            var sharedDiscovery = cardData.GetSharedDiscoveryCards();
+            sharedDiscovery.AddRange(SharedDiscoveryCards);
 
             var linkedClass = ClanID == null ? null : CustomClassManager.GetClassDataByID(ClanID);
             AccessTools.Field(typeof(CardData), "cardLoreTooltipKeys").SetValue(cardData, CardLoreTooltipKeys);
@@ -274,7 +279,6 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(CardData), "overrideDescriptionKey").SetValue(cardData, OverrideDescriptionKey);
             AccessTools.Field(typeof(CardData), "rarity").SetValue(cardData, Rarity);
             AccessTools.Field(typeof(CardData), "requiredDLC").SetValue(cardData, RequiredDLC);
-            AccessTools.Field(typeof(CardData), "sharedMasteryCards").SetValue(cardData, SharedMasteryCards);
             AccessTools.Field(typeof(CardData), "targetless").SetValue(cardData, Targetless);
             AccessTools.Field(typeof(CardData), "targetsRoom").SetValue(cardData, TargetsRoom);
             AccessTools.Field(typeof(CardData), "unlockLevel").SetValue(cardData, UnlockLevel);

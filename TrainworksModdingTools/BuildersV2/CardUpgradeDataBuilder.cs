@@ -176,6 +176,8 @@ namespace Trainworks.BuildersV2
         public bool IsUnitSynthesisUpgrade { get => SourceSynthesisUnit != null; }
         /// <summary>
         /// Indicates that the upgrade can only be applied to a card/unit once.
+        /// Rarely used. This is used for Relics that apply TempCardUpgrades to cards.
+        /// See: Channelheart and Thorn Casing.
         /// </summary>
         public bool IsUnique { get; set; }
         /// <summary>

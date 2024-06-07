@@ -1,12 +1,11 @@
 ﻿using HarmonyLib;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
-using Trainworks.Enums.MTTriggers;
 
-namespace TrainworksModdingTools.Patches
+namespace Trainworks.Patches
 {
+    // Patch to prevent a rare incorrect localization key being formed for a tooltip.
+    // Fixes Trigger tooltips for CardEffectPlayUnitTrigger and CardEffectReplayTriggers.
     [HarmonyPatch(typeof(TooltipUI), nameof(TooltipUI.InitCardExplicitTooltip))]
     public class CustomTriggerNamePatch
     {

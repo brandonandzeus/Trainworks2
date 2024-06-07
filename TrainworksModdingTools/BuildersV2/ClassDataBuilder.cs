@@ -114,6 +114,8 @@ namespace Trainworks.BuildersV2
         /// Not important for many RelicEffect Interfaces, but do note that the Covenants are implemented
         /// as Relics. So things like applying additional effects the starter deck can't be done easily without
         /// a patch, Since Covenant 1 removes all starter cards, and adds them back with a CardSet.
+        /// 
+        /// See: IPostStartOfRunRelicEffect.
         /// </summary>
         public List<RelicData> StarterRelics { get; set; }
         /// <summary>

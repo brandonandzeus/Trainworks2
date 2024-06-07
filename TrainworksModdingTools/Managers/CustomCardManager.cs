@@ -49,6 +49,7 @@ namespace Trainworks.Managers
         /// <param name="cardPoolData">The card pools the custom card should be a part of</param>
         public static void RegisterCustomCard(CardData cardData, List<string> cardPoolData)
         {
+            ContentValidator.Validate(cardData);
             if (!CustomCardData.ContainsKey(cardData.GetID()))
             {
                 CustomCardData.Add(cardData.GetID(), cardData);

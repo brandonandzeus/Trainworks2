@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BepInEx.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,15 +37,15 @@ namespace Trainworks.Enums
             this.Name = Name;
             if (NameToExtendedEnumMap.ContainsKey(this.Name))
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, $"Name: {this.Name} Conflict in domain, {typeof(TExtendedEnum).Name}");
+                Trainworks.Log(LogLevel.Warning, $"Name: {this.Name} Conflict in domain, {typeof(TExtendedEnum).Name}");
             }
             if (IntToExtendedEnumMap.ContainsKey(this.ID))
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, $"ID#{this.ID} Conflict between {Name} and {IntToExtendedEnumMap[this.ID].Name} in domain, {typeof(TExtendedEnum).Name}");
+                Trainworks.Log(LogLevel.Warning, $"ID#{this.ID} Conflict between {Name} and {IntToExtendedEnumMap[this.ID].Name} in domain, {typeof(TExtendedEnum).Name}");
             }
             if (ReservedIDs.Contains(this.ID))
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, $"ID#{this.ID} is Reserved and can't be set for {Name}");
+                Trainworks.Log(LogLevel.Warning, $"ID#{this.ID} is Reserved and can't be set for {Name}");
             }
             NameToExtendedEnumMap[Name] = (TExtendedEnum)this;
             IntToExtendedEnumMap[ID] = (TExtendedEnum)this;

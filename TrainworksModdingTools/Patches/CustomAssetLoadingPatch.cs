@@ -101,7 +101,7 @@ namespace Trainworks.Patches
                 {
                     if (info.instCount > 0)
                     {
-                        Trainworks.Log(LogLevel.Warning, string.Format("Unloading asset {1} failed.  It has {0} instances in scene.  We expect that soon this instance will be destroyed so that this asset unloads.", info.instCount, assetRef.DebugName));
+                        Trainworks.Log(LogLevel.Error, string.Format("Unloading asset {1} failed.  It has {0} instances in scene.  We expect that soon this instance will be destroyed so that this asset unloads.", info.instCount, assetRef.DebugName));
                         __result = false;
                         return false;
                     }

@@ -209,7 +209,7 @@ namespace Trainworks.Managers
         {
             if (ReplacementStrings.ContainsKey(keyword))
             {
-                Trainworks.Log("Attempt to add duplicate Replacement String Keyword: " + keyword);
+                Trainworks.Log(LogLevel.Warning, "Attempt to add duplicate Replacement String Keyword: " + keyword);
                 return false;
             }
             ReplacementStringData replacementStringData = new ReplacementStringData();

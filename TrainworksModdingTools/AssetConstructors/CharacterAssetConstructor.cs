@@ -13,6 +13,7 @@ using System.Linq;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using ShinyShoe;
 using System.IO;
+using BepInEx.Logging;
 
 namespace Trainworks.AssetConstructors
 {
@@ -39,7 +40,7 @@ namespace Trainworks.AssetConstructors
             Sprite sprite = CustomAssetManager.LoadSpriteFromRuntimeKey(assetRef.RuntimeKey);
             if (sprite == null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Could not find sprite with asset runtime key: " + assetRef.RuntimeKey);
+                Trainworks.Log(LogLevel.Error, "Could not find sprite with asset runtime key: " + assetRef.RuntimeKey);
                 return null;
             }
             var charObj = CreateCharacterGameObject(assetRef, sprite);
@@ -52,7 +53,7 @@ namespace Trainworks.AssetConstructors
             var tex = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.SpriteName) as Texture2D;
             if (tex == null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Invalid sprite name when loading asset: " + bundleInfo.SpriteName);
+                Trainworks.Log(LogLevel.Error, "Invalid sprite name when loading asset: " + bundleInfo.SpriteName);
                 return null;
             }
 
@@ -70,14 +71,14 @@ namespace Trainworks.AssetConstructors
                     GameObject gameObject = BundleManager.LoadAssetFromBundle(bundleInfo, anim_path.Value) as GameObject;
                     if (gameObject == null)
                     {
-                        Trainworks.Log("Could not load spine animation anim: " + anim_path.Key + " path: " + anim_path.Value);
+                        Trainworks.Log(LogLevel.Error, "Could not load spine animation anim: " + anim_path.Key + " path: " + anim_path.Value);
                         continue;
                     }
                     loadedAnims.Add(anim_path.Key, gameObject);
                 }
                 if (loadedAnims.IsNullOrEmpty())
                 {
-                    Trainworks.Log("Failed to load any animations for " + bundleInfo.SpriteName);
+                    Trainworks.Log(LogLevel.Error, "Failed to load any animations for " + bundleInfo.SpriteName);
                     var charObj = CreateCharacterGameObject(assetRef, sprite);
                     GameObject.DontDestroyOnLoad(charObj);
                     return charObj;
@@ -89,11 +90,11 @@ namespace Trainworks.AssetConstructors
             // Legacy. Animated sprite asset with a single spine animation.
             else if (bundleInfo.ObjectName != null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Looking in bundle for... " + bundleInfo.ObjectName);
+                Trainworks.Log(LogLevel.Debug, "Looking in bundle for... " + bundleInfo.ObjectName);
                 GameObject gameObject = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.ObjectName) as GameObject;
                 if (gameObject == null)
                 {
-                    Trainworks.Log("Could not load spine animations for bundle object: " + bundleInfo.ObjectName);
+                    Trainworks.Log(LogLevel.Error, "Could not load spine animations for bundle object: " + bundleInfo.ObjectName);
                     var charObj = CreateCharacterGameObject(assetRef, sprite);
                     GameObject.DontDestroyOnLoad(charObj);
                     return charObj;

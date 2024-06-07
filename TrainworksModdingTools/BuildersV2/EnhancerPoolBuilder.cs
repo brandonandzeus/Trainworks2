@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using Trainworks.ManagersV2;
@@ -49,8 +50,9 @@ namespace Trainworks.BuildersV2
             // Not catastrophic enough to throw an Exception, this should be provided though.
             if (EnhancerPoolID == null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Warning should provide a EnhancerPoolID.");
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Stacktrace: " + Environment.StackTrace);
+                // Doesn't affect localization keys so setting to warning.
+                Trainworks.Log(LogLevel.Warning, "Warning should provide a EnhancerPoolID.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
 
             EnhancerPool enhancerPool = ScriptableObject.CreateInstance<EnhancerPool>();

@@ -12,6 +12,7 @@ using UnityEngine.AddressableAssets;
 using Trainworks.Builders;
 using Trainworks.AssetConstructors;
 using Trainworks.Utilities;
+using BepInEx.Logging;
 
 namespace Trainworks.Managers
 {
@@ -49,7 +50,7 @@ namespace Trainworks.Managers
                 }
                 else
                 {
-                    Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Custom asset bundle failed to load from path: " + path);
+                    Trainworks.Log(LogLevel.Error, "Custom asset bundle failed to load from path: " + path);
                 }
             }
         }
@@ -75,12 +76,12 @@ namespace Trainworks.Managers
                 var asset = LoadedAssetBundles[info.FullPath].LoadAsset(assetName);
                 if (asset == null)
                 {
-                    Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Custom asset: " + assetName + " failed to load from bundle: " + info.FullPath);
+                    Trainworks.Log(LogLevel.Error, "Custom asset: " + assetName + " failed to load from bundle: " + info.FullPath);
                 }
                 ApplyImportSettings(info, ref asset);
                 return asset;
             }
-            Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Attempting to load asset from non-existent bundle: " + info.FullPath);
+            Trainworks.Log(LogLevel.Error, "Attempting to load asset from non-existent bundle: " + info.FullPath);
             return null;
         }
 

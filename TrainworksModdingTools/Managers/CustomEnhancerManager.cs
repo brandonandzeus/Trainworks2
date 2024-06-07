@@ -1,5 +1,6 @@
 ﻿using BepInEx.Logging;
 using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using Trainworks.ConstantsV2;
 using Trainworks.Managers;
@@ -51,7 +52,8 @@ namespace Trainworks.ManagersV2
 
             if (enhancerPool == null)
             {
-                Trainworks.Log(LogLevel.All, "Could not find EnhancerPool wtih id " + enhancerPoolID + " ignoring adding enhancer: " + enhancerData.name + " to this pool.");
+                Trainworks.Log(LogLevel.Error, "Could not find EnhancerPool wtih id " + enhancerPoolID + " ignoring adding enhancer: " + enhancerData.name + " to this pool.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
                 return;
             }
 
@@ -105,7 +107,8 @@ namespace Trainworks.ManagersV2
                 }
             }
 
-            Trainworks.Log(LogLevel.Warning, "Couldn't find enhancer: " + enhancerID + " - This will cause crashes.");
+            Trainworks.Log(LogLevel.Error, "Couldn't find enhancer: " + enhancerID + " - This will cause crashes.");
+            Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
 
             return null;
         }

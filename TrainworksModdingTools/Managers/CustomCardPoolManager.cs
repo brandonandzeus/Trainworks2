@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using BepInEx.Logging;
@@ -34,7 +35,7 @@ namespace Trainworks.Managers
             {
                 return reward.GetDraftPool();
             }
-            Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Could not get MegaPool Instance");
+            Trainworks.Log(LogLevel.Error, "Could not get MegaPool Instance");
             return null;
         }
 
@@ -47,7 +48,7 @@ namespace Trainworks.Managers
             var relic = ProviderManager.SaveManager.GetAllGameData().FindCollectableRelicData(VanillaCollectableRelicIDs.ConscriptionNotice);
             if (relic == null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Could not get ConscriptionPool");
+                Trainworks.Log(LogLevel.Error, "Could not get ConscriptionPool");
                 return null;
             }
             return relic.GetFirstRelicEffectData<RelicEffectAddBattleCardToHandOnUnitTrigger>().GetParamCardPool();
@@ -180,7 +181,8 @@ namespace Trainworks.Managers
             {
                 return CustomCardPools[cardPoolID];
             }
-            Trainworks.Log(LogLevel.Warning, "Could not find card pool: " + cardPoolID);
+            Trainworks.Log(LogLevel.Error, "Could not find card pool: " + cardPoolID);
+            Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             return null;
         }
 
@@ -219,7 +221,8 @@ namespace Trainworks.Managers
         {
             if (cardPool == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Attempted to mark a null CardPool for preloading");
+                Trainworks.Log(LogLevel.Error, "Attempted to mark a null CardPool for preloading");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
                 return;
             }
 

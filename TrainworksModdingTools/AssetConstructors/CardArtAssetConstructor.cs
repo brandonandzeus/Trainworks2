@@ -8,6 +8,7 @@ using HarmonyLib;
 using Trainworks.Managers;
 using Trainworks.Utilities;
 using Trainworks.Interfaces;
+using BepInEx.Logging;
 
 namespace Trainworks.AssetConstructors
 {
@@ -77,7 +78,7 @@ namespace Trainworks.AssetConstructors
                     return gameObject;
                 }
             }
-            Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Invalid asset type " + asset.GetType() + " when loading asset: " + bundleInfo.SpriteName);
+            Trainworks.Log(LogLevel.Error, "Invalid asset type " + asset.GetType() + " when loading asset: " + bundleInfo.SpriteName);
             return null;
         }
     }

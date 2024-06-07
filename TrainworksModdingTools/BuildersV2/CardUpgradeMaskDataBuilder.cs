@@ -73,35 +73,35 @@ namespace Trainworks.BuildersV2
         /// <summary>
         /// Operator determines if we require all or at least one
         /// </summary>
-        public CardUpgradeMaskDataBuilder.CompareOperator RequiredSubtypesOperator { get; set; }
+        public CompareOperator RequiredSubtypesOperator { get; set; }
         /// <summary>
         /// Operator determines if we require all or at least one
         /// </summary>
-        public CardUpgradeMaskDataBuilder.CompareOperator ExcludedSubtypesOperator { get; set; }
+        public CompareOperator ExcludedSubtypesOperator { get; set; }
         /// <summary>
         /// Operator determines if we require all or at least one
         /// </summary>
-        public CardUpgradeMaskDataBuilder.CompareOperator RequiredStatusEffectsOperator { get; set; }
+        public CompareOperator RequiredStatusEffectsOperator { get; set; }
         /// <summary>
         /// Operator determines if we require all or at least one
         /// </summary>
-        public CardUpgradeMaskDataBuilder.CompareOperator ExcludedStatusEffectsOperator { get; set; }
+        public CompareOperator ExcludedStatusEffectsOperator { get; set; }
         /// <summary>
         /// Operator determines if we require all or at least one
         /// </summary>
-        public CardUpgradeMaskDataBuilder.CompareOperator RequiredCardTraitsOperator { get; set; }
+        public CompareOperator RequiredCardTraitsOperator { get; set; }
         /// <summary>
         /// Operator determines if we require all or at least one
         /// </summary>
-        public CardUpgradeMaskDataBuilder.CompareOperator ExcludedCardTraitsOperator { get; set; }
+        public CompareOperator ExcludedCardTraitsOperator { get; set; }
         /// <summary>
         /// Operator determines if we require all or at least one
         /// </summary>
-        public CardUpgradeMaskDataBuilder.CompareOperator RequiredCardEffectsOperator { get; set; }
+        public CompareOperator RequiredCardEffectsOperator { get; set; }
         /// <summary>
         /// Operator determines if we require all or at least one
         /// </summary>
-        public CardUpgradeMaskDataBuilder.CompareOperator ExcludedCardEffectsOperator { get; set; }
+        public CompareOperator ExcludedCardEffectsOperator { get; set; }
         /// <summary>
         /// Allows the upgrade to be only applied to X cost cards.
         /// </summary>
@@ -110,6 +110,15 @@ namespace Trainworks.BuildersV2
         /// Disallows X cost cards from receiving the upgrade.
         /// </summary>
         public bool ExcludeXCost { get; set; }
+        /// <summary>
+        /// Excludes a unit if it has a synthesis. Currently only used at Divine Temple.
+        /// If using this for a in battle upgrade to a non synthesized unit, the result will
+        /// be unreliable. Some Card Upgrades (that aren't essences) in the Vanilla game (and mods)
+        /// have the IsUnitSynthesis flag set as a bandage for the bugged unit Kinhost Carapace.
+        /// 
+        /// Without it Kinhost Carapace will scale any upgrade it applies to itself or others.
+        /// </summary>
+        public bool ExcludeIfUnitSynthesized { get; set; }
         /// <summary>
         /// This is the reason why a card is filtered away from having this upgrade applied to it
         /// </summary>
@@ -138,8 +147,9 @@ namespace Trainworks.BuildersV2
             // Not catastrophic enough to throw an Exception, this should be provided though.
             if (CardUpgradeMaskID == null)
             {
+                // Doesn't effect localization so keeping to Warning level.
                 Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Warning should provide a CardUpgradeMaskDataID.");
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Stacktrace: " + Environment.StackTrace);
+                Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
 
             CardUpgradeMaskData cardUpgradeMaskData = ScriptableObject.CreateInstance<CardUpgradeMaskData>();
@@ -160,6 +170,7 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(CardUpgradeMaskData), "excludedSubtypesOperator").SetValue(cardUpgradeMaskData, Enum.ToObject(realEnumType, ExcludedSubtypesOperator));
             AccessTools.Field(typeof(CardUpgradeMaskData), "excludeNonAttackingMonsters").SetValue(cardUpgradeMaskData, ExcludeNonAttackingMonsters);
             AccessTools.Field(typeof(CardUpgradeMaskData), "excludeXCost").SetValue(cardUpgradeMaskData, ExcludeXCost);
+            AccessTools.Field(typeof(CardUpgradeMaskData), "excludeIfUnitSynthesized").SetValue(cardUpgradeMaskData, ExcludeIfUnitSynthesized);
             AccessTools.Field(typeof(CardUpgradeMaskData), "requiredCardEffects").SetValue(cardUpgradeMaskData, RequiredCardEffects);
             AccessTools.Field(typeof(CardUpgradeMaskData), "requiredCardEffectsOperator").SetValue(cardUpgradeMaskData, Enum.ToObject(realEnumType, RequiredCardEffectsOperator));
             AccessTools.Field(typeof(CardUpgradeMaskData), "requiredCardTraits").SetValue(cardUpgradeMaskData, RequiredCardTraits);

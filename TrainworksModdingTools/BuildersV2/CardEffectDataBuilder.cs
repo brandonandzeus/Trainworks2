@@ -279,6 +279,7 @@ namespace Trainworks.BuildersV2
             AccessTools.Field(typeof(CardEffectData), "paramCardUpgradeData").SetValue(cardEffectData, upgrade);
 
             // Field not allocated.
+            // TODO don't allocate if it isn't needed.
             var characterDataPool = new List<CharacterData>();
             characterDataPool.AddRange(ParamCharacterDataPool);
             foreach (var character in ParamCharacterDataPoolBuilder)

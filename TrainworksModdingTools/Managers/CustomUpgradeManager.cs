@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Logging;
+using Steamworks;
 using Trainworks.Managers;
 using Trainworks.Utilities;
 
@@ -25,6 +27,8 @@ namespace Trainworks.ManagersV2
                 }
 
                 upgradeList.Add(upgrade);
+
+                ContentValidator.Validate(upgrade);
             }
             else
             {
@@ -50,7 +54,8 @@ namespace Trainworks.ManagersV2
             var vanillaUpgrade = ProviderManager.SaveManager.GetAllGameData().FindCardUpgradeData(upgradeID);
             if (vanillaUpgrade == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Couldn't find upgrade: " + upgradeID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Error, "Couldn't find upgrade: " + upgradeID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
             return vanillaUpgrade;
         }

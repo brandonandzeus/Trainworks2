@@ -8,6 +8,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using Trainworks.Utilities;
 using Malee;
+using System;
 
 namespace Trainworks.Managers
 {
@@ -49,6 +50,7 @@ namespace Trainworks.Managers
         /// <param name="cardPoolData">The card pools the custom card should be a part of</param>
         public static void RegisterCustomCard(CardData cardData, List<string> cardPoolData)
         {
+            ContentValidator.Validate(cardData);
             if (!CustomCardData.ContainsKey(cardData.GetID()))
             {
                 CustomCardData.Add(cardData.GetID(), cardData);
@@ -83,7 +85,8 @@ namespace Trainworks.Managers
             var vanillaCard = ProviderManager.SaveManager.GetAllGameData().FindCardData(cardID);
             if (vanillaCard == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Couldn't find card: " + cardID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Error, "Couldn't find card: " + cardID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
             return vanillaCard;
         }

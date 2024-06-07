@@ -54,6 +54,11 @@ namespace Trainworks.BuildersV2
 
         public RewardData Build(bool register = true)
         {
+            if (RewardID == null)
+            {
+                throw new BuilderException("RewardID is required");
+            }
+
             var rewardData = ScriptableObject.CreateInstance<PurgeRewardData>();
             rewardData.name = RewardID;
 

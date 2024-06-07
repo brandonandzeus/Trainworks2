@@ -112,6 +112,11 @@ namespace Trainworks.BuildersV2
         public bool ExcludeXCost { get; set; }
         /// <summary>
         /// Excludes a unit if it has a synthesis. Currently only used at Divine Temple.
+        /// If using this for a in battle upgrade to a non synthesized unit, the result will
+        /// be unreliable. Some Card Upgrades (that aren't essences) in the Vanilla game (and mods)
+        /// have the IsUnitSynthesis flag set as a bandage for the bugged unit Kinhost Carapace.
+        /// 
+        /// Without it Kinhost Carapace will scale any upgrade it applies to itself or others.
         /// </summary>
         public bool ExcludeIfUnitSynthesized { get; set; }
         /// <summary>
@@ -142,8 +147,9 @@ namespace Trainworks.BuildersV2
             // Not catastrophic enough to throw an Exception, this should be provided though.
             if (CardUpgradeMaskID == null)
             {
+                // Doesn't effect localization so keeping to Warning level.
                 Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Warning should provide a CardUpgradeMaskDataID.");
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Stacktrace: " + Environment.StackTrace);
+                Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
 
             CardUpgradeMaskData cardUpgradeMaskData = ScriptableObject.CreateInstance<CardUpgradeMaskData>();

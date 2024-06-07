@@ -84,7 +84,8 @@ namespace Trainworks.Managers
             });
             if (vanillaChar == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Couldn't find character: " + characterID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Error, "Couldn't find character: " + characterID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
             return vanillaChar;
         }
@@ -129,7 +130,7 @@ namespace Trainworks.Managers
             TemplateCharacter = asyncOperation.Result;
             if (TemplateCharacter == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Failed to load character template");
+                Trainworks.Log(LogLevel.Error, "Failed to load character template");
             }
         }
 
@@ -166,7 +167,8 @@ namespace Trainworks.Managers
         {
             if (character == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Attempted to mark a null CharacterData for preloading ignoring.");
+                Trainworks.Log(LogLevel.Error, "Attempted to mark a null CharacterData for preloading ignoring.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
                 return;
             }
 
@@ -184,11 +186,9 @@ namespace Trainworks.Managers
 
             if (!CustomCharacterData.ContainsKey(characterData.GetID()))
             {
-                //Trainworks.Log("Not a custom character " + characterData);
                 return null;
             }
 
-            //Trainworks.Log("" + characterData);
             // New Builders should already have this cached.
             if (UnitSynthesisMapping.TryGetValue(characterData, out CardUpgradeData value))
             {
@@ -203,12 +203,9 @@ namespace Trainworks.Managers
                 if (synthesis != null)
                 {
                     UnitSynthesisMapping.Add(characterData, synthesis);
-                    //Trainworks.Log("Synthesis found for unit " + characterData + " " + synthesis);
                     return synthesis;
                 }
             }
-            
-            //Trainworks.Log("No synthesis found for unit " + characterData);
 
             // Last attempt find the dummy unit synthesis.
             return cardUpgrades.FindLast(u => characterData == u.GetSourceSynthesisUnit());
@@ -227,7 +224,7 @@ namespace Trainworks.Managers
             // it will change them all. Probably not what you want.
             if (BuildersV2.BuilderUtils.IsFromBaseGame(RoomModifierClassType))
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Room Modifier Class Type: " + RoomModifierClassType.FullName + " is a base game Room Modifier. Ignoring.");
+                Trainworks.Log(LogLevel.Warning, "Room Modifier Class Type: " + RoomModifierClassType.FullName + " is a base game Room Modifier. Ignoring.");
                 return;
             }
 

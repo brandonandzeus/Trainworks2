@@ -64,7 +64,8 @@ namespace Trainworks.Managers
             var vanillaScenario = ProviderManager.SaveManager.GetAllGameData().FindScenarioData(id);
             if (vanillaScenario == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Couldn't find scenario: " + id + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Error, "Couldn't find scenario: " + id + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
             return vanillaScenario;
         }
@@ -104,7 +105,8 @@ namespace Trainworks.Managers
             var vanillaSins = ProviderManager.SaveManager.GetAllGameData().FindEnemySinsData(sinsID);
             if (vanillaSins == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Couldn't find SinsData: " + sinsID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Error, "Couldn't find SinsData: " + sinsID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
             return vanillaSins;
         }
@@ -147,7 +149,8 @@ namespace Trainworks.Managers
             var vanillaTrial = ProviderManager.SaveManager.GetAllGameData().FindTrialData(trialID);
             if (vanillaTrial == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Couldn't find TrialData: " + trialID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Error, "Couldn't find TrialData: " + trialID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
             return vanillaTrial;
         }

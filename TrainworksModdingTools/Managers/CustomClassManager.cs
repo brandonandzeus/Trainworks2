@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -72,7 +73,8 @@ namespace Trainworks.Managers
             var vanillaClan = ProviderManager.SaveManager.GetAllGameData().FindClassData(classID);
             if (vanillaClan == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Couldn't find clan: " + classID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Error, "Couldn't find clan: " + classID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
             return vanillaClan;
         }

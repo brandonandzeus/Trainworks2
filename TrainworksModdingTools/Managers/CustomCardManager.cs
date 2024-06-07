@@ -8,6 +8,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using Trainworks.Utilities;
 using Malee;
+using System;
 
 namespace Trainworks.Managers
 {
@@ -84,7 +85,8 @@ namespace Trainworks.Managers
             var vanillaCard = ProviderManager.SaveManager.GetAllGameData().FindCardData(cardID);
             if (vanillaCard == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Couldn't find card: " + cardID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Error, "Couldn't find card: " + cardID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
             return vanillaCard;
         }

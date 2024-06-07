@@ -1,5 +1,6 @@
 ﻿using BepInEx.Logging;
 using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using Trainworks.Managers;
 using Trainworks.Utilities;
@@ -40,7 +41,8 @@ namespace Trainworks.ManagersV2
                 return challenge;
             }
 
-            Trainworks.Log(LogLevel.Warning, "Couldn't find challenge: " + id + " - This will cause crashes.");
+            Trainworks.Log(LogLevel.Error, "Couldn't find challenge: " + id + " - This will cause crashes.");
+            Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             return null;
 
         }

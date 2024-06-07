@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Logging;
 using Trainworks.Managers;
@@ -50,7 +51,8 @@ namespace Trainworks.ManagersV2
             var vanillaUpgrade = ProviderManager.SaveManager.GetAllGameData().FindCardUpgradeData(upgradeID);
             if (vanillaUpgrade == null)
             {
-                Trainworks.Log(LogLevel.Warning, "Couldn't find upgrade: " + upgradeID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Error, "Couldn't find upgrade: " + upgradeID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
             return vanillaUpgrade;
         }

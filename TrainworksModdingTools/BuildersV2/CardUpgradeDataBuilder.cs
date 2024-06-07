@@ -242,8 +242,8 @@ namespace Trainworks.BuildersV2
             // Not catastrophic enough to throw an Exception, this should be provided though.
             if (UpgradeID == null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Warning should provide a UpgradeID.");
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Stacktrace: " + Environment.StackTrace);
+                Trainworks.Log(BepInEx.Logging.LogLevel.Error, "Warning should provide a UpgradeID.");
+                Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
 
             CardUpgradeData cardUpgradeData = ScriptableObject.CreateInstance<CardUpgradeData>();

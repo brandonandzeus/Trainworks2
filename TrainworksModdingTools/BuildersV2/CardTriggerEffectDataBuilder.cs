@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 
@@ -70,8 +71,8 @@ namespace Trainworks.BuildersV2
             // Not catastrophic enough to throw an Exception, this should be provided though.
             if (TriggerID == null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Warning should provide a TriggerID.");
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Stacktrace: " + Environment.StackTrace);
+                Trainworks.Log(LogLevel.Error, "Warning should provide a TriggerID.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
 
             // Doesn't inherit from ScriptableObject
@@ -106,12 +107,13 @@ namespace Trainworks.BuildersV2
         /// <returns></returns>
         public CardTriggerData AddCardTrigger(PersistenceMode persistenceMode, string cardTriggerEffect, string buffEffectType, int paramInt)
         {
-            CardTriggerData trigger = new CardTriggerData();
-
-            trigger.persistenceMode = persistenceMode;
-            trigger.cardTriggerEffect = cardTriggerEffect;
-            trigger.buffEffectType = buffEffectType;
-            trigger.paramInt = paramInt;
+            CardTriggerData trigger = new CardTriggerData
+            {
+                persistenceMode = persistenceMode,
+                cardTriggerEffect = cardTriggerEffect,
+                buffEffectType = buffEffectType,
+                paramInt = paramInt
+            };
 
             CardTriggerEffects.Add(trigger);
             return trigger;
@@ -127,12 +129,13 @@ namespace Trainworks.BuildersV2
         /// <returns></returns>
         public static CardTriggerData MakeCardTrigger(PersistenceMode persistenceMode, string cardTriggerEffect, string buffEffectType, int paramInt)
         {
-            CardTriggerData trigger = new CardTriggerData();
-
-            trigger.persistenceMode = persistenceMode;
-            trigger.cardTriggerEffect = cardTriggerEffect;
-            trigger.buffEffectType = buffEffectType;
-            trigger.paramInt = paramInt;
+            CardTriggerData trigger = new CardTriggerData
+            {
+                persistenceMode = persistenceMode,
+                cardTriggerEffect = cardTriggerEffect,
+                buffEffectType = buffEffectType,
+                paramInt = paramInt
+            };
 
             return trigger;
         }

@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using Spine;
 using Spine.Unity;
 using System;
@@ -56,8 +57,9 @@ namespace Trainworks.BuildersV2
             // Not catastrophic enough to throw an Exception, this should be provided though.
             if (MerchantCharacterID == null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Warning should provide a MerchantCharacterID.");
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Stacktrace: " + Environment.StackTrace);
+                // May cause lookup errors if not provided.
+                Trainworks.Log(LogLevel.Error, "Warning should provide a MerchantCharacterID.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
 
             var merchant = ScriptableObject.CreateInstance<MerchantCharacterData>();

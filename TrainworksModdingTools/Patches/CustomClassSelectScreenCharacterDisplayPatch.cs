@@ -54,7 +54,7 @@ namespace Trainworks.Patches
                 GameObject gameObject = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.ObjectName) as GameObject;
                 if (gameObject == null)
                 {
-                    Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Could not find skeletonData for " + bundleInfo.ObjectName);
+                    Trainworks.Log(LogLevel.Error, "Could not find skeletonData for " + bundleInfo.ObjectName);
                     UpdateCharacterDisplayGameObject(characterState, sprite);
                     return null;
                 }

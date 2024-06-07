@@ -4,6 +4,7 @@ using System.Text;
 using System.Security.Cryptography;
 using HarmonyLib;
 using System.Reflection;
+using BepInEx.Logging;
 
 namespace Trainworks.Utilities
 {
@@ -18,7 +19,7 @@ namespace Trainworks.Utilities
         {
             if (key == null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "GUIDGenerator cannot generate determinstic GUID for null key");
+                Trainworks.Log(LogLevel.Error, "GUIDGenerator cannot generate determinstic GUID for null key");
                 return key;
             }
 

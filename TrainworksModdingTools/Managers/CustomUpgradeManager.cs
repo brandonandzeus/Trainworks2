@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Logging;
+using Steamworks;
 using Trainworks.Managers;
 using Trainworks.Utilities;
 
@@ -26,6 +27,8 @@ namespace Trainworks.ManagersV2
                 }
 
                 upgradeList.Add(upgrade);
+
+                ContentValidator.Validate(upgrade);
             }
             else
             {

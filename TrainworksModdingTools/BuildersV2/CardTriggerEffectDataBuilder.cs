@@ -42,11 +42,13 @@ namespace Trainworks.BuildersV2
         public string DescriptionKey { get; set; }
         /// <summary>
         /// List of CardTrigger Effects.
-        /// Note no builder since CardTriggerData is mutable.
+        /// Note no builder since all fields in CardTriggerData are public.
+        /// These CardTriggerEffects are ran first.
         /// </summary>
         public List<CardTriggerData> CardTriggerEffects { get; set; }
         /// <summary>
-        /// List of CardEffects.
+        /// List of normal CardEffects to run. 
+        /// The CardEffects are ran AFTER CardTriggerEffects.
         /// </summary>
         public List<CardEffectData> CardEffects { get; set; }
         /// <summary>
@@ -101,10 +103,54 @@ namespace Trainworks.BuildersV2
         /// Adds a new CardTrigger to the list.
         /// </summary>
         /// <param name="persistenceMode">SingleRun, or SingleBattle</param>
-        /// <param name="cardTriggerEffect"></param>
-        /// <param name="buffEffectType"></param>
-        /// <param name="paramInt"></param>
+        /// <param name="cardTriggerEffect">ICardTriggerEffect subclass this is the CardTriggerEffect to play and will be instantiated</param>
+        /// <param name="buffEffectType">Used by CardTriggerBuffEffect.
+        /// ICardEffect subclass this should match one of the CardEffects within CardData.Effects (Not CardTriggerEffectData's CardEffects). 
+        /// If given will reset the CardEffectState that has EffectStateName equal to this class.
+        /// However this is bugged if you have multiple CardEffects since it reorders the effects of your card since it removes the effect pointed to by buffEffectTytpe
+        /// and readds it at the end of the effects list at the end of battle if the PersistenceMode is SingleBattle.
+        /// 
+        /// </param>
+        /// <param name="paramInt">ParamInt</param>
+        /// <param name="upgrade">ParamUpgrade</param>
         /// <returns></returns>
+        public CardTriggerData AddCardTrigger(PersistenceMode persistenceMode, Type cardTriggerEffect, Type buffEffectType, int paramInt, CardUpgradeData upgrade)
+        {
+            var trigger = MakeCardTrigger(persistenceMode, cardTriggerEffect, buffEffectType, paramInt, upgrade);
+            CardTriggerEffects.Add(trigger);
+            return trigger;
+        }
+
+        /// <summary>
+        /// Makes a CardTriggerData.
+        /// </summary>
+        /// <param name="persistenceMode">SingleRun, or SingleBattle</param>
+        /// <param name="cardTriggerEffect">ICardTriggerEffect subclass this is the CardTriggerEffect to play and will be instantiated</param>
+        /// <param name="buffEffectType">Used by CardTriggerBuffEffect.
+        /// ICardEffect subclass this should match one of the CardEffects within CardData.Effects (Not CardTriggerEffectData's CardEffects).
+        /// If given will reset the CardEffectState that has EffectStateName equal to this class.
+        /// However this is bugged if you have multiple CardEffects since it reorders the effects of your card since it removes the effect pointed to by buffEffectTytpe
+        /// and readds it at the end of the effects list at the end of battle if the PersistenceMode is SingleBattle.
+        /// </param>
+        /// <param name="paramInt">ParamInt</param>
+        /// <param name="upgrade">ParamUpgrade</param>
+        /// <returns></returns>
+        public static CardTriggerData MakeCardTrigger(PersistenceMode persistenceMode, Type cardTriggerEffect, Type buffEffectType, int paramInt, CardUpgradeData upgrade)
+        {
+            CardTriggerData trigger = new CardTriggerData
+            {
+                persistenceMode = persistenceMode,
+                cardTriggerEffect = BuilderUtils.GetEffectClassName(cardTriggerEffect),
+                buffEffectType = buffEffectType == null ? "None" : BuilderUtils.GetEffectClassName(buffEffectType),
+                paramInt = paramInt,
+                paramUpgrade = upgrade
+            };
+
+            return trigger;
+        }
+
+        // Unsafe An incorrect Class type can be passed in.
+        [Obsolete("AddCardTrigger(PersistenceMode, string, string, int) is deprecated. Please switch to the overload AddCardTrigger(PersistenceMode, Type, Type, int, CardUpgradeData).")]
         public CardTriggerData AddCardTrigger(PersistenceMode persistenceMode, string cardTriggerEffect, string buffEffectType, int paramInt)
         {
             CardTriggerData trigger = new CardTriggerData
@@ -119,14 +165,8 @@ namespace Trainworks.BuildersV2
             return trigger;
         }
 
-        /// <summary>
-        /// Makes a new card trigger.
-        /// </summary>
-        /// <param name="persistenceMode">SingleRun, or SingleBattle</param>
-        /// <param name="cardTriggerEffect"></param>
-        /// <param name="buffEffectType"></param>
-        /// <param name="paramInt"></param>
-        /// <returns></returns>
+        // Unsafe An incorrect Class type can be passed in.
+        [Obsolete("MakeCardTrigger(PersistenceMode, string, string, int) is deprecated. Please switch to the overload MakeCardTrigger(PersistenceMode, Type, Type, int, CardUpgradeData).")]
         public static CardTriggerData MakeCardTrigger(PersistenceMode persistenceMode, string cardTriggerEffect, string buffEffectType, int paramInt)
         {
             CardTriggerData trigger = new CardTriggerData

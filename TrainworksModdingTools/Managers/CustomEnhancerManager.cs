@@ -34,6 +34,11 @@ namespace Trainworks.ManagersV2
         };
 
         /// <summary>
+        /// Cache for the ExcludedStatusEffects field in Stackstone.
+        /// </summary>
+        private static List<StatusEffectStackData> StackstoneExcludedStatusEffects = null;
+
+        /// <summary>
         /// Add the enhancer to the pool.
         /// </summary>
         /// <param name="enhancerData">EnhancerData to be added to the pool</param>
@@ -144,6 +149,38 @@ namespace Trainworks.ManagersV2
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Excludes a status effect from Doublestack. You generally want to do this if the status effect is nonstackable.
+        /// </summary>
+        /// <param name="statusId">Status Effect ID to exclude from Doublestack</param>
+        public static void ExcludeStatusEffectFromDoublestack(string statusId)
+        {
+            if (StackstoneExcludedStatusEffects == null)
+            {
+                var upgrade = CustomUpgradeManager.GetCardUpgradeByID(VanillaCardUpgradeDataIDs.Stackstone);
+
+                CardUpgradeMaskData nonstackable = null;
+                foreach (var filter in upgrade.GetFilters())
+                {
+                    if (filter.GetName() == "ExcludeNonstackableStatusEffects")
+                    {
+                        nonstackable = filter;
+                        break;
+                    }
+                }
+
+                if (nonstackable == null)
+                {
+                    Trainworks.Log(LogLevel.Error, "Could not find ExcludeNonstackableStatusEffects in Stackstone.");
+                    return;
+                }
+
+                StackstoneExcludedStatusEffects = (List<StatusEffectStackData>)AccessTools.Field(typeof(CardUpgradeMaskData), "excludedStatusEffects").GetValue(nonstackable);
+            }
+
+            StackstoneExcludedStatusEffects?.Add(new StatusEffectStackData { statusId = statusId, count = 0 });
         }
     }
 }

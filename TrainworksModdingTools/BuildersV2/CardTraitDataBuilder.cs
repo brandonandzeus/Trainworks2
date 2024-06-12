@@ -63,11 +63,15 @@ namespace Trainworks.BuildersV2
         /// <summary>
         /// Use Scaling Params. This only seems to be set for Scaling Card Traits,
         /// however there's no references to the use of this field anywhere in the
-        /// MT codebase so it appears optional.
+        /// MT codebase so it appears optional. To reiterate setting this to true
+        /// does nothing.
         /// </summary>
         public bool ParamUseScalingParams { get; set; }
         /// <summary>
-        /// Card Upgrade Data Parameter.
+        /// Card Upgrade Data Parameter. Unfortunately this parameter isn't directly accessible in a Custom CardTraitState subclass.
+        /// must be accesssed through the CardTraitData instance.
+        /// 
+        /// The only usage of this Param is in Spellchain (CardTraitCopyOnPlay). Which applies an upgrade giving Purge and increasing the cost by 1.
         /// </summary>
         public CardUpgradeData ParamCardUpgradeData { get; set; }
         /// <summary>
@@ -76,11 +80,30 @@ namespace Trainworks.BuildersV2
         public CardUpgradeDataBuilder ParamCardUpgradeDataBuilder { get; set; }
         /// <summary>
         /// Allows the trait to be removable.
+        /// 
+        /// As far as the base game this field is used for CardTraitCorruptRestricted (Extract)
+        /// however the usage among cards with that specific trait is inconsistent.
+        /// Only two cards in the game have it set to false Forced Contamination and Ambient Charge. 
+        /// While all other Extract cards like Glugsider have it set to true (the default).
+        /// 
+        /// So???? shrug.
         /// </summary>
         public bool TraitIsRemovable { get; set; }
         /// <summary>
         /// An Enum that indicates how application of this CardTrait is handled.
         /// Either it can be ignored or each application increases ParamInt by 1.
+        /// 
+        /// If you are going to use StackMode.ParamInt then it works as expected on Nonpermanent 
+        /// Card Traits (those were are not added via CardData.Traits)
+        /// Use CardData.StartingUpgrades instead, if you need it on a card initially.
+        /// Then using CardEffectAddTempCardUpgradeXXX card effects will work.
+        /// Each time the trait is added to a card it will increase ParamInt by 1 
+        /// StackMode.None's behaviour is to simply not allow the Trait to be added to the card multiple times.
+        /// 
+        /// The only use in the Base Game is CardTraitCopyOnPlay (Spellchain)
+        /// However you can't apply the Spellchain upgrade on a card multiple times.
+        /// 
+        /// So???? shrug.
         /// </summary>
         public CardTraitData.StackMode StackMode { get; set; }
 

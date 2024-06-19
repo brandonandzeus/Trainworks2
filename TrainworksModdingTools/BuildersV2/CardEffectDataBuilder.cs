@@ -97,7 +97,8 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public List<StatusEffectStackData> ParamStatusEffects { get; set; }
         /// <summary>
-        /// Vector3 parameter.
+        /// Timing Delays. It is a Vector3 with x, y, z being the delay (in seconds) in Normal, Fast, Ultra speeds respectively.
+        /// The timing delay happens before this effect is applied.
         /// </summary>
         public Vector3 ParamTimingDelays { get; set; }
         /// <summary>
@@ -161,7 +162,8 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public CardEffectData.CardSelectionMode TargetCardSelectionMode { get; set; }
         /// <summary>
-        /// Used to filter out CardEffects that targets cards to a specific card type.
+        /// Used to filter out Cards of a specific card type in Certain Card targetting CardEffects.
+        /// (Defaults to Spell).
         /// </summary>
         public CardType TargetCardType { get; set; }
         /// <summary>

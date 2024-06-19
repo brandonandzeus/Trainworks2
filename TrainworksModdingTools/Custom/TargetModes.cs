@@ -42,7 +42,7 @@ namespace Trainworks.Custom
         /// <summary>
         /// Special character target type, Simply specifies OverrideTargetCharacter.
         /// This is useful for Custom Triggers as you can fire a trigger setting overrideTargetCharacter and not have to write Custom Card Effects to get the override target.
-        /// (Added for readability, LastAttackedCharacter works however selfTarget needs to be specified as well)..
+        /// (Added for readability, LastAttackedCharacter works however selfTarget needs to be specified as well).
         /// </summary>
         public static readonly TargetMode OverrideTarget = new TargetModeType("OverrideTarget", HandleOverrideTarget).GetEnum();
 

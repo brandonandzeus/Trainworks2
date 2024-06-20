@@ -93,6 +93,7 @@ namespace Trainworks.Patches
         {
             var targetMode = effectState.GetTargetMode();
 
+            // Have to handle these Card Target Modes here.
             if (targetMode == TargetModes.PlayedCard)
             {
                 cardEffectParams.targetCards.Clear();

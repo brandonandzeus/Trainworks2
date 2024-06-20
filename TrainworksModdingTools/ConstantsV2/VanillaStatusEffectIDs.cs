@@ -20,7 +20,6 @@
         public static readonly string Heartless = StatusEffectHealImmunityState.StatusId;
         public static readonly string Sweep = StatusEffectHunterState.StatusId;
         public static readonly string Immobile = StatusEffectImmobileState.StatusId;
-        public static readonly string Inedible = StatusEffectInedibleState.StatusId;
         public static readonly string Inert = StatusEffectInertState.StatusId;
         public static readonly string Lifesteal = StatusEffectLifestealState.StatusId;
         public static readonly string Frostbite = StatusEffectPoisonState.StatusId;
@@ -53,5 +52,6 @@
         public static readonly string Immunity = StatusEffectImmuneState.StatusId;
         public static readonly string PyreVengeance = StatusEffectPyreLockState.StatusId;
         public static readonly string Revive = StatusEffectReviveState.StatusId;
+        public static readonly string Inedible = StatusEffectInedibleState.StatusId;
     }
 }

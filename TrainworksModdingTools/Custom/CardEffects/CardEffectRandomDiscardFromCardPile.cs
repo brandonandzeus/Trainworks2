@@ -36,9 +36,11 @@ namespace Trainworks.Custom.CardEffects
         {
             TargetMode.Hand,
             TargetMode.LastDrawnCard,
+            /*
             TargetMode.LastDrawnCard.Invert(),
             // Same as hand.pretty much
             TargetModes.PlayedCard.Invert()
+            */
         };
         private readonly List<CardState> targets = new List<CardState>();
         private readonly List<CardState> selected = new List<CardState>();

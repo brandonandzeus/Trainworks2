@@ -7,7 +7,7 @@ using System.Text;
 using Trainworks.Enums;
 using Trainworks.Custom;
 using static TargetHelper;
-using static UnityEngine.GraphicsBuffer;
+
 
 namespace Trainworks.Patches
 {
@@ -24,15 +24,18 @@ namespace Trainworks.Patches
             return AccessTools.Method(typeof(TargetHelper), nameof(TargetHelper.CollectTargets), new Type[] { typeof(TargetHelper.CollectTargetsData), typeof(List<CharacterState>).MakeByRefType() });
         }
 
+        /*
         // The idea is to run the original with the Original Target Mode (non inverted) and the Postfix patch does the inversion.
         public static void Prefix(ref TargetHelper.CollectTargetsData data, ref bool __state)
         {
             // state == invert.
-            __state = TargetModeType.IsInverted(data.targetMode) && (TargetModeType.GetOriginalTargetMode(data.targetMode) != TargetMode.DropTargetCharacter);
-            data.targetMode = TargetModeType.GetOriginalTargetMode(data.targetMode);
+            var original = TargetModeType.GetOriginalTargetMode(data.targetMode);
+            __state = TargetModeType.IsInverted(data.targetMode) && (original != TargetMode.DropTargetCharacter);
+            data.targetMode = original;
         }
+        */
 
-        public static void Postfix(TargetHelper.CollectTargetsData data, ref List<CharacterState> targets, List<CharacterState> ___allTargets, ref List<CharacterState> ___lastTargetedCharacters, ref bool __state)
+        public static void Postfix(TargetHelper.CollectTargetsData data, ref List<CharacterState> targets, List<CharacterState> ___allTargets, ref List<CharacterState> ___lastTargetedCharacters/*, ref bool __state*/)
         {
             bool flag = data.firstEffectInPlayedCard.HasValue && data.firstEffectInPlayedCard.Value;
             bool handled = false;
@@ -47,6 +50,7 @@ namespace Trainworks.Patches
                 func.Invoke(data, ___allTargets, targets);
             }
 
+            /*
             // Need to invert.
             if (__state)
             {
@@ -68,9 +72,9 @@ namespace Trainworks.Patches
                 targets.Clear();
                 targets.AddRange(temp);
             }
+            */
 
-
-            if (flag && (handled || __state))
+            if (flag && (handled/* || __state*/))
             {
                 ___lastTargetedCharacters.Clear();
                 ___lastTargetedCharacters.AddRange(targets);
@@ -91,7 +95,7 @@ namespace Trainworks.Patches
 
         public static void Postfix(CardEffectState effectState, CardEffectParams cardEffectParams, bool isTesting, ref List<CharacterState> ___lastTargetedCharacters)
         {
-            var targetMode = effectState.GetTargetMode();
+            var targetMode = effectState.GetTargetMode();  
 
             // Have to handle these Card Target Modes here.
             if (targetMode == TargetModes.PlayedCard)
@@ -99,7 +103,7 @@ namespace Trainworks.Patches
                 cardEffectParams.targetCards.Clear();
                 cardEffectParams.targetCards.Add(cardEffectParams.playedCard);
             }
-            else if (targetMode == TargetModes.PlayedCard.Invert())
+            /*else if (targetMode == TargetModes.PlayedCard.Invert())
             {
                 cardEffectParams.targetCards.Clear();
                 cardEffectParams.targetCards.AddRange(cardEffectParams.cardManager.GetHand());
@@ -110,7 +114,7 @@ namespace Trainworks.Patches
                 cardEffectParams.targetCards.Clear();
                 cardEffectParams.targetCards.AddRange(cardEffectParams.cardManager.GetHand());
                 cardEffectParams.targetCards.Remove(cardEffectParams.cardManager.GetLastDrawnCard());
-            }
+            }*/
             else if (targetMode == TargetMode.Hand)
             {
                 cardEffectParams.targetCards.Clear();
@@ -185,18 +189,20 @@ namespace Trainworks.Patches
         }
     }
 
+    /*
     /// <summary>
     /// Patch to get DropTargetCharacter.Invert() working.
     /// </summary>
     [HarmonyPatch(typeof(TargetHelper), nameof(TargetHelper.CheckTargetsOverride))]
     class FixInvertDropTargetCharacterPatch
     {
-        public static void Postfix(CardEffectState effectState, ref List<CharacterState> targets, SpawnPoint dropLocation, ref List<CharacterState> ___lastTargetedCharacters)
+
+        public static void Postfix(CardEffectState effectState, ref List<CharacterState> targets, SpawnPoint dropLocation, ref List<CharacterState> ___lastTargetedCharacters, SubtypeData targetSubtype)
         {
-            if (effectState.GetTargetMode() == TargetModeType.MakeInverted(TargetMode.DropTargetCharacter) && dropLocation != null)
+            if (effectState.GetTargetMode() == TargetMode.DropTargetCharacter.Invert() && dropLocation != null)
             {
                 CharacterState characterState = dropLocation.GetCharacterState();
-                if (characterState != null)
+                if (characterState != null && characterState.GetCharacterManager().DoesCharacterPassSubtypeCheck(characterState, targetSubtype))
                 {
                     // Targets here should be the full list of valid targets, as gathered in CollectTargets.
                     targets.Remove(characterState);
@@ -210,7 +216,9 @@ namespace Trainworks.Patches
             }
         }
     }
+    */
 
+    /*
     /// <summary>
     /// Patch to enable the above patch to run.
     /// </summary>
@@ -220,10 +228,15 @@ namespace Trainworks.Patches
         public static void Postfix(CardState card, ref bool __result)
         {
             // Only need to handle DropTargetCharacter Inverted. Self is already handled in CollectTargets
-            if (card != null && card.DoesAnyEffectTarget(TargetMode.DropTargetCharacter.Invert()))
+            if (card != null)
             {
-                __result = false;
+                if (card.DoesAnyEffectTarget(TargetMode.DropTargetCharacter.Invert()))
+                {
+                    __result = false;
+                }
             }
+
         }
     }
+    */
 }

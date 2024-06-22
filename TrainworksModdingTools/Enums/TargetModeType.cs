@@ -27,6 +27,7 @@ namespace Trainworks.Enums
         {
             TargetMode.Tower,
             TargetMode.Pyre,
+            TargetMode.LastTargetedCharacters,
         };
 #pragma warning disable CS0618 // Type or member is obsolete
         internal static TargetMode InvertTargets = new TargetModeType("Invert", 128).GetEnum();
@@ -66,6 +67,7 @@ namespace Trainworks.Enums
             CardTargetModeHandlers.Add(this.GetEnum(), func);
         }
 
+        /*
         /// <summary>
         /// Given a TargetMode (including custom TargetMode) returns the TargetMode that selects the targets not matching the original condition.
         /// </summary>
@@ -74,10 +76,12 @@ namespace Trainworks.Enums
             if (CardTargetModeHandlers.ContainsKey(targetMode) || InvalidInvertedCardTargetModes.Contains(targetMode))
             {
                 Trainworks.Log(LogLevel.Fatal, "Can't invert a TargetMode specifying Cards other than PlayedCard or LastDrawnCard.");
+                return targetMode;
             }
             if (InvalidInvertedTargetModes.Contains(targetMode))
             {
-                Trainworks.Log(LogLevel.Fatal, "Can't invert TargetMode.Tower or TargetMode.Pyre");
+                Trainworks.Log(LogLevel.Fatal, "Can't invert TargetMode.Tower, TargetMode.Pyre, or TargetMode.LastTargetedCharacters");
+                return targetMode;
             }
             return (TargetMode)((byte)InvertTargets | (byte)targetMode);
         }
@@ -91,6 +95,7 @@ namespace Trainworks.Enums
         {
             return ((int)targetMode & (int)TargetModeType.InvertTargets) != 0;
         }
+        */
 
         public static byte GetNewID()
         {
@@ -103,6 +108,7 @@ namespace Trainworks.Enums
         }
     }
 
+/*  
     public static class TargetModeExtensions
     {
         public static TargetMode Invert(this TargetMode targetmode)
@@ -110,4 +116,5 @@ namespace Trainworks.Enums
             return TargetModeType.MakeInverted(targetmode);
         }
     }
+*/
 }

@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 
@@ -76,8 +77,8 @@ namespace Trainworks.BuildersV2
             // Not catastrophic enough to throw an Exception, this should be provided though.
             if (TriggerID == null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Error, "Warning should provide a TriggerID.");
-                Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
+                Trainworks.Log(LogLevel.Error, "Warning should provide a TriggerID.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
 
             CharacterTriggerData characterTriggerData = new CharacterTriggerData(Trigger, /* cardEffectData = */null);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BepInEx.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace Trainworks.Utilities
         {
             if (CustomSpriteAtlas != null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Error, "SpriteAsset has already been built. Please add icons during your Plugin's Initialize method only.");
+                Trainworks.Log(LogLevel.Error, "SpriteAsset has already been built. Please add icons during your Plugin's Initialize method only.");
                 return false;
             }
             byte[] data = File.ReadAllBytes(fullpath);
@@ -45,12 +46,12 @@ namespace Trainworks.Utilities
             UnityEngine.ImageConversion.LoadImage(texture, data);
             if (Icons.ContainsKey(texture.name))
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Error, "Icon with name: " + texture.name + " has already been added to texture atlas.");
+                Trainworks.Log(LogLevel.Error, "Icon with name: " + texture.name + " has already been added to texture atlas.");
                 return false;
             }
             if (texture.width != 24 || texture.height != 24)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Error, string.Format("Icon is of incorrect size, must be 24x24, found size {0}x{1}", texture.width, texture.height));
+                Trainworks.Log(LogLevel.Error, string.Format("Icon is of incorrect size, must be 24x24, found size {0}x{1}", texture.width, texture.height));
                 return false;
             }
             Icons.Add(texture.name, texture);

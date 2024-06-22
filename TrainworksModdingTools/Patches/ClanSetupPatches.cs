@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using Trainworks.Managers;
@@ -40,7 +41,7 @@ namespace Trainworks.Patches
                 }
                 catch (Exception)
                 {
-                    Trainworks.Log(BepInEx.Logging.LogLevel.Error, "TryGetValue failed.");
+                    Trainworks.Log(LogLevel.Error, "TryGetValue failed.");
                 }
             }
         }

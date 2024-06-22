@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -240,8 +241,8 @@ namespace Trainworks.BuildersV2
             // Not catastrophic enough to throw an Exception, this should be provided though.
             if (UpgradeID == null)
             {
-                Trainworks.Log(BepInEx.Logging.LogLevel.Error, "Warning should provide a UpgradeID.");
-                Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
+                Trainworks.Log(LogLevel.Error, "Warning should provide a UpgradeID.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
 
             CardUpgradeData cardUpgradeData = ScriptableObject.CreateInstance<CardUpgradeData>();

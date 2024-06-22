@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -79,8 +80,8 @@ namespace Trainworks.BuildersV2
             if (ChatterID == null)
             {
                 // Doesn't affect localization keys so keeping at warning.
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Warning should provide a ChatterID.");
-                Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
+                Trainworks.Log(LogLevel.Warning, "Warning should provide a ChatterID.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
 
             CharacterChatterData chatter = ScriptableObject.CreateInstance<CharacterChatterData>();

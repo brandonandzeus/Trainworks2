@@ -61,7 +61,7 @@ namespace Trainworks.AssetConstructors
                 Dictionary<CharacterUI.Anim, GameObject> loadedAnims = new Dictionary<CharacterUI.Anim, GameObject>();
                 foreach (var anim_path in bundleInfo.SpineAnimationDict)
                 {
-                    Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Looking in bundle for... " + anim_path.Value);
+                    Trainworks.Log(LogLevel.Debug, "Looking in bundle for... " + anim_path.Value);
                     GameObject gameObject = BundleManager.LoadAssetFromBundle(bundleInfo, anim_path.Value) as GameObject;
                     if (gameObject == null)
                     {
@@ -217,7 +217,7 @@ namespace Trainworks.AssetConstructors
             characterUI.GetComponent<SpriteRenderer>().forceRenderingOff = true;
             dest.gameObject.SetActive(false);
 
-            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Created spine component for " + characterGameObject.name);
+            Trainworks.Log(LogLevel.Debug, "Created spine component for " + characterGameObject.name);
 
             return characterGameObject;
         }
@@ -296,7 +296,7 @@ namespace Trainworks.AssetConstructors
             GameObject.Destroy(originalObject);
 
 
-            Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Created spine component for " + characterGameObject.name);
+            Trainworks.Log(LogLevel.Debug, "Created spine component for " + characterGameObject.name);
 
             return characterGameObject;
         }

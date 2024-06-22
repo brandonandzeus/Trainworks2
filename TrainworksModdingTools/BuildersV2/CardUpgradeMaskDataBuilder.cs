@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -148,8 +149,8 @@ namespace Trainworks.BuildersV2
             if (CardUpgradeMaskID == null)
             {
                 // Doesn't effect localization so keeping to Warning level.
-                Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Warning should provide a CardUpgradeMaskDataID.");
-                Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
+                Trainworks.Log(LogLevel.Warning, "Warning should provide a CardUpgradeMaskDataID.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
 
             CardUpgradeMaskData cardUpgradeMaskData = ScriptableObject.CreateInstance<CardUpgradeMaskData>();

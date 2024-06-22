@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -173,7 +174,7 @@ namespace Trainworks.Managers
         /// <returns></returns>
         public static void ApplyCardTriggers(CardTrigger cardTrigger, CardState playedCard, bool fireAllMonsterTriggersInRoom = false, int roomIndex = -1, bool ignoreDeadInTargeting = true, CharacterState triggeredCharacter = null, Action cardTriggerFiredCallback = null)
         {
-            Trainworks.Log(BepInEx.Logging.LogLevel.Info, $"Applying {cardTrigger.Name}");
+            Trainworks.Log(LogLevel.Info, $"Applying {cardTrigger.Name}");
             if (ProviderManager.TryGetProvider<CombatManager>(out CombatManager combatManager))
             {
                 combatManager.StartCoroutine(

@@ -182,7 +182,7 @@ namespace Trainworks.Patches
             characterUI.GetComponent<SpriteRenderer>().forceRenderingOff = true;
             dest.gameObject.SetActive(false);
 
-            //Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Created spine component for " + characterGameObject.name);
+            //Trainworks.Log(LogLevel.Debug, "Created spine component for " + characterGameObject.name);
         }
 
         static void DisableCharacterDisplayGameObject(CharacterState characterState)

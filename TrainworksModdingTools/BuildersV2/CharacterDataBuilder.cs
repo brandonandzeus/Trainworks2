@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -281,7 +282,7 @@ namespace Trainworks.BuildersV2
 
         private static void BuildDummyUnitSynthesis(CharacterData characterData)
         {
-            Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Building Dummy Unit Synthesis for Character: " + characterData.name);
+            Trainworks.Log(LogLevel.Warning, "Building Dummy Unit Synthesis for Character: " + characterData.name);
             new CardUpgradeDataBuilder()
             {
                 UpgradeID = $"Dummy_synth_{characterData.name}",

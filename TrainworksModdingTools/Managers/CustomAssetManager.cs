@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BepInEx.Logging;
+using System.Collections.Generic;
 using System.IO;
 using Trainworks.AssetConstructors;
 using Trainworks.Builders;
@@ -41,7 +42,7 @@ namespace Trainworks.Managers
             if (BundleManager.RuntimeKeyToBundleInfo.ContainsKey(runtimeKey))
             {
                 var bundleInfo = BundleManager.RuntimeKeyToBundleInfo[runtimeKey];
-                Trainworks.Log(BepInEx.Logging.LogLevel.Debug, "Loading " + bundleInfo.FilePath);
+                Trainworks.Log(LogLevel.Debug, "Loading " + bundleInfo.FilePath);
 
                 var assetType = RuntimeKeyToAssetInfo[runtimeKey].AssetType;
                 var assetConstructor = AssetTypeToAssetConstructor[assetType];
@@ -53,7 +54,7 @@ namespace Trainworks.Managers
                 var assetConstructor = AssetTypeToAssetConstructor[assetType];
                 return assetConstructor.Construct(assetRef);
             }
-            Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Runtime key is not registered with CustomAssetManager: " + runtimeKey);
+            Trainworks.Log(LogLevel.Warning, "Runtime key is not registered with CustomAssetManager: " + runtimeKey);
             return null;
         }
 
@@ -63,7 +64,7 @@ namespace Trainworks.Managers
             {
                 return LoadSpriteFromPath(RuntimeKeyToAssetInfo[runtimeKey].FullPath);
             }
-            Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "Custom asset failed to load from runtime key: " + runtimeKey);
+            Trainworks.Log(LogLevel.Warning, "Custom asset failed to load from runtime key: " + runtimeKey);
             return null;
         }
 
@@ -84,7 +85,7 @@ namespace Trainworks.Managers
                 sprite.name = Path.GetFileNameWithoutExtension(path);
                 return sprite;
             }
-            Trainworks.Log(BepInEx.Logging.LogLevel.Warning, "No asset found at: " + path);
+            Trainworks.Log(LogLevel.Warning, "No asset found at: " + path);
             return null;
         }
     }

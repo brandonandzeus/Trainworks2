@@ -1,8 +1,4 @@
 ﻿using HarmonyLib;
-using Spine;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Trainworks.Patches
 {
@@ -48,7 +44,7 @@ namespace Trainworks.Patches
             return ret;
         }
     }
-    
+
     /// <summary>
     /// 
     /// </summary>

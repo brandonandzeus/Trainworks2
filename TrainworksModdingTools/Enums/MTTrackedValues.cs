@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Trainworks.Enums
+﻿namespace Trainworks.Enums
 {
     /// <summary>
     /// An Extended Enum

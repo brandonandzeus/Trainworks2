@@ -1,10 +1,7 @@
 ﻿using BepInEx.Logging;
-using HarmonyLib;
-using Trainworks.Managers;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
+using Trainworks.Managers;
 using UnityEngine;
 
 namespace Trainworks.Builders

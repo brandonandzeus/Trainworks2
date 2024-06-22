@@ -1,13 +1,6 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
-using BepInEx;
-using BepInEx.Harmony;
-using System.Reflection;
-using HarmonyLib;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using ShinyShoe;
-using Trainworks.Managers;
 
 namespace Trainworks.Builders
 {
@@ -140,7 +133,7 @@ namespace Trainworks.Builders
             {
                 this.Triggers.Add(builder.Build());
             }
-            foreach(var builder in this.ParamCardEffectBuilders)
+            foreach (var builder in this.ParamCardEffectBuilders)
             {
                 this.ParamCardEffects.Add(builder.Build());
             }

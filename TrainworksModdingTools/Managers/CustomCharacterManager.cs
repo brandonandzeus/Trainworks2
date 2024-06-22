@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using BepInEx.Logging;
-using Trainworks.Builders;
+﻿using BepInEx.Logging;
 using HarmonyLib;
-using UnityEngine;
-using ShinyShoe;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using Trainworks.Utilities;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
-using static RotaryHeart.Lib.DataBaseExample;
+using Trainworks.Builders;
+using Trainworks.Utilities;
+using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Trainworks.Managers
 {

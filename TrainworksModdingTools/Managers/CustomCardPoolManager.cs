@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.CompilerServices;
-using BepInEx.Logging;
+﻿using BepInEx.Logging;
 using HarmonyLib;
-using Trainworks.Builders;
+using System;
+using System.Collections.Generic;
 using Trainworks.ConstantsV2;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.UI;
 
 namespace Trainworks.Managers
 {
@@ -126,7 +120,7 @@ namespace Trainworks.Managers
 
             //if (rarityCondition == null)
             //{    
-                //testRarityCondition = false;
+            //testRarityCondition = false;
             //}
             rarityCondition = (rarityCondition ?? EqualRarity);
 

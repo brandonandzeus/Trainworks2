@@ -1,9 +1,6 @@
 ﻿using BepInEx.Logging;
 using HarmonyLib;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Trainworks.Managers;
 
 namespace Trainworks.Managers
 {

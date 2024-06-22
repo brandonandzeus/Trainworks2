@@ -2,7 +2,6 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Trainworks.Utilities;
 
 namespace Trainworks.Managers
@@ -34,7 +33,7 @@ namespace Trainworks.Managers
                 // Add scenario to AllGameData.
                 AllGameData allGameData = ProviderManager.SaveManager.GetAllGameData();
                 List<ScenarioData> scenarios;
-                scenarios = (List<ScenarioData>) AccessTools.Field(typeof(AllGameData), "scenarioDatas").GetValue(allGameData);
+                scenarios = (List<ScenarioData>)AccessTools.Field(typeof(AllGameData), "scenarioDatas").GetValue(allGameData);
                 scenarios.Add(scenario);
 
                 // Add scenario to appear at distance.

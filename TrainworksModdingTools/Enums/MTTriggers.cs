@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Trainworks.Enums;
-using Trainworks.Managers;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Trainworks.Enums.MTTriggers
 {

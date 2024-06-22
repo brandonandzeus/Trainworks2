@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using BepInEx.Logging;
 using HarmonyLib;
-using UnityEngine;
-using Trainworks.Managers;
-using BepInEx.Logging;
-using UnityEngine.AddressableAssets;
 using ShinyShoe;
 using Spine.Unity;
+using System;
+using System.Collections.Generic;
+using Trainworks.Managers;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Trainworks.Patches
 {
-  // This patch displays custom characters on the clan select screen
+    // This patch displays custom characters on the clan select screen
     [HarmonyPatch(typeof(ClassSelectionScreen), "RefreshCharacters")]
     public class CustomClanSelectScreenPatch
     {
@@ -29,7 +28,7 @@ namespace Trainworks.Patches
                 __state = true;
             }
         }
-        
+
         private static GameObject UpdateCharacterGameObject(CharacterState characterState, AssetReference assetRef)
         {
             var runtimeKey = assetRef.RuntimeKey;
@@ -113,7 +112,7 @@ namespace Trainworks.Patches
                 if (ObjectsToRemove.Contains(c.gameObject.name))
                 {
                     GameObject.Destroy(c.gameObject);
-                }       
+                }
             }
 
             // Set up the outline Sprite - well, seems like there will be problems here

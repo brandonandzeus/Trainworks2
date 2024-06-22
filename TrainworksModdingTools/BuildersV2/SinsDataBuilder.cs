@@ -1,10 +1,7 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Trainworks.Managers;
-using Trainworks.ManagersV2;
 using Trainworks.Utilities;
 using UnityEngine;
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Trainworks.Builders
+﻿namespace Trainworks.Builders
 {
     public interface IRewardDataBuilder
     {

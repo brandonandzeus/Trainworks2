@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Trainworks.Interfaces
+﻿namespace Trainworks.Interfaces
 {
     /// <summary>
     /// Indicates that the class has something to initialize when the game starts up

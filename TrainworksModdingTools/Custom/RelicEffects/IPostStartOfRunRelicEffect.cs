@@ -1,6 +1,4 @@
-﻿using HarmonyLib;
-
-namespace Trainworks.CustomRelicEffects
+﻿namespace Trainworks.CustomRelicEffects
 {
     /// <summary>
     /// Interface for a RelicEffect that runs its effects after a new run has been setup.

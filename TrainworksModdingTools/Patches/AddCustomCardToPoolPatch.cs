@@ -1,11 +1,9 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
-using HarmonyLib;
-using Trainworks.Managers;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using Trainworks.Managers;
 
 // TODO Verify that these patches are sufficient.
 // Accessing a CardPool by indices will not work with these patches since the cards aren't actually added.

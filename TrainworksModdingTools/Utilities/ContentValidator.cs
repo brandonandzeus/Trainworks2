@@ -1,7 +1,6 @@
 ﻿using BepInEx.Logging;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Trainworks.Utilities
 {

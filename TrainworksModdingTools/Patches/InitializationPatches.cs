@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HarmonyLib;
-using Trainworks.Managers;
-using Trainworks.Interfaces;
-using System.Linq;
-using Trainworks.Utilities;
+﻿using HarmonyLib;
 using ShinyShoe.Loading;
-using I2.Loc;
+using System.Collections.Generic;
+using System.Linq;
+using Trainworks.Interfaces;
+using Trainworks.Managers;
+using Trainworks.Utilities;
 
 namespace Trainworks.Patches
 {
@@ -49,7 +46,7 @@ namespace Trainworks.Patches
             var dict = AccessTools.Field(typeof(LocalizationGlobalParameterHandler), "_replacements").GetValue(handler);
             CustomLocalizationManager.ReplacementStrings = (Dictionary<string, ReplacementStringData>)dict;
 
-            List <IInitializable> initializables =
+            List<IInitializable> initializables =
                 PluginManager.Plugins.Values.ToList()
                     .Where((plugin) => plugin is IInitializable)
                     .Select((plugin) => plugin as IInitializable)

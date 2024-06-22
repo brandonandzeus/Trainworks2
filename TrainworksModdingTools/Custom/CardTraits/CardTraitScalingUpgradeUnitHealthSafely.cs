@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Trainworks.CustomCardTraits
+﻿namespace Trainworks.CustomCardTraits
 {
     /// <summary>
     /// Card Trait that handles scaling a Unit's health stat, safely.

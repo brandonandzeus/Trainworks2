@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Trainworks.Constants
+﻿namespace Trainworks.Constants
 {
     /// <summary>
     /// Provides easy access to all of the base game's card IDs

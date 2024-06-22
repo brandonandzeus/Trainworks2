@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.UI;
+﻿using BepInEx.Logging;
 using HarmonyLib;
+using ShinyShoe;
+using Spine.Unity;
+using System.Collections.Generic;
+using System.IO;
 using Trainworks.Managers;
 using Trainworks.Utilities;
-using Spine.Unity;
-using Spine;
-using System.Linq;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using ShinyShoe;
-using System.IO;
-using BepInEx.Logging;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Trainworks.AssetConstructors
 {
@@ -58,7 +52,7 @@ namespace Trainworks.AssetConstructors
             }
 
             Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 128f);
-            
+
             sprite.name = "Sprite_" + Path.GetFileNameWithoutExtension(bundleInfo.SpriteName);
 
             // Animated sprite asset with multiple spine animations
@@ -153,7 +147,7 @@ namespace Trainworks.AssetConstructors
 
             // Disable the meshRenderer otherwise the templateCharacter will be displayed.
             characterUIMesh.meshRenderer.forceRenderingOff = true;
-            characterUIMesh.meshRenderer.material = NullMaterial; 
+            characterUIMesh.meshRenderer.material = NullMaterial;
             characterUIMesh.meshRenderer.sharedMaterial = NullMaterial;
             characterUIMesh.meshRenderer.materials = new Material[] { NullMaterial };
             characterUIMesh.meshRenderer.sharedMaterials = new Material[] { NullMaterial };

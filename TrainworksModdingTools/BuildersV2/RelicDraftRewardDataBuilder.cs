@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using System.Reflection;
 using Trainworks.Managers;
-using Trainworks.Utilities;
 using UnityEngine;
 
 namespace Trainworks.BuildersV2
@@ -33,7 +32,7 @@ namespace Trainworks.BuildersV2
 
 
         public RunState.ClassType ClassType { get; set; }
-       
+
         /// <summary>
         /// Number of cards the banner offers
         /// </summary>

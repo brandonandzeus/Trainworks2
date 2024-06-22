@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Malee;
+using System.Collections.Generic;
 using Trainworks.Managers;
-using UnityEngine;
 
 namespace Trainworks.Patches
 {

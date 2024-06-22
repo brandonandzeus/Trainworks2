@@ -1,7 +1,4 @@
 ﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Trainworks.Managers;
 using UnityEngine;
 
@@ -65,7 +62,7 @@ namespace Trainworks.BuildersV2
             Construct(rewardData);
 
             var cardUpgradeMaskData = CardUpgradeMaskData;
-            if (CardUpgradeMaskBuilder  != null)
+            if (CardUpgradeMaskBuilder != null)
             {
                 cardUpgradeMaskData = CardUpgradeMaskBuilder.Build();
             }

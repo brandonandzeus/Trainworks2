@@ -1,13 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using Trainworks.Enums;
-using UnityEngine;
-using static DiscordRpc;
-using static PyreArmorUI;
-using static ShinyShoe.Loading.SaveDataFileTaskBase;
 
 namespace Trainworks.Custom.CardEffects
 {
@@ -72,7 +65,7 @@ namespace Trainworks.Custom.CardEffects
 
         public HandUI.DrawSource GetDrawSource(TargetMode targetMode)
         {
-            switch(targetMode)
+            switch (targetMode)
             {
                 case TargetMode.Discard:
                     return HandUI.DrawSource.Discard;
@@ -88,7 +81,7 @@ namespace Trainworks.Custom.CardEffects
 
         public float GetDrawDelay(TargetMode targetMode, BalanceData.AnimationTimingData timings)
         {
-            switch(targetMode)
+            switch (targetMode)
             {
                 case TargetMode.Discard:
                     return timings.cardDrawAnimationDuration;
@@ -131,7 +124,7 @@ namespace Trainworks.Custom.CardEffects
         public override IEnumerator ApplyEffect(CardEffectState cardEffectState, CardEffectParams cardEffectParams)
         {
             var sourceCardState = cardEffectState.GetParentCardState() ?? cardEffectParams.cardTriggeredCharacter?.GetSpawnerCard() ?? cardEffectParams.selfTarget?.GetSpawnerCard();
-            PickRandomCards(cardEffectParams.targetCards, cardEffectState.GetTargetCardType(), sourceCardState, cardEffectState.GetTargetCharacterSubtype());            
+            PickRandomCards(cardEffectParams.targetCards, cardEffectState.GetTargetCardType(), sourceCardState, cardEffectState.GetTargetCharacterSubtype());
             int num = Math.Min(cardEffectState.GetIntInRange(), targets.Count);
 
             selected.Clear();

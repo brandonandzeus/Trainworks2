@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
-
-namespace Trainworks.Constants
+﻿namespace Trainworks.Constants
 {
     /// <summary>
     /// Provides easy access to all of the base game's enhancer pool IDs

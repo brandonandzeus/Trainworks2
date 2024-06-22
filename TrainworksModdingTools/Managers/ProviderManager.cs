@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Trainworks.Managers
 {
     public class ProviderManager : IClient
     {
         private static IDictionary<Type, (bool, IProvider)> ProviderDictionary { get; set; } = new Dictionary<Type, (bool, IProvider)>();
-        
+
         public static SaveManager SaveManager
         {
             get

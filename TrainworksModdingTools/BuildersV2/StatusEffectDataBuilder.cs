@@ -230,7 +230,7 @@ namespace Trainworks.BuildersV2
             }
             BuilderUtils.ImportStandardLocalization(StatusIDKey + "_CardTooltipText", Description);
             BuilderUtils.ImportStandardLocalization(StatusIDKey + "_CharacterTooltipText", Description);
-            
+
 
             return statusEffect;
         }

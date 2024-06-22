@@ -1,16 +1,9 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using Trainworks.Interfaces;
-using Trainworks.Managers;
-using Trainworks.Utilities;
-using UnityEngine;
-using System.IO;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
+using System.IO;
+using Trainworks.Managers;
 
 namespace Trainworks
 {

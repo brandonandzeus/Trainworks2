@@ -1,16 +1,11 @@
-﻿using System;
+﻿using HarmonyLib;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.IO;
-using BepInEx;
-using BepInEx.Harmony;
 using System.Reflection;
-using HarmonyLib;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using ShinyShoe;
+using System.Runtime.Serialization;
 using Trainworks.Managers;
 using Trainworks.Utilities;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Trainworks.Builders
 {
@@ -175,7 +170,7 @@ namespace Trainworks.Builders
         /// Holds the built Unit synthesis Data.
         /// This is set after the Character is built.
         /// </summary>
-        public CardUpgradeData UnitSynthesis {  get; private set; }
+        public CardUpgradeData UnitSynthesis { get; private set; }
 
         public CharacterDataBuilder()
         {
@@ -210,7 +205,7 @@ namespace Trainworks.Builders
         public CharacterData BuildAndRegister()
         {
             var characterData = this.Build();
-            
+
             // Build the unit's synthesis ability
             if (UnitSynthesisBuilder == null)
             {
@@ -225,7 +220,7 @@ namespace Trainworks.Builders
                 CustomCharacterManager.RegisterUnitSynthesis(characterData, UnitSynthesis);
             }
 
-            CustomCharacterManager.RegisterCustomCharacter(characterData);            
+            CustomCharacterManager.RegisterCustomCharacter(characterData);
 
             return characterData;
         }

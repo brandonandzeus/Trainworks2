@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using BepInEx;
-using BepInEx.Harmony;
+﻿using HarmonyLib;
 using System.Reflection;
-using HarmonyLib;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using ShinyShoe;
 using Trainworks.Managers;
-using Trainworks.Builders;
+using UnityEngine;
 
 namespace Trainworks.Builders
 {

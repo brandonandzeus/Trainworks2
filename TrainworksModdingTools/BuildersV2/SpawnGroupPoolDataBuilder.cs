@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Trainworks.BuildersV2
 {
@@ -10,7 +8,7 @@ namespace Trainworks.BuildersV2
         /// <summary>
         /// Possible Groups of enemies to spawn.
         /// </summary>
-        public List<SpawnGroupDataBuilder> PossibleGroups {  get; set; }
+        public List<SpawnGroupDataBuilder> PossibleGroups { get; set; }
 
         public SpawnGroupPoolDataBuilder()
         {
@@ -21,7 +19,7 @@ namespace Trainworks.BuildersV2
         {
             var spawnGroupPoolData = new SpawnGroupPoolData();
 
-            SpawnGroupPoolData.SpawnGroupDataList list = (SpawnGroupPoolData.SpawnGroupDataList) AccessTools.Field(typeof(SpawnGroupPoolData), "possibleGroups").GetValue(spawnGroupPoolData);
+            SpawnGroupPoolData.SpawnGroupDataList list = (SpawnGroupPoolData.SpawnGroupDataList)AccessTools.Field(typeof(SpawnGroupPoolData), "possibleGroups").GetValue(spawnGroupPoolData);
             list.Clear();
             foreach (var builder in PossibleGroups)
             {

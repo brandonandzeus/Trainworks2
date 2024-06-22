@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using BepInEx.Logging;
+﻿using BepInEx.Logging;
 using HarmonyLib;
-using Trainworks.Builders;
+using System;
+using System.Collections.Generic;
 using Trainworks.Utilities;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.UI;
 
 namespace Trainworks.Managers
 {
@@ -23,7 +19,7 @@ namespace Trainworks.Managers
         /// <summary>
         /// Maps custom class IDs to their respective Class Frame Sprites. The list should be in the format Unit, Spell.
         /// </summary>
-        public static IDictionary<string, List<Sprite>> CustomClassFrame { get; } = new Dictionary<string, List<Sprite>> ();
+        public static IDictionary<string, List<Sprite>> CustomClassFrame { get; } = new Dictionary<string, List<Sprite>>();
         /// <summary>
         /// Maps custom class IDs to their respective Class Draft Icon
         /// </summary>

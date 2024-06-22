@@ -1,15 +1,11 @@
-﻿using System;
+﻿using BepInEx.Logging;
+using HarmonyLib;
+using I2.Loc;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using BepInEx.Logging;
-using HarmonyLib;
-using I2.Loc;
-using Trainworks.Builders;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.UI;
 
 namespace Trainworks.Managers
 {
@@ -188,13 +184,13 @@ namespace Trainworks.Managers
         }
 
 
-        public static string ExportCSV(int language=0)
+        public static string ExportCSV(int language = 0)
         {
             string ret = "";
             List<string> categories = LocalizationManager.Sources[0].GetCategories(true, (List<string>)null);
             foreach (string Category in categories)
                 ret += LocalizationManager.Sources[0].Export_CSV(Category);
-            
+
             return ret;
         }
 
@@ -225,7 +221,7 @@ namespace Trainworks.Managers
         /// <param name="cardTraitClass"></param>
         public static void AllowCustomCardTraitTooltips(Type cardTraitClass)
         {
-            var traits = (List<string>) AccessTools.Field(typeof(TooltipContainer), "TraitsSupportedInTooltips").GetValue(null);
+            var traits = (List<string>)AccessTools.Field(typeof(TooltipContainer), "TraitsSupportedInTooltips").GetValue(null);
             // Have to add both the name and qualified name as the checks for this could be from CardTraitData.TraitStateName or CardTraitState.GetType().Name
             // The first will always be the fully qualified assembly name the second since it is direct access will be the class name.
             traits.Add(cardTraitClass.Name);

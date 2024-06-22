@@ -1,14 +1,11 @@
 ﻿using BepInEx.Logging;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Trainworks.Enums;
-using Trainworks.Patches;
 
 namespace Trainworks.Enums
 {
-    using CharacterTargetSelectionFunc = Action<TargetHelper.CollectTargetsData, List<CharacterState>, List<CharacterState>>;
     using CardTargetSelectionFunc = Action<TargetHelper.CollectTargetsData, List<CardState>>;
+    using CharacterTargetSelectionFunc = Action<TargetHelper.CollectTargetsData, List<CharacterState>, List<CharacterState>>;
 
     public class TargetModeType : ExtendedByteEnum<TargetModeType, TargetMode>
     {
@@ -108,13 +105,13 @@ namespace Trainworks.Enums
         }
     }
 
-/*  
-    public static class TargetModeExtensions
-    {
-        public static TargetMode Invert(this TargetMode targetmode)
+    /*  
+        public static class TargetModeExtensions
         {
-            return TargetModeType.MakeInverted(targetmode);
+            public static TargetMode Invert(this TargetMode targetmode)
+            {
+                return TargetModeType.MakeInverted(targetmode);
+            }
         }
-    }
-*/
+    */
 }

@@ -1,9 +1,7 @@
-﻿using System;
+﻿using BepInEx;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
 using System.IO;
-using BepInEx;
 using System.Linq;
 
 namespace Trainworks.Managers
@@ -54,7 +52,7 @@ namespace Trainworks.Managers
         public static void RegisterPlugin(BaseUnityPlugin plugin)
         {
             Plugins.Add(plugin.Info.Metadata.GUID, plugin);
-            
+
             var assembly = plugin.GetType().Assembly;
             var uri = new UriBuilder(assembly.CodeBase);
             var path = Path.GetDirectoryName(Uri.UnescapeDataString(uri.Path));

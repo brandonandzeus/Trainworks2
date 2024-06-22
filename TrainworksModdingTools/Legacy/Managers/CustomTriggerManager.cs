@@ -1,12 +1,8 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using Trainworks.Enums.MTTriggers;
-using HarmonyLib;
-using System.Linq;
-using UnityEngine;
-using Unity;
 
 // Deprecated. This class is not necessary for Custom Card/Character Triggers.
 namespace Trainworks.Managers
@@ -22,7 +18,7 @@ namespace Trainworks.Managers
         /// Dictionary used for conversion of CardTriggers to CharacterTriggers
         /// </summary>
         private static Dictionary<CardTriggerType, CharacterTriggerData.Trigger> CardToCharTriggerDict = new Dictionary<CardTriggerType, CharacterTriggerData.Trigger>();
-        
+
         /// <summary>
         /// Used to queue a Character Trigger to be automatically executed during key phases of combat. If you need to ensure that your trigger is executed at other times, please use QueueAndRunTrigger with a coroutine.
         /// </summary>

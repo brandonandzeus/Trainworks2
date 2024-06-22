@@ -1,7 +1,5 @@
-﻿using HarmonyLib;
-using Trainworks.Managers;
+﻿using BepInEx.Logging;
 using System;
-using BepInEx.Logging;
 
 // Only here for backwards compatibility. This used to recompute the internal unit synthesis mapping dictionary.
 // But it was an inefficient solution requiring it to be called per Plugin which recomputes them all every time.

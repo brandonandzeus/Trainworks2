@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Trainworks.Builders
@@ -35,11 +33,11 @@ namespace Trainworks.Builders
                 UpgradeTreesInternal = new List<CardUpgradeTreeData.UpgradeTree>();
 
                 // Iterate over each source branch
-                foreach (List<CardUpgradeDataBuilder> branch in UpgradeTrees) 
+                foreach (List<CardUpgradeDataBuilder> branch in UpgradeTrees)
                 {
                     // New Branch
                     CardUpgradeTreeData.UpgradeTree newBranch = new CardUpgradeTreeData.UpgradeTree();
-                    
+
                     List<CardUpgradeData> newbranchlist = new List<CardUpgradeData>();
 
                     // Leaves (Make like a tree)

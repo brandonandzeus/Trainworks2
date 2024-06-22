@@ -1,8 +1,5 @@
 ﻿using HarmonyLib;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Trainworks.Builders;
 using Trainworks.Managers;
 using Trainworks.Utilities;
 using UnityEngine;
@@ -16,8 +13,8 @@ namespace Trainworks.BuildersV2
         public String TrialID
         {
             get
-            { 
-                return trialID; 
+            {
+                return trialID;
             }
             set
             {

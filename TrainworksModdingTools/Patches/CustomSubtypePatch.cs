@@ -1,8 +1,7 @@
 ﻿using HarmonyLib;
-using Trainworks.Managers;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using Trainworks.Managers;
 
 namespace Trainworks.Patches
 {

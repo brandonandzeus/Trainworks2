@@ -1,11 +1,8 @@
-﻿using Spine;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using TMPro;
-using Trainworks.Managers;
 using UnityEngine;
 
 namespace Trainworks.Utilities
@@ -19,7 +16,7 @@ namespace Trainworks.Utilities
     /// </summary>
     public static class TMP_SpriteAssetUtils
     {
-        public static Dictionary<string, Texture2D> Icons  = new Dictionary<string, Texture2D>();
+        public static Dictionary<string, Texture2D> Icons = new Dictionary<string, Texture2D>();
         public static Texture2D CustomSpriteAtlas { get; private set; } = null;
         // 10x10
         private static readonly int MAX_TEXTURE_SIZE = 240;

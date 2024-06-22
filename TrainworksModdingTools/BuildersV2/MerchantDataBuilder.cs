@@ -200,7 +200,7 @@ namespace Trainworks.BuildersV2
             MerchantData copyMerchant = (ProviderManager.SaveManager.GetAllGameData().FindMapNodeData(VanillaMapNodeIDs.SpellUpgradeMerchant) as MerchantData);
 
             Type type = typeof(MerchantData).GetNestedType("MerchantRewardDataList", BindingFlags.NonPublic);
-            var rewards = (ReorderableArray<MerchantRewardData>) Activator.CreateInstance(type, true);
+            var rewards = (ReorderableArray<MerchantRewardData>)Activator.CreateInstance(type, true);
             rewards.CopyFrom(Rewards);
             foreach (var rewardBuilder in RewardBuilders)
             {

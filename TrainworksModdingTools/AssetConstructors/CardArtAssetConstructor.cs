@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using BepInEx.Logging;
+using Trainworks.Interfaces;
+using Trainworks.Managers;
+using Trainworks.Utilities;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
-using HarmonyLib;
-using Trainworks.Managers;
-using Trainworks.Utilities;
-using Trainworks.Interfaces;
-using BepInEx.Logging;
 
 namespace Trainworks.AssetConstructors
 {

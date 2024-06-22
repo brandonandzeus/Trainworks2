@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using BepInEx.Logging;
+using System;
 using System.Security.Cryptography;
-using HarmonyLib;
-using System.Reflection;
-using BepInEx.Logging;
+using System.Text;
 
 namespace Trainworks.Utilities
 {

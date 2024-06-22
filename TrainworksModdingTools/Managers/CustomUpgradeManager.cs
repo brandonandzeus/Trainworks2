@@ -1,8 +1,7 @@
-﻿using System;
+﻿using BepInEx.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BepInEx.Logging;
-using Steamworks;
 using Trainworks.Managers;
 using Trainworks.Utilities;
 

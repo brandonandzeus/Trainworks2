@@ -1,8 +1,6 @@
-﻿using Trainworks.Builders;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using Trainworks.Builders;
 
 namespace Trainworks.Utilities
 {

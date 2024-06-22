@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using BepInEx.Logging;
+﻿using BepInEx.Logging;
 using HarmonyLib;
-using Trainworks.Builders;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.UI;
-using Trainworks.Utilities;
 using Malee;
 using System;
+using System.Collections.Generic;
+using Trainworks.Utilities;
+using UnityEngine;
 
 namespace Trainworks.Managers
 {
@@ -32,8 +28,8 @@ namespace Trainworks.Managers
         /// <summary>
         /// Reference to UnlockableCustomCardsPool.cardDataList.
         /// </summary>
-        internal static ReorderableArray<CardData> UnlockableCustomCardPoolDataList 
-        { 
+        internal static ReorderableArray<CardData> UnlockableCustomCardPoolDataList
+        {
             get
             {
                 if (customCardPoolDataList == null)
@@ -56,7 +52,7 @@ namespace Trainworks.Managers
                 CustomCardData.Add(cardData.GetID(), cardData);
                 CustomCardPoolManager.AddCardToPools(cardData, cardPoolData);
                 ProviderManager.SaveManager.GetAllGameData().GetAllCardData().Add(cardData);
-                if (cardData.GetUnlockLevel() > 1) 
+                if (cardData.GetUnlockLevel() > 1)
                 {
                     UnlockableCustomCardPoolDataList.Add(cardData);
                 }

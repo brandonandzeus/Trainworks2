@@ -1,11 +1,9 @@
 ﻿using BepInEx.Logging;
 using HarmonyLib;
-using Spine;
 using Spine.Unity;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Trainworks.Managers;
 using Trainworks.Utilities;
 using UnityEngine;

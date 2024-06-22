@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Trainworks.Enums;
-using Trainworks.Managers;
+﻿using Trainworks.Managers;
 
 namespace Trainworks.Builders
 {

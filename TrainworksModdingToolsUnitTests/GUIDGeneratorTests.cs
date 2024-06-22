@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using Trainworks.Utilities;
 
 namespace TrainworksUnitTests
@@ -30,12 +30,12 @@ namespace TrainworksUnitTests
         [TestMethod]
         public void ConsistencyTest()
         {
-             GUIDGenerator.ResetProvider();
-            for (int i = 0; i< 100; i++)
+            GUIDGenerator.ResetProvider();
+            for (int i = 0; i < 100; i++)
             {
                 string genKey = i.ToString("X");
                 string gen = GUIDGenerator.GenerateDeterministicGUID(genKey);
-                for (int j = 0; j< 100; j++)
+                for (int j = 0; j < 100; j++)
                 {
                     string gen2 = GUIDGenerator.GenerateDeterministicGUID(genKey);
                     Assert.AreEqual(gen, gen2);
@@ -56,10 +56,10 @@ namespace TrainworksUnitTests
                 random.NextBytes(buffer);
                 string conversion = System.Text.Encoding.UTF8.GetString(buffer);
                 string gen = GUIDGenerator.GenerateDeterministicGUID(conversion);
-                
+
                 // Check if Index 14 is 4
                 Assert.AreEqual(gen[14], '4');
-                
+
                 // Check if Index 19 is a,b,8,or 9
                 char testchar = gen[19];
                 if (testchar != 'a' && testchar != 'b' && testchar != '8' && testchar != '9')

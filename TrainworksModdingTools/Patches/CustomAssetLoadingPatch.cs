@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using BepInEx;
-using BepInEx.Harmony;
-using System.Reflection;
-using BepInEx.Logging;
+﻿using BepInEx.Logging;
 using HarmonyLib;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Trainworks.Managers;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using ShinyShoe;
-using Trainworks.Managers;
 
 namespace Trainworks.Patches
 {
@@ -20,10 +17,10 @@ namespace Trainworks.Patches
     {
         static MethodInfo setAssetInfoAssetMethod;
 
-        static bool Prefix(ref AssetLoadingManager __instance, 
-                            ref Dictionary<Hash128, AssetLoadingManager.AssetInfo> ____assetsLoaded, 
-                            ref int ____numLoadingTasksRunning, 
-                            ref AssetReference assetRef, 
+        static bool Prefix(ref AssetLoadingManager __instance,
+                            ref Dictionary<Hash128, AssetLoadingManager.AssetInfo> ____assetsLoaded,
+                            ref int ____numLoadingTasksRunning,
+                            ref AssetReference assetRef,
                             ref IAddressableAssetOwner assetOwner
                            )
         {

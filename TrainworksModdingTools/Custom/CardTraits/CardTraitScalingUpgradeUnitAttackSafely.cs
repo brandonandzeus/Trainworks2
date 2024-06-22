@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Trainworks;
-
-namespace Trainworks.CustomCardTraits
+﻿namespace Trainworks.CustomCardTraits
 {
     /// <summary>
     /// Card Trait that handles scaling a Unit's attack stat, safely.

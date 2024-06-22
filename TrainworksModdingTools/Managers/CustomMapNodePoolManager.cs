@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using BepInEx.Logging;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Malee;
-using Trainworks.Builders;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace Trainworks.Managers
 {
@@ -98,10 +91,10 @@ namespace Trainworks.Managers
 
             foreach (var bucketList in mnbl[0].BucketList)
             {
-                var id = (string) AccessTools.Field(typeof(MapNodeBucketContainer), "id").GetValue(bucketList);
+                var id = (string)AccessTools.Field(typeof(MapNodeBucketContainer), "id").GetValue(bucketList);
                 if (id == mapNodePoolID)
                 {
-                    var containerList = (ReorderableArray<MapNodeBucketData>) AccessTools.Field(typeof(MapNodeBucketContainer), "mapNodeBucketContainerList").GetValue(bucketList);
+                    var containerList = (ReorderableArray<MapNodeBucketData>)AccessTools.Field(typeof(MapNodeBucketContainer), "mapNodeBucketContainerList").GetValue(bucketList);
                     containerList[0].MapNodes.Add(data);
                 }
             }

@@ -1,10 +1,6 @@
-﻿using System;
+﻿using HarmonyLib;
 using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
-using HarmonyLib;
 using Trainworks.Managers;
-using System.Reflection.Emit;
 
 namespace Trainworks.Patches
 {

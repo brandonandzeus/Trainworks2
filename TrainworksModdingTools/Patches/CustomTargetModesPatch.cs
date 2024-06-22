@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Trainworks.Enums;
 using Trainworks.Custom;
+using Trainworks.Enums;
 using static TargetHelper;
 
 
@@ -90,12 +88,12 @@ namespace Trainworks.Patches
     {
         public static MethodBase TargetMethod()
         {
-            return AccessTools.Method(typeof(TargetHelper), nameof(TargetHelper.CollectTargets), new Type[] { typeof(CardEffectState), typeof(CardEffectParams), typeof(bool) } );
+            return AccessTools.Method(typeof(TargetHelper), nameof(TargetHelper.CollectTargets), new Type[] { typeof(CardEffectState), typeof(CardEffectParams), typeof(bool) });
         }
 
         public static void Postfix(CardEffectState effectState, CardEffectParams cardEffectParams, bool isTesting, ref List<CharacterState> ___lastTargetedCharacters)
         {
-            var targetMode = effectState.GetTargetMode();  
+            var targetMode = effectState.GetTargetMode();
 
             // Have to handle these Card Target Modes here.
             if (targetMode == TargetModes.PlayedCard)

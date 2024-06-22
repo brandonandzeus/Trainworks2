@@ -1,13 +1,8 @@
-﻿using System;
+﻿using HarmonyLib;
 using System.Collections.Generic;
-using BepInEx;
-using BepInEx.Harmony;
 using System.Reflection;
-using HarmonyLib;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using ShinyShoe;
 using Trainworks.Managers;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Trainworks.Builders
@@ -168,7 +163,7 @@ namespace Trainworks.Builders
             AccessTools.Field(typeof(MapNodeData), "nodeSelectedSfxCue").SetValue(rewardNodeData, this.NodeSelectedSfxCue);
             if (this.SkipCheckIfFullHealth && this.SkipCheckInBattleMode)
             {
-                AccessTools.Field(typeof(MapNodeData), "skipCheckSettings").SetValue(rewardNodeData, MapNodeData.SkipCheckSettings.Always | MapNodeData.SkipCheckSettings.IfFullHealth | MapNodeData.SkipCheckSettings.InBattleMode );
+                AccessTools.Field(typeof(MapNodeData), "skipCheckSettings").SetValue(rewardNodeData, MapNodeData.SkipCheckSettings.Always | MapNodeData.SkipCheckSettings.IfFullHealth | MapNodeData.SkipCheckSettings.InBattleMode);
             }
             else if (this.SkipCheckIfFullHealth)
             {

@@ -1,8 +1,6 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using static SpawnGroupData;
 
 namespace Trainworks.BuildersV2
 {
@@ -35,8 +33,8 @@ namespace Trainworks.BuildersV2
 
             AccessTools.Field(typeof(SpawnGroupData), "hasWaveMessage").SetValue(spawnGroupData, WaveMessageKey != null);
             AccessTools.Field(typeof(SpawnGroupData), "waveMessageKey").SetValue(spawnGroupData, WaveMessageKey);
-            
-            SpawnGroupData.CharacterDataContainerList characterList = (SpawnGroupData.CharacterDataContainerList) AccessTools.Field(typeof(SpawnGroupData), "characterDataContainerList").GetValue(spawnGroupData);
+
+            SpawnGroupData.CharacterDataContainerList characterList = (SpawnGroupData.CharacterDataContainerList)AccessTools.Field(typeof(SpawnGroupData), "characterDataContainerList").GetValue(spawnGroupData);
             characterList.Clear();
             foreach (var characterBuilder in Characters)
             {

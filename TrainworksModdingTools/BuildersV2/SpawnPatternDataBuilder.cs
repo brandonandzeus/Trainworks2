@@ -1,11 +1,6 @@
-﻿using Malee;
-using System;
+﻿using HarmonyLib;
 using System.Collections.Generic;
-using System.Text;
 using static SpawnPatternData;
-using UnityEngine.Serialization;
-using UnityEngine;
-using HarmonyLib;
 
 namespace Trainworks.BuildersV2
 {
@@ -50,7 +45,7 @@ namespace Trainworks.BuildersV2
         {
             var spawnPatternData = new SpawnPatternData();
 
-            SpawnPatternData.SpawnGroupPoolsDataList list = (SpawnPatternData.SpawnGroupPoolsDataList) AccessTools.Field(typeof(SpawnPatternData), "spawnGroupWaves").GetValue(spawnPatternData);
+            SpawnPatternData.SpawnGroupPoolsDataList list = (SpawnPatternData.SpawnGroupPoolsDataList)AccessTools.Field(typeof(SpawnPatternData), "spawnGroupWaves").GetValue(spawnPatternData);
             list.Clear();
             foreach (var wave in SpawnGroupWaves)
             {

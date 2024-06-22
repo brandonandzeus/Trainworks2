@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Trainworks.Custom.CardEffects
@@ -58,7 +56,7 @@ namespace Trainworks.Custom.CardEffects
                     yield break;
                 }
                 int damage = cardEffectState.GetParamBool() ? num / toProcessCharacters.Count : num;
-                foreach (var target2 in toProcessCharacters) 
+                foreach (var target2 in toProcessCharacters)
                 {
                     yield return cardEffectParams.combatManager.ApplyDamageToTarget(damage, target2, new CombatManager.ApplyDamageToTargetParameters
                     {
@@ -74,7 +72,7 @@ namespace Trainworks.Custom.CardEffects
         private void CollectTargets(CardEffectState cardEffectState, CardEffectParams cardEffectParams, Team.Type team, int roomIndex, bool isTesting = false)
         {
             toProcessCharacters.Clear();
-            collectTargetsData.Reset((TargetMode) cardEffectState.GetAdditionalParamInt());
+            collectTargetsData.Reset((TargetMode)cardEffectState.GetAdditionalParamInt());
             collectTargetsData.targetTeamType = team.GetOppositeTeam();
             collectTargetsData.roomIndex = roomIndex;
             collectTargetsData.inCombat = false;

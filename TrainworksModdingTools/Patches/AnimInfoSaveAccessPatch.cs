@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HarmonyLib;
+﻿using HarmonyLib;
 using ShinyShoe;
-using UnityEngine;
 
 namespace Trainworks.Patches
 {
@@ -13,7 +9,7 @@ namespace Trainworks.Patches
     [HarmonyPatch(typeof(CharacterUIMeshSpine), "GetAnimInfo")]
     class AnimInfoSaveAccessPatch
     {
-        public static bool Prefix(ref object __result,ref CharacterUIMeshSpine __instance)
+        public static bool Prefix(ref object __result, ref CharacterUIMeshSpine __instance)
         {
             if (AccessTools.Field(typeof(CharacterUIMeshSpine), "_animInfos").GetValue(__instance) == null)
             {

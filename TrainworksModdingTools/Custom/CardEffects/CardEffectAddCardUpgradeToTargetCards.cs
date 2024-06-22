@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Trainworks.Custom.CardEffects
 {
@@ -41,7 +39,7 @@ namespace Trainworks.Custom.CardEffects
                 {
                     continue;
                 }
-                
+
                 var sourceCard = cardEffectState.GetParentCardState() ?? cardEffectParams.selfTarget.GetSpawnerCard();
                 CardUpgradeState cardUpgradeState = new CardUpgradeState();
                 cardUpgradeState.Setup(cardEffectState.GetParamCardUpgradeData());

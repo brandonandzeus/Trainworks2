@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace Trainworks.Custom.CardEffects
@@ -31,7 +29,7 @@ namespace Trainworks.Custom.CardEffects
             {
                 CardUpgradeState upgradeState = new CardUpgradeState();
                 upgradeState.Setup(cardEffectState.GetParamCardUpgradeData());
-                
+
                 if (cardEffectParams.playedCard != null)
                 {
                     foreach (CardTraitState traitState in cardEffectParams.playedCard.GetTraitStates())
@@ -70,7 +68,7 @@ namespace Trainworks.Custom.CardEffects
                 }
 
                 yield return target.ApplyCardUpgrade(upgradeState);
-                
+
                 CardState spawnerCard = target.GetSpawnerCard();
                 if (spawnerCard != null && !cardEffectParams.saveManager.PreviewMode && (target.GetSourceCharacterData() == spawnerCard.GetSpawnCharacterData() || spawnerCard.GetSpawnCharacterData() == null))
                 {

@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.Reflection;
 using Trainworks.ConstantsV2;
 using Trainworks.Managers;

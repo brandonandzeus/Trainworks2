@@ -19,7 +19,7 @@ namespace Trainworks.Patches
             if (!match.Success) return;
 
 
-            var triggerId = (CharacterTriggerData.Trigger) Int32.Parse(match.Groups["triggerid"].Value);
+            var triggerId = (CharacterTriggerData.Trigger)Int32.Parse(match.Groups["triggerid"].Value);
             var baseKey = CharacterTriggerData.TriggerToLocalizationExpression[triggerId];
 
             titleKey = baseKey + "_CardText";

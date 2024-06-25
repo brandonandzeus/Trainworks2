@@ -20,6 +20,8 @@ namespace Trainworks.Managers
         internal static Dictionary<string, ReplacementStringData> ReplacementStrings;
         // Single localization lines added.
         private static readonly Dictionary<string, string> CSVLineStrings = new Dictionary<string, string>();
+        // Flag to specify that Localization Data has already been loaded and further changes are ignored.
+        public static bool HasBeenLoaded { get; private set; }
 
         // Required because the library just chokes. When we need plural support, we can reimplement this.
         // The existing issue was that LocalizationUtil.GetPluralsUsedByLanguages() returns one less than mTerm.Languages.Length
@@ -54,6 +56,10 @@ namespace Trainworks.Managers
             {
                 Trainworks.Log(LogLevel.Error, "Attempt to Import CSV file: " + fullPath + " multiple times. Please only call this function once in your Plugin's Initialize");
             }
+            if (HasBeenLoaded)
+            {
+                Trainworks.Log(LogLevel.Error, "Localization data has already been uploaded to the I2.Loc library, any additions will not be reflected. Localization data should only be added in your Plugin's Initialize method");
+            }
             SeparatorsToCsvFiles[separator].Add(fullPath);
         }
 
@@ -74,6 +80,11 @@ namespace Trainworks.Managers
         /// <param name="chinese">The Chinese Translation</param>
         public static void ImportSingleLocalization(string key, string type, string desc, string plural, string group, string descriptions, string english, string french = null, string german = null, string russian = null, string portuguese = null, string chinese = null)
         {
+            if (HasBeenLoaded)
+            {
+                Trainworks.Log(LogLevel.Error, "Localization data has already been uploaded to the I2.Loc library, any additions will not be reflected. Localization data should only be added in your Plugin's Initialize method");
+                return;
+            }
             if (string.IsNullOrEmpty(key)) return;
             if (!key.HasTranslation() && !CSVLineStrings.ContainsKey(key))
             {
@@ -181,6 +192,8 @@ namespace Trainworks.Managers
             List<string> categories = LocalizationManager.Sources[0].GetCategories(true, (List<string>)null);
             foreach (string Category in categories)
                 LocalizationManager.Sources[0].Import_CSV(Category, miniCSVBuilder.ToString(), eSpreadsheetUpdateMode.AddNewTerms, ',');
+
+            HasBeenLoaded = true;
         }
 
 

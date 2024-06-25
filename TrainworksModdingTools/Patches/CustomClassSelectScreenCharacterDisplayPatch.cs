@@ -5,6 +5,7 @@ using Spine.Unity;
 using System;
 using System.Collections.Generic;
 using Trainworks.Managers;
+using Trainworks.Utilities;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -29,7 +30,7 @@ namespace Trainworks.Patches
             }
         }
 
-        private static GameObject UpdateCharacterGameObject(CharacterState characterState, AssetReference assetRef)
+        private static void UpdateCharacterGameObject(CharacterState characterState, AssetReference assetRef)
         {
             var runtimeKey = assetRef.RuntimeKey;
             // AssetBundle
@@ -39,7 +40,7 @@ namespace Trainworks.Patches
                 var tex = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.SpriteName) as Texture2D;
                 if (tex == null)
                 {
-                    return null;
+                    return;
                 }
 
                 Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 128f);
@@ -47,7 +48,7 @@ namespace Trainworks.Patches
                 if (bundleInfo.ObjectName == null)
                 {
                     UpdateCharacterDisplayGameObject(characterState, sprite);
-                    return null;
+                    return;
                 }
 
                 GameObject gameObject = BundleManager.LoadAssetFromBundle(bundleInfo, bundleInfo.ObjectName) as GameObject;
@@ -55,18 +56,17 @@ namespace Trainworks.Patches
                 {
                     Trainworks.Log(LogLevel.Error, "Could not find skeletonData for " + bundleInfo.ObjectName);
                     UpdateCharacterDisplayGameObject(characterState, sprite);
-                    return null;
+                    return;
                 }
-                UpdateCharacterDisplayGameObject(characterState, sprite, gameObject);
+                UpdateCharacterDisplayGameObject(characterState, sprite, gameObject, bundleInfo);
             }
             // Static image
             else if (CustomAssetManager.RuntimeKeyToAssetInfo.ContainsKey(runtimeKey))
             {
                 var sprite = CustomAssetManager.LoadSpriteFromRuntimeKey(runtimeKey);
                 UpdateCharacterDisplayGameObject(characterState, sprite);
-                return null;
+                return;
             }
-            return null;
         }
 
         private static void UpdateCharacterDisplayGameObject(CharacterState characterState, Sprite sprite)
@@ -120,7 +120,7 @@ namespace Trainworks.Patches
             AccessTools.Field(typeof(CharacterUIOutlineMesh), "outlineData").SetValue(outlineMesh, null);
         }
 
-        private static void UpdateCharacterDisplayGameObject(CharacterState characterState, Sprite sprite, GameObject skeletonData)
+        private static void UpdateCharacterDisplayGameObject(CharacterState characterState, Sprite sprite, GameObject skeletonData, BundleAssetLoadingInfo bundleInfo)
         {
             // Set aside its CharacterState and CharacterUI components for later use
             var characterUI = characterState.GetComponentInChildren<CharacterUI>();
@@ -128,7 +128,7 @@ namespace Trainworks.Patches
             // Hide the UI
             characterState.gameObject.SetActive(true);
             characterUI.HideDetails();
-            characterState.name = "Character_" + sprite.name + "_ClassSelect";
+            characterState.name = "Character_" + (bundleInfo.BaseName ?? sprite.name) + "_ClassSelect";
 
             // Hide the quad, ensure the Spine mesh is shown (it should be by default)           
             var Quad = characterState.GetComponentInChildren<ShinyShoe.CharacterUIMesh>(true).gameObject;
@@ -160,10 +160,21 @@ namespace Trainworks.Patches
 
             dest.skeletonDataAsset = source.skeletonDataAsset;
 
-
             // Now delete the pre-existing animations
             GameObject.Destroy(spineMeshes.transform.GetChild(1).gameObject);
             GameObject.Destroy(spineMeshes.transform.GetChild(2).gameObject);
+
+            if (bundleInfo.OverrideCharacterSelectScale.HasValue)
+            {
+                var vec = bundleInfo.OverrideCharacterSelectScale.Value;
+                //animation.transform.localScale = vec;
+                clonedObject.transform.SetScale(vec.x, vec.y, vec.z);
+            }
+            if (bundleInfo.OverrideCharacterSelectPosition.HasValue)
+            {
+                var vec = bundleInfo.OverrideCharacterSelectPosition.Value;
+                clonedObject.transform.SetLocalPosition(vec.x, vec.y, vec.z);
+            }
 
             // Remove Extra GameObjects that are specific to cloned Champions.
             // The Sentient's hair glow effects, and others really.

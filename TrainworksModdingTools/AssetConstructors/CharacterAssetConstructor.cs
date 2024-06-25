@@ -1,6 +1,7 @@
 ﻿using BepInEx.Logging;
 using HarmonyLib;
 using ShinyShoe;
+using Spine;
 using Spine.Unity;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +12,7 @@ using UnityEngine.AddressableAssets;
 
 namespace Trainworks.AssetConstructors
 {
+    // DEV note if this code changes for some reason then CustomClassSelectDisplayPatch needs to change as well.
     public class CharacterAssetConstructor : Interfaces.IAssetConstructor
     {
         // Empty material used for static images for characters.
@@ -77,11 +79,11 @@ namespace Trainworks.AssetConstructors
                     GameObject.DontDestroyOnLoad(charObj);
                     return charObj;
                 }
-                var spineObj = CreateCharacterGameObject(assetRef, sprite, loadedAnims, bundleInfo.BaseName);
+                var spineObj = CreateCharacterGameObject(assetRef, sprite, loadedAnims, bundleInfo);
                 GameObject.DontDestroyOnLoad(spineObj);
                 return spineObj;
             }
-            // Legacy. Animated sprite asset with a single spine animation.
+            // Animated sprite asset with a single spine animation (possibly) with all of the animations
             else if (bundleInfo.ObjectName != null)
             {
                 Trainworks.Log(LogLevel.Debug, "Looking in bundle for... " + bundleInfo.ObjectName);
@@ -93,7 +95,7 @@ namespace Trainworks.AssetConstructors
                     GameObject.DontDestroyOnLoad(charObj);
                     return charObj;
                 }
-                var spineObj = CreateCharacterGameObject(assetRef, sprite, gameObject);
+                var spineObj = CreateCharacterGameObject(assetRef, sprite, gameObject, bundleInfo);
                 GameObject.DontDestroyOnLoad(spineObj);
                 return spineObj;
             }
@@ -166,7 +168,7 @@ namespace Trainworks.AssetConstructors
         /// <param name="sprite">Sprite to create character with</param>
         /// <param name="skeletonData">GameObject containing the necessary Spine animation data</param>
         /// <returns>The GameObject for the character</returns>
-        private static GameObject CreateCharacterGameObject(AssetReference assetRef, Sprite sprite, GameObject skeletonData)
+        private static GameObject CreateCharacterGameObject(AssetReference assetRef, Sprite sprite, GameObject skeletonData, BundleAssetLoadingInfo bundleInfo)
         {
             // Create a new character GameObject by cloning an existing, working character
             var characterGameObject = GameObject.Instantiate(CustomCharacterManager.TemplateCharacter);
@@ -177,7 +179,7 @@ namespace Trainworks.AssetConstructors
 
             // Hide the UI
             characterUI.HideDetails();
-            characterGameObject.name = "Character_" + skeletonData.name;
+            characterGameObject.name = "Character_" + (bundleInfo.BaseName ?? skeletonData.name);
 
             // Hide the quad, ensure the Spine mesh is shown (it should be by default)           
             var Quad = characterGameObject.GetComponentInChildren<ShinyShoe.CharacterUIMesh>(true).gameObject;
@@ -210,6 +212,18 @@ namespace Trainworks.AssetConstructors
             GameObject.Destroy(spineMeshes.transform.GetChild(1).gameObject);
             GameObject.Destroy(spineMeshes.transform.GetChild(2).gameObject);
 
+            if (bundleInfo.OverrideScale.HasValue)
+            {
+                var vec = bundleInfo.OverrideScale.Value;
+                //animation.transform.localScale = vec;
+                clonedObject.transform.SetScale(vec.x, vec.y, vec.z);
+            }
+            if (bundleInfo.OverridePosition.HasValue)
+            {
+                var vec = bundleInfo.OverridePosition.Value;
+                clonedObject.transform.SetLocalPosition(vec.x, vec.y, vec.z);
+            }
+
             // TODO Set googly eye positions
             // TODO Add in visual effects such as particles
 
@@ -232,7 +246,7 @@ namespace Trainworks.AssetConstructors
         /// <param name="animations">Dictionary of Spine Animation GameObjects</param>
         /// <param name="name">Base name to give the newly created GameObjects</param>
         /// <returns>The GameObject for the character</returns>
-        private static GameObject CreateCharacterGameObject(AssetReference assetRef, Sprite sprite, IDictionary<CharacterUI.Anim, GameObject> animations, string name)
+        private static GameObject CreateCharacterGameObject(AssetReference assetRef, Sprite sprite, IDictionary<CharacterUI.Anim, GameObject> animations, BundleAssetLoadingInfo bundleInfo)
         {
             // Create a new character GameObject by cloning an existing, working character
             var characterGameObject = GameObject.Instantiate(CustomCharacterManager.TemplateCharacter);
@@ -243,7 +257,7 @@ namespace Trainworks.AssetConstructors
 
             // Hide the UI
             characterUI.HideDetails();
-            characterGameObject.name = "Character_" + name;
+            characterGameObject.name = "Character_" + bundleInfo.BaseName;
 
             // Hide the quad, ensure the Spine mesh is shown (it should be by default)           
             var Quad = characterGameObject.GetComponentInChildren<ShinyShoe.CharacterUIMesh>(true).gameObject;
@@ -288,6 +302,18 @@ namespace Trainworks.AssetConstructors
 
                 dest.skeletonDataAsset = source.skeletonDataAsset;
 
+                if (bundleInfo.OverrideScale.HasValue)
+                {
+                    var vec = bundleInfo.OverrideScale.Value;
+                    //animation.transform.localScale = vec;
+                    clonedObject.transform.SetScale(vec.x, vec.y, vec.z);
+                }
+                if (bundleInfo.OverridePosition.HasValue)
+                {
+                    var vec = bundleInfo.OverridePosition.Value;
+                    clonedObject.transform.SetLocalPosition(vec.x, vec.y, vec.z);
+                }
+
                 // Remove our friends
                 characterUI.GetComponent<SpriteRenderer>().forceRenderingOff = true;
                 dest.gameObject.SetActive(false);
@@ -329,7 +355,7 @@ namespace Trainworks.AssetConstructors
         }
 
 
-        private static Dictionary<CharacterUI.Anim, string> ANIM_NAMES = new Dictionary<CharacterUI.Anim, string>
+        private static readonly Dictionary<CharacterUI.Anim, string> ANIM_NAMES = new Dictionary<CharacterUI.Anim, string>
         {
             {
                 CharacterUI.Anim.Idle,

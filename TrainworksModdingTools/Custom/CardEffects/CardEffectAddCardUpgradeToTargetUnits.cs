@@ -12,6 +12,11 @@ namespace Trainworks.Custom.CardEffects
     /// 
     /// Note like the base game's CardEffect the Filters on the CardUpgrade are ignored.
     /// 
+    /// WARNING if applying a permanent upgrade, You should not modify the CardUpgradeState
+    /// via CardTraitState's OnApplyingCardUpgradeToUnit. Any modifications to the CardUpgrade
+    /// are not able to be saved and will be lost if the game is reloaded. Only the original stats
+    /// from the CardUpgradeData are used.
+    /// 
     /// Parameters:
     ///   ParamCardUpgrade: CardUpgrade to apply.
     ///   ParamBool: False for temporary upgrade. True for permanent upgrade.

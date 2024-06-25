@@ -7,7 +7,6 @@ namespace Trainworks.Custom.CardEffects
     /// 
     /// Params:
     ///    ParamInt: Cost modification. Positive will increase. Negative decreases.
-    ///    ParamBool: True to make the cost modification permanent, false for temporary.
     ///    TargetCardType: Cards type to restrict target cards to. Defaults to Spell Cards. Set to CardType.Invalid to disable this filter.
     /// </summary>
     public sealed class CardEffectModifyTargetCardCost : CardEffectBase
@@ -26,14 +25,7 @@ namespace Trainworks.Custom.CardEffects
             {
                 if (item.GetCardType() == cardEffectState.GetTargetCardType() || cardEffectState.GetTargetCardType() == CardType.Invalid)
                 {
-                    if (permanent)
-                    {
-                        item.Upgrade(cardUpgradeState, cardEffectParams.saveManager);
-                    }
-                    else
-                    {
-                        item.GetTemporaryCardStateModifiers().AddUpgrade(cardUpgradeState);
-                    }
+                    item.GetTemporaryCardStateModifiers().AddUpgrade(cardUpgradeState);
                 }
             }
             yield break;

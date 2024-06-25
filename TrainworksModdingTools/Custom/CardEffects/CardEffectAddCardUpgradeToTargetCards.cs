@@ -11,6 +11,11 @@ namespace Trainworks.Custom.CardEffects
     /// This card effect doesn't suffer the limitations of the afforementioned CardEffect, it can be used in
     /// Charactere's Trigger effects.
     /// 
+    /// WARNING if applying a permanent upgrade, You should not modify the CardUpgradeState
+    /// via CardTraitState's OnCardBeingUpgrade. Any modifications to the CardUpgrade
+    /// are not able to be saved and will be lost if the game is reloaded. Only the original stats
+    /// from the CardUpgradeData are used.
+    /// 
     /// Parameters:
     ///   ParamCardUpgrade: CardUpgrade to apply. The filters in the CardUpgrade further filter from TargetCards.
     ///   ParamBool: False for temporary upgrade. True for permanent upgrade.

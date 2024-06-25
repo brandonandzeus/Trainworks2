@@ -9,6 +9,11 @@ namespace Trainworks.Custom.CardEffects
     /// Allows you to move cards from anywhere to the discard. If moving cards from the Consume or Eaten piles the cards
     /// are restored (which adds to deck), then drawn, then discarded.
     /// 
+    /// WARNING if applying a permanent upgrade, You should not modify the CardUpgradeState
+    /// via CardTraitState's OnApplyingCardUpgradeToUnit. Any modifications to the CardUpgrade
+    /// are not able to be saved and will be lost if the game is reloaded. Only the original stats
+    /// from the CardUpgradeData are used.
+    /// 
     /// Params:
     ///   TargetCardType: (Required) Target card filter. Note default is Spell cards only. Set to CardType.Invalid to disable filtering.
     ///   TargetCharacterSubtype: If TargetCardType is Monster additional filtering based on subtype.The default is the None subtype which matches all.

@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Trainworks.Managers
+namespace TrainworksModdingTools.Legacy.Managers
 {
+    /// <summary>
+    /// DEFUNCT. Do not use.
+    /// </summary>
+    [Obsolete("Please use CustomCollectableRelicManager's functions instead")]
     public class CustomRelicPoolManager
     {
         /// <summary>

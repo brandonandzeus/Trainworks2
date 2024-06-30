@@ -10,11 +10,11 @@
         /// </summary>
         public static readonly string MegaRelicPool = "MegaRelicPool";
         /// <summary>
-        /// Daedalus boss relic reward
+        /// Daedalus/Talos boss relic reward
         /// </summary>
         public static readonly string BossPool = "BossPool";
         /// <summary>
-        /// Fel boss relic reward
+        /// Fel/Archus boss relic reward
         /// </summary>
         public static readonly string BossPoolLevel6 = "BossPoolLevel6";
     }

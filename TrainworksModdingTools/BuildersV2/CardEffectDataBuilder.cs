@@ -52,6 +52,8 @@ namespace Trainworks.BuildersV2
         public string ParamSubtype { get; set; }
         /// <summary>
         /// CardUpgradeMaskData parameter.
+        /// 
+        /// This is unused in the base game. 
         /// </summary>
         public CardUpgradeMaskData ParamCardFilter { get; set; }
         /// <summary>

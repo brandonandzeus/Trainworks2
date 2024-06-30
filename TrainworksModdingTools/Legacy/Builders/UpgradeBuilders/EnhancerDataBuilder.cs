@@ -2,6 +2,7 @@ using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
 using Trainworks.Managers;
+using Trainworks.ManagersV2;
 using UnityEngine;
 
 namespace Trainworks.Builders
@@ -78,10 +79,11 @@ namespace Trainworks.Builders
         public EnhancerData BuildAndRegister()
         {
             var enhancerData = this.Build();
-            foreach (var pool in EnhancerPoolIDs)
+            CustomEnhancerManager.RegisterEnhancer(enhancerData, EnhancerPoolIDs);
+            /*foreach (var pool in EnhancerPoolIDs)
             {
                 CustomEnhancerPoolManager.AddEnhancerToPool(enhancerData, pool);
-            }
+            }*/
             return enhancerData;
         }
 

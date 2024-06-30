@@ -28,22 +28,22 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public List<StatusEffectStackData> ExcludedStatusEffects { get; set; }
         /// <summary>
-        /// Note if you are checking for a CardTrait in the base game feel free to use the exact class name of it.
+        /// Note if you are checking for a CardTrait in the base game you must use the exact class name.
         /// However if it is a custom CardTrait you will need to pass typeof(Class).AssemblyQualifiedName.
         /// </summary>
         public List<string> RequiredCardTraits { get; set; }
         /// <summary>
-        /// Note if you are checking for a CardTrait in the base game feel free to use the exact class name of it.
+        /// Note if you are checking for a CardTrait in the base game you must use the exact class name.
         /// However if it is a custom CardTrait you will need to pass typeof(Class).AssemblyQualifiedName.
         /// </summary>
         public List<string> ExcludedCardTraits { get; set; }
         /// <summary>
-        /// Note if you are checking for a CardEffect in the base game feel free to use the exact class name of it.
+        /// Note if you are checking for a CardEffect in the base game you must use the exact class name.
         /// However if it is a custom CardEffect you will need to pass typeof(Class).AssemblyQualifiedName.
         /// </summary>
         public List<string> RequiredCardEffects { get; set; }
         /// <summary>
-        /// Note if you are checking for a CardEffect in the base game feel free to use the exact class name of it.
+        /// Note if you are checking for a CardEffect in the base game you must use the exact class name.
         /// However if it is a custom CardEffect you will need to pass typeof(Class).AssemblyQualifiedName.
         /// </summary>
         public List<string> ExcludedCardEffects { get; set; }

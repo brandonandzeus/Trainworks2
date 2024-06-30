@@ -31,7 +31,7 @@ namespace Trainworks.BuildersV2
 
         /// <summary>
         /// Builds the EnhancerPool represented by this builder's parameters
-        /// and registers it with the CustomEnhancerPoolManager.
+        /// and registers it with CustomEnhancerManager.
         /// </summary>
         /// <returns>The newly registered EnhancerPool</returns>
         public EnhancerPool BuildAndRegister()

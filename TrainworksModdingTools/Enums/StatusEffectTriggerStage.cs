@@ -1,4 +1,5 @@
-﻿namespace Trainworks.Enums
+﻿
+namespace Trainworks.Enums
 {
     public class StatusEffectTriggerStage : ExtendedByteEnum<StatusEffectTriggerStage, StatusEffectData.TriggerStage>
     {
@@ -13,6 +14,11 @@
         {
             InitialID++;
             return InitialID;
+        }
+
+        public static implicit operator StatusEffectData.TriggerStage(StatusEffectTriggerStage extendedEnum)
+        {
+            return extendedEnum.GetEnum();
         }
     }
 

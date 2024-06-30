@@ -94,6 +94,11 @@ namespace Trainworks.Enums
         }
         */
 
+        public static implicit operator TargetMode(TargetModeType extendedEnum)
+        {
+            return extendedEnum.GetEnum();
+        }
+
         public static byte GetNewID()
         {
             InitialID++;

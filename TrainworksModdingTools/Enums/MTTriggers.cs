@@ -3,7 +3,7 @@
 namespace Trainworks.Enums.MTTriggers
 {
     /// <summary>
-    /// 
+    /// An Extended Enum wrapping CardTriggerType.
     /// </summary>
     public class CardTrigger : ExtendedEnum<CardTrigger, CardTriggerType>
     {
@@ -25,10 +25,15 @@ namespace Trainworks.Enums.MTTriggers
         {
             return CardTrigger.Convert(cardTriggerType);
         }
+
+        public static implicit operator CardTriggerType(CardTrigger extendedEnum)
+        {
+            return extendedEnum.GetEnum();
+        }
     }
 
     /// <summary>
-    /// 
+    /// An Extended Enum wrapping CharacterTriggerData.Trigger.
     /// </summary>
     public class CharacterTrigger : ExtendedEnum<CharacterTrigger, CharacterTriggerData.Trigger>
     {
@@ -48,6 +53,11 @@ namespace Trainworks.Enums.MTTriggers
         public static implicit operator CharacterTrigger(CharacterTriggerData.Trigger trigger)
         {
             return CharacterTrigger.Convert(trigger);
+        }
+
+        public static implicit operator CharacterTriggerData.Trigger(CharacterTrigger extendedEnum)
+        {
+            return extendedEnum.GetEnum();
         }
     }
 }

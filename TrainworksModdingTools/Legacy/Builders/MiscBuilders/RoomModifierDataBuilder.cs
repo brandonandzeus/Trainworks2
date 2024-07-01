@@ -69,6 +69,8 @@ namespace Trainworks.Builders
 
         public RoomModifierDataBuilder()
         {
+            ParamStatusEffects = Array.Empty<StatusEffectStackData>();
+            ExtraTooltipTitleKey = string.Empty;
         }
 
         /// <summary>

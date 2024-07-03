@@ -109,6 +109,10 @@ namespace Trainworks.Builders
             AccessTools.Field(typeof(RewardData), "_rewardTitleKey").SetValue(rewardData, this._RewardTitleKey);
             AccessTools.Field(typeof(RewardData), "_showCancelOverride").SetValue(rewardData, this._ShowCancelOverride);
             AccessTools.Field(typeof(RewardData), "_showRewardFlowInEvent").SetValue(rewardData, this._ShowRewardFlowInEvent);
+
+            /// Trainworks2 Backport. Should fix Clan Banners on restart.
+            CustomRewardManager.RegisterCustomReward(rewardData);
+
             return rewardData;
         }
     }

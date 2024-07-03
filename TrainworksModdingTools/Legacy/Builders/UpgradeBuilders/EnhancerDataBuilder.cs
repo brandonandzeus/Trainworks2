@@ -79,6 +79,7 @@ namespace Trainworks.Builders
         public EnhancerData BuildAndRegister()
         {
             var enhancerData = this.Build();
+            /// Trainworks2 Backport. Should fix Merchants on restart.
             CustomEnhancerManager.RegisterEnhancer(enhancerData, EnhancerPoolIDs);
             /*foreach (var pool in EnhancerPoolIDs)
             {

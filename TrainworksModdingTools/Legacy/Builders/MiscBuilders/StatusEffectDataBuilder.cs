@@ -129,8 +129,11 @@ namespace Trainworks.Builders
                 AccessTools.Field(typeof(StatusEffectData), "icon").SetValue(statusEffect, draftIconSprite);
             }
 
-            StatusEffectManager manager = GameObject.FindObjectOfType<StatusEffectManager>() as StatusEffectManager;
+            var manager = StatusEffectManager.Instance;
             manager.GetAllStatusEffectsData().GetStatusEffectData().Add(statusEffect);
+            // To keep parity with old API, don't capitalize the status.
+            string idkey = "StatusEffect_" + StatusId;
+            StatusEffectManager.StatusIdToLocalizationExpression.Add(StatusId, idkey);
 
             return statusEffect;
         }

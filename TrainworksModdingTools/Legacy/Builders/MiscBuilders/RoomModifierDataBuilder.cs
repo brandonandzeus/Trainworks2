@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System;
+using Trainworks.Utilities;
 using UnityEngine;
 
 namespace Trainworks.Builders
@@ -79,6 +80,8 @@ namespace Trainworks.Builders
         /// <returns>The newly created RoomModifierData</returns>
         public RoomModifierData Build()
         {
+            ContentValidator.PreBuild(this);
+
             RoomModifierData roomModifierData = new RoomModifierData();
             BuilderUtils.ImportStandardLocalization(this.DescriptionKey, this.Description);
             AccessTools.Field(typeof(RoomModifierData), "descriptionKey").SetValue(roomModifierData, this.DescriptionKey);

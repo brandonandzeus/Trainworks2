@@ -2,6 +2,7 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using Trainworks.Utilities;
 
 namespace Trainworks.BuildersV2
 {
@@ -161,6 +162,8 @@ namespace Trainworks.BuildersV2
                 paramInt = paramInt
             };
 
+            ContentValidator.PreBuild(trigger);
+
             CardTriggerEffects.Add(trigger);
             return trigger;
         }
@@ -176,6 +179,8 @@ namespace Trainworks.BuildersV2
                 buffEffectType = buffEffectType,
                 paramInt = paramInt
             };
+
+            ContentValidator.PreBuild(trigger);
 
             return trigger;
         }

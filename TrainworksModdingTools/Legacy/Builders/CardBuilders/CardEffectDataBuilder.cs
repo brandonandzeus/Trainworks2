@@ -1,5 +1,8 @@
 ﻿using HarmonyLib;
+using ShinyShoe;
 using System;
+using System.Collections.Generic;
+using Trainworks.Utilities;
 using UnityEngine;
 
 namespace Trainworks.Builders
@@ -161,6 +164,9 @@ namespace Trainworks.Builders
                 this.ParamCharacterData = this.ParamCharacterDataBuilder.BuildAndRegister();
             }
             CardEffectData cardEffectData = new CardEffectData();
+
+            ContentValidator.PreBuild(this);
+
             AccessTools.Field(typeof(CardEffectData), "additionalParamInt").SetValue(cardEffectData, this.AdditionalParamInt);
             AccessTools.Field(typeof(CardEffectData), "additionalTooltips").SetValue(cardEffectData, this.AdditionalTooltips);
             AccessTools.Field(typeof(CardEffectData), "animToPlay").SetValue(cardEffectData, this.AnimToPlay);

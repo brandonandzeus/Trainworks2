@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using Trainworks.Utilities;
 
 namespace Trainworks.Builders
 {
@@ -121,6 +122,8 @@ namespace Trainworks.Builders
         /// <returns>The newly created RelicEffectData</returns>
         public RelicEffectData Build()
         {
+            ContentValidator.PreBuild(this);
+
             foreach (var builder in this.EffectConditionBuilders)
             {
                 this.EffectConditions.Add(builder.Build());

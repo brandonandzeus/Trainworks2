@@ -1,5 +1,7 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using System;
+using Trainworks.Utilities;
 
 namespace Trainworks.Builders
 {
@@ -81,6 +83,8 @@ namespace Trainworks.Builders
         /// <returns>The newly created CardTraitData</returns>
         public CardTraitData Build()
         {
+            ContentValidator.PreBuild(this);
+
             CardTraitData cardTraitData = new CardTraitData();
             AccessTools.Field(typeof(CardTraitData), "paramCardData").SetValue(cardTraitData, this.ParamCardData);
             AccessTools.Field(typeof(CardTraitData), "paramCardType").SetValue(cardTraitData, this.ParamCardType);

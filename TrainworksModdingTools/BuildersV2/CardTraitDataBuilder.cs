@@ -1,7 +1,9 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using Trainworks.ConstantsV2;
+using Trainworks.Utilities;
 
 namespace Trainworks.BuildersV2
 {
@@ -127,6 +129,8 @@ namespace Trainworks.BuildersV2
             {
                 throw new BuilderException("TraitStateType is required");
             }
+
+            ContentValidator.PreBuild(this);
 
             // Doesn't inherit from ScriptableObject
             CardTraitData cardTraitData = new CardTraitData();

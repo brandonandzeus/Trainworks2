@@ -1,5 +1,6 @@
 using HarmonyLib;
 using System.Collections.Generic;
+using Trainworks.Utilities;
 
 namespace Trainworks.Builders
 {
@@ -80,6 +81,11 @@ namespace Trainworks.Builders
             foreach (var builder in this.CardEffectBuilders)
             {
                 this.CardEffects.Add(builder.Build());
+            }
+
+            foreach (var triggerEffect in this.CardTriggerEffects)
+            {
+                ContentValidator.PreBuild(triggerEffect);
             }
 
             CardTriggerEffectData cardTriggerEffectData = new CardTriggerEffectData();

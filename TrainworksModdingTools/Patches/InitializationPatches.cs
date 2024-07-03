@@ -30,6 +30,8 @@ namespace Trainworks.Patches
     {
         public static void Postfix(AssetLoadingData ____assetLoadingData)
         {
+            CustomCardPoolManager.GatherAllVanillaCardPools();
+
             Trainworks.Log("[START] Loading all Trainworks Plugins");
             // Ensure that unlockable cards are loaded, otherwise they will never be loaded.
             // (UnlockScreen doesn't have a call to LoadAdditionalCards).

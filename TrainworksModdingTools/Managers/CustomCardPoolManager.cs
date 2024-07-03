@@ -3,34 +3,30 @@ using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using Trainworks.ConstantsV2;
+using UnityEngine;
 
 namespace Trainworks.Managers
 {
     public class CustomCardPoolManager
     {
         /// <summary>
-        /// Maps card pool IDs to the CardData of cards which can appear in them.
-        /// Cards which naturally appear in the pool in the base game will not appear in these lists.
-        /// </summary>
-        public static IDictionary<string, List<CardData>> CustomCardPoolData { get; } = new Dictionary<string, List<CardData>>();
-
-        /// <summary>
         /// Maps custom card pool IDs to their actual CardPool instances.
         /// </summary>
         public static IDictionary<string, CardPool> CustomCardPools { get; } = new Dictionary<string, CardPool>();
+
+        /// <summary>
+        /// Cache of Vanilla Card Pools.
+        /// </summary>
+        internal static Dictionary<string, CardPool> VanillaCardPools = new Dictionary<string, CardPool>();
+        // TODO: Remove when GetCardsForPool is no longer used.
+        internal static List<CardData> EMPTY = new List<CardData>();
 
         /// <summary>
         /// Gets the Card MegaPool instance which contains every card in the game.
         /// </summary>
         public static CardPool GetMegaPool()
         {
-            var reward = ProviderManager.SaveManager.GetAllGameData().FindRewardData(VanillaRewardIDs.CardDraftMainClassReward) as DraftRewardData;
-            if (reward != null)
-            {
-                return reward.GetDraftPool();
-            }
-            Trainworks.Log(LogLevel.Error, "Could not get MegaPool Instance");
-            return null;
+            return VanillaCardPools[VanillaCardPoolIDs.MegaPool];
         }
 
         /// <summary>
@@ -39,17 +35,24 @@ namespace Trainworks.Managers
         /// <returns></returns>
         public static CardPool GetConscriptUnitPool()
         {
-            var relic = ProviderManager.SaveManager.GetAllGameData().FindCollectableRelicData(VanillaCollectableRelicIDs.ConscriptionNotice);
-            if (relic == null)
-            {
-                Trainworks.Log(LogLevel.Error, "Could not get ConscriptionPool");
-                return null;
-            }
-            return relic.GetFirstRelicEffectData<RelicEffectAddBattleCardToHandOnUnitTrigger>().GetParamCardPool();
+            return VanillaCardPools[VanillaCardPoolIDs.ConscriptUnitPool];
         }
 
+        public static CardPool GetVanillaCardPool(string name)
+        {
+            return VanillaCardPools[name];
+        }
+
+        /// <summary>
+        /// Registers a Custom Card Pool.
+        /// </summary>
+        /// <param name="cardPool"></param>
         public static void RegisterCustomCardPool(CardPool cardPool)
         {
+            if (VanillaCardPools.ContainsKey(cardPool.name))
+            {
+                Trainworks.Log(LogLevel.Warning, "Card Pool name" + cardPool.name + " is reserved");
+            }
             if (!CustomCardPools.ContainsKey(cardPool.name))
             {
                 CustomCardPools.Add(cardPool.name, cardPool);
@@ -69,99 +72,32 @@ namespace Trainworks.Managers
         {
             foreach (string cardPoolID in cardPoolIDs)
             {
-                if (CustomCardPools.ContainsKey(cardPoolID))
+                CardPool cardPool = null;
+                if (VanillaCardPools.ContainsKey(cardPoolID))
                 {
-                    var pool = CustomCardPools[cardPoolID];
-                    var cardDataList = (Malee.ReorderableArray<CardData>)AccessTools.Field(typeof(CardPool), "cardDataList").GetValue(pool);
-                    cardDataList.Add(cardData);
-                }
-                else
-                {
-                    if (!CustomCardPoolData.ContainsKey(cardPoolID))
+                    cardPool = VanillaCardPools[cardPoolID];
+                    if (cardPool == null)
                     {
-                        CustomCardPoolData[cardPoolID] = new List<CardData>();
+                        Trainworks.Log(LogLevel.Warning, "CardPool " + cardPoolID + " is unsupported, ignoring.");
+                        continue;
                     }
-                    CustomCardPoolData[cardPoolID].Add(cardData);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets a list of all cards added to the given card pool by mods.
-        /// Cards which naturally appear in the pool will not be returned.
-        /// </summary>
-        /// <param name="cardPoolID">ID of the card pool to get cards for</param>
-        /// <returns>A list of cards added to the card pool with given ID by mods</returns>
-        public static List<CardData> GetCardsForPool(string cardPoolID)
-        {
-            if (CustomCardPoolData.ContainsKey(cardPoolID))
-            {
-                return CustomCardPoolData[cardPoolID];
-            }
-            return new List<CardData>();
-        }
-
-        /// <summary>
-        /// Gets a list of all cards added to the given card pool by mods
-        /// which satisfy the constraints specified by the parameters passed in.
-        /// Cards which naturally appear in the pool will not be returned.
-        /// </summary>
-        /// <param name="cardPoolID">ID of the card pool to get cards for</param>
-        /// <param name="classData">Card must be part of this class</param>
-        /// <param name="paramRarity">Rarity which is compared against the rarities of the cards in the pool using rarityCondition</param>
-        /// <param name="rarityCondition">Rarity condition which takes into account paramRarity and the rarities of the cards in the pool</param>
-        /// <param name="testRarityCondition">Whether or not the rarity condition should be checked</param>
-        /// <returns>A list of cards added to the card pool with given ID by mods, all of which satisfy the given constraints.</returns>
-        public static List<CardData> GetCardsForPoolSatisfyingConstraints(string cardPoolID, ClassData classData, CollectableRarity paramRarity, CardPoolHelper.RarityCondition rarityCondition, bool testRarityCondition)
-        {
-            var allValidCards = GetCardsForPool(cardPoolID);
-
-            var validCards = new List<CardData>();
-
-            //if (rarityCondition == null)
-            //{    
-            //testRarityCondition = false;
-            //}
-            rarityCondition = (rarityCondition ?? EqualRarity);
-
-            foreach (CardData cardData in allValidCards)
-            {
-                if (cardData.GetLinkedClass() == classData && (!testRarityCondition || rarityCondition(paramRarity, cardData.GetRarity())))
+                else if (CustomCardPools.ContainsKey(cardPoolID))
                 {
-                    validCards.Add(cardData);
+                    cardPool = CustomCardPools[cardPoolID];
                 }
-            }
-
-            return validCards;
-        }
-
-        private static CardPoolHelper.RarityCondition EqualRarity = (CollectableRarity paramRarity, CollectableRarity cardRarity) => paramRarity == cardRarity;
-
-        /// <summary>
-        /// Gets a list of all cards added to the given card pool by mods
-        /// which satisfy the constraints specified by the mask data passed in.
-        /// Cards which naturally appear in the pool will not be returned.
-        /// </summary>
-        /// <param name="cardPoolID">ID of the card pool to get cards for</param>
-        /// <param name="paramCardFilter">Constraints to satisfy</param>
-        /// <param name="relicManager">a RelicManager</param>
-        /// <returns>A list of cards added to the card pool with given ID by mods, all of which satisfy the given constraints.</returns>
-        public static List<CardData> GetCardsForPoolSatisfyingConstraints(string cardPoolID, CardUpgradeMaskData paramCardFilter, RelicManager relicManager)
-        {
-            var allValidCards = GetCardsForPool(cardPoolID);
-            var validCards = new List<CardData>();
-            foreach (CardData cardData in allValidCards)
-            {
-                if (paramCardFilter == null)
+                // Apparently people don't use CardPoolBuilder and register a CardPool beforehand.
+                if (cardPool == null)
                 {
-                    validCards.Add(cardData);
+                    Trainworks.Log(LogLevel.Warning, "Could not find card pool: " + cardPoolID + ". Creating a card pool");
+                    cardPool = ScriptableObject.CreateInstance<CardPool>();
+                    cardPool.name = cardPoolID;
+                    CustomCardPools.Add(cardPoolID, cardPool);
                 }
-                else if (paramCardFilter.FilterCard<CardData>(cardData, relicManager))
-                {
-                    validCards.Add(cardData);
-                }
+
+                var cardDataList = (Malee.ReorderableArray<CardData>)AccessTools.Field(typeof(CardPool), "cardDataList").GetValue(cardPool);
+                cardDataList.Add(cardData);
             }
-            return validCards;
         }
 
         /// <summary>
@@ -178,6 +114,14 @@ namespace Trainworks.Managers
             Trainworks.Log(LogLevel.Error, "Could not find card pool: " + cardPoolID);
             Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             return null;
+        }
+
+        
+        // TODO remove once CustomClanHelper doesn't use this anymore.
+        [Obsolete("UNSUPPORTED DO NOT USE. Call GetCustomCardPoolByID(id) or GetVanillaCardPool(id) then GetAllChoices()")]
+        public static List<CardData> GetCardsForPool(string pool)
+        {
+            return EMPTY;
         }
 
         /// <summary>
@@ -230,6 +174,108 @@ namespace Trainworks.Managers
             {
                 assetLoadingData.CardPoolsAll.Add(cardPool);
             }
+        }
+
+        internal static void GatherAllVanillaCardPools()
+        {
+
+            var allGameData = ProviderManager.SaveManager.GetAllGameData();
+
+
+            VanillaCardPools.Add(VanillaCardPoolIDs.MegaPool, (allGameData.FindRewardData(VanillaRewardIDs.CardDraftMainClassReward) as DraftRewardData)?.GetDraftPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.ConscriptUnitPool, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.ConscriptionNotice).GetFirstRelicEffectData<RelicEffectAddBattleCardToHandOnUnitTrigger>()?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.UnitsAllBanner, (allGameData.FindRewardData(VanillaRewardIDs.CardDraftLevelUpUnitMainOrAllied) as DraftRewardData)?.GetDraftPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.ChampionPool, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.BlankPages)?.GetFirstRelicEffectData<RelicEffectAddChampionCardToHand>()?.GetParamCardPool());
+
+
+            VanillaCardPools.Add(VanillaCardPoolIDs.HellhornedBanner, (allGameData.FindRewardData(VanillaRewardIDs.CardDraftLevelUpUnitHellhorned) as DraftRewardData)?.GetDraftPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.AwokenBanner, (allGameData.FindRewardData(VanillaRewardIDs.CardDraftLevelUpUnitAwoken) as DraftRewardData)?.GetDraftPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.StygianBanner, (allGameData.FindRewardData(VanillaRewardIDs.CardDraftLevelUpUnitStygian) as DraftRewardData)?.GetDraftPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.UmbraBanner, (allGameData.FindRewardData(VanillaRewardIDs.CardDraftLevelUpUnitUmbra) as DraftRewardData)?.GetDraftPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.RemnantBanner, (allGameData.FindRewardData(VanillaRewardIDs.CardDraftLevelUpUnitRemnant) as DraftRewardData)?.GetDraftPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.WurmkinBanner, (allGameData.FindRewardData(VanillaRewardIDs.CardDraftLevelUpUnitWurm) as DraftRewardData)?.GetDraftPool());
+
+
+            var rewards = allGameData.FindStoryEventData(VanillaStoryEventIDs.ClassPotions)?.GetPossibleRewards();
+            // HellhornedConsumeables (Class1Potions) - WurmkinConsumeables (Class6Potions).
+            foreach (var reward in rewards)
+            {
+                var cprdata = reward as CardPoolRewardData;
+                var cardPool = AccessTools.Field(typeof(CardPoolRewardData), "cardPool").GetValue(cprdata) as CardPool;
+                VanillaCardPools.Add(cardPool.name, cardPool);
+            }
+
+            VanillaCardPools.Add(VanillaCardPoolIDs.NewChallengerChampionPool, allGameData.FindMutatorData(VanillaMutatorIDs.ANewChallenger)?.GetFirstRelicEffectData<RelicEffectReplaceChampion>()?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.ImpPool, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.Impcicle)?.GetFirstRelicEffectData<RelicEffectAddBattleCardToHand>()?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.MorselPool, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.Shadelamp)?.GetFirstRelicEffectData<RelicEffectAddBattleCardToHandOnUnitTrigger>()?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.MorselPoolStarter, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.AbandonedAntumbra)?.GetFirstRelicEffectData<RelicEffectAddBattleCardToHand>()?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.Class5MorselMinerOnly, allGameData.FindCardData(VanillaCardIDs.MakingofaMorsel)?.GetEffects()[0]?.GetParamCardPool());
+
+
+            VanillaCardPools.Add(VanillaCardPoolIDs.LevelableUnits, null);
+            VanillaCardPools.Add(VanillaCardPoolIDs.UmbraBlazingArrows2, allGameData.FindCardData(VanillaCardIDs.BlazingBolts)?.GetEffects()[1]?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.UmbraBlazingArrows3, allGameData.FindCardData(VanillaCardIDs.BlazingBolts2)?.GetEffects()[2]?.GetParamCardPool());
+
+            VanillaCardPools.Add(VanillaCardPoolIDs.DanteMutatorPool, allGameData.FindMutatorData(VanillaMutatorIDs.DantesComedy)?.GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>()?.GetParamCardPool());
+            var mask = allGameData.FindMutatorData(VanillaMutatorIDs.DantesComedy)?.GetFirstRelicEffectData<RelicEffectAddTempUpgrade>()?.GetParamCardUpgradeData()?.GetFilters()[0];
+            var pools = AccessTools.Field(typeof(CardUpgradeMaskData), "allowedCardPools").GetValue(mask) as List<CardPool>;
+            VanillaCardPools.Add(VanillaCardPoolIDs.DanteOnlyPool, pools[0]);
+            VanillaCardPools.Add(VanillaCardPoolIDs.HephMutatorPool, allGameData.FindMutatorData(VanillaMutatorIDs.IfIhadaHammer)?.GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>()?.GetParamCardPool());
+            mask = allGameData.FindMutatorData(VanillaMutatorIDs.IfIhadaHammer)?.GetFirstRelicEffectData<RelicEffectAddTempUpgrade>()?.GetParamCardUpgradeData()?.GetFilters()[0];
+            pools = AccessTools.Field(typeof(CardUpgradeMaskData), "allowedCardPools").GetValue(mask) as List<CardPool>;
+            VanillaCardPools.Add(VanillaCardPoolIDs.HephOnlyPool, pools[0]);
+
+
+            VanillaCardPools.Add(VanillaCardPoolIDs.JunkPoolT1, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.Reconciler)?.GetTriggers()[0]?.GetEffects()[0]?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.JunkPoolT2, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.Absolver)?.GetTriggers()[0]?.GetEffects()[0]?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.JunkPoolT3, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.Purifier)?.GetTriggers()[0]?.GetEffects()[0]?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.JunkPoolUltimate, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.FeltheWingsofLightJunk).GetBossActionData()[0].GetActions()[0].GetActionEffectData()[0].GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.SpreadingSpores, allGameData.FindCardData(VanillaCardIDs.SpreadingSpores).GetEffects()[2].GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.AutomaticRailspikes, allGameData.FindCardData(VanillaCardIDs.AutomaticRailspikes).GetUpgradeData()[0].GetCardTriggerUpgrades()[0].GetCardEffects()[0].GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.SpikedriverColony, allGameData.FindCardData(VanillaCardIDs.SpikedriverColony).GetUpgradeData()[0].GetTriggerUpgrades()[0].GetEffects()[0].GetParamCardPool());
+
+            var smrd = (allGameData.FindRewardData(VanillaRewardIDs.SpellMergeReward) as SpellMergeRewardData);
+            VanillaCardPools.Add(VanillaCardPoolIDs.IgnoredFromNexusSpike, AccessTools.Field(typeof(SpellMergeRewardData), "cardsToIgnore").GetValue(smrd) as CardPool);
+
+            mask = allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.Powerstone).GetFilters()[1];
+            pools = AccessTools.Field(typeof(CardUpgradeMaskData), "disallowedCardPools").GetValue(mask) as List<CardPool>;
+            // UnleashTheWildwoodOnlyPool, AdaptiveMutationOnlyPool
+            foreach (var pool in pools)
+            {
+                VanillaCardPools.Add(pool.name, pool);
+            }
+
+
+            VanillaCardPools.Add(VanillaCardPoolIDs.CalcifiedEmberOnlyPool, allGameData.FindMutatorData(VanillaMutatorIDs.JunkedUp).GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>().GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.DantesCandleOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.MonsterDanteSynthesis).GetTriggerUpgrades()[0].GetEffects()[0].GetParamCardPool());
+
+            VanillaCardPools.Add(VanillaCardPoolIDs.DraffOnlyPool, allGameData.FindCardData(VanillaCardIDs.SacrificialResurrection).GetEffects()[1].GetParamCardPool());
+            mask = allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.Furystone).GetFilters()[0];
+            pools = AccessTools.Field(typeof(CardUpgradeMaskData), "disallowedCardPools").GetValue(mask) as List<CardPool>;
+            VanillaCardPools.Add(VanillaCardPoolIDs.EelGorgonOnlyPool, pools[0]);
+            VanillaCardPools.Add(VanillaCardPoolIDs.ExcavatedEmberOnlyPool, allGameData.FindCardData(VanillaCardIDs.EmberCache).GetEffects()[0].GetParamCardPool());
+
+            VanillaCardPools.Add(VanillaCardPoolIDs.ImpStarterOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.ImpParade).GetTriggerUpgrades()[0].GetEffects()[0].GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.FledglingImpOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.ImpParadeII).GetTriggerUpgrades()[0].GetEffects()[0].GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.WelderHelperOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.ImpParadeIII).GetTriggerUpgrades()[0].GetEffects()[1].GetParamCardPool());
+
+            VanillaCardPools.Add(VanillaCardPoolIDs.LodestoneOnlyPool, allGameData.FindMutatorData(VanillaMutatorIDs.Heavy).GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>().GetParamCardPool());
+
+            mask = allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.Stackstone).GetFilters()[4];
+            pools = AccessTools.Field(typeof(CardUpgradeMaskData), "disallowedCardPools").GetValue(mask) as List<CardPool>;
+            VanillaCardPools.Add(VanillaCardPoolIDs.ExcludedFromStackstone, pools[0]);
+            mask = allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.Stackstone).GetFilters()[5];
+            pools = AccessTools.Field(typeof(CardUpgradeMaskData), "disallowedCardPools").GetValue(mask) as List<CardPool>;
+            VanillaCardPools.Add(VanillaCardPoolIDs.SoulSiphonOnlyPool, pools[0]);
+
+            VanillaCardPools.Add(VanillaCardPoolIDs.StingOnlyPool, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.Thornfruit).GetFirstRelicEffectData<RelicEffectAddBattleCardToHand>().GetParamCardPool());
+            var csb = allGameData.FindCovenantData(VanillaCovenentIDs.Ascension01StrongerEnemies).GetFirstRelicEffectData<RelicEffectAddCardSetStartOfRun>().GetParamCardSetBuilder();
+            var cpulls = AccessTools.Field(typeof(CardSetBuilder), "paramCardPulls").GetValue(csb) as List<CardPull>;
+            VanillaCardPools.Add(VanillaCardPoolIDs.TrainStewardOnly, AccessTools.Field(typeof(CardPull), "cardPool").GetValue(cpulls[2]) as CardPool);
+
+            VanillaCardPools.Add(VanillaCardPoolIDs.VengefulShardOnlyPool, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.SeraphtheDiligent).GetBossActionData()[0].GetActions()[0].GetActionEffectData()[0].GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.VineGraspOnlyPool, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.CursedVines).GetFirstRelicEffectData<RelicEffectAddBattleCardToHand>().GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.TrainSteward2, allGameData.FindMutatorData(VanillaMutatorIDs.AtYourService).GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>().GetParamCardPool());
         }
     }
 }

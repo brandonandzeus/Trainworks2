@@ -231,7 +231,7 @@ namespace Trainworks.Builders
         public CardData BuildAndRegister()
         {
             var cardData = this.Build();
-            Trainworks.Log(LogLevel.Debug, "Adding custom card: " + cardData.GetName());
+
             CustomCardManager.RegisterCustomCard(cardData, this.CardPoolIDs);
 
             return cardData;

@@ -219,7 +219,7 @@ namespace Trainworks.BuildersV2
                 }
             }
 
-            StatusEffectManager manager = GameObject.FindObjectOfType<StatusEffectManager>() as StatusEffectManager;
+            var manager = StatusEffectManager.Instance;
             manager.GetAllStatusEffectsData().GetStatusEffectData().Add(statusEffect);
             StatusEffectManager.StatusIdToLocalizationExpression.Add(StatusID, StatusIDKey);
 

@@ -116,8 +116,8 @@ namespace Trainworks.BuildersV2
         {
             ParamSubtype = VanillaSubtypeIDs.None;
             ParamStatusEffects = new List<StatusEffectStackData>();
-            ExtraTooltipBodyKey = "";
-            ExtraTooltipTitleKey = "";
+            ExtraTooltipBodyKey = string.Empty;
+            ExtraTooltipTitleKey = string.Empty;
 
             var assembly = Assembly.GetCallingAssembly();
             BaseAssetPath = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];

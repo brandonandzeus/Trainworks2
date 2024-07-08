@@ -1,4 +1,6 @@
-﻿namespace Trainworks.ConstantsV2
+﻿using System;
+
+namespace Trainworks.ConstantsV2
 {
     /// <summary>
     /// Provides easy access to all of the base game's map node pool IDs
@@ -112,10 +114,12 @@
         /// <summary>
         /// Do not use. Left in for compatibility. (Mispelled)
         /// </summary>
+        [Obsolete("Use FirstMerchant instead.", true)]
         public static readonly string FirstMerhant = "Merchant - First";
         ///<summary>
         /// Do not use. Left in for compatibility. (Wrong Ring Number)
         /// </summary>
+        [Obsolete("Use ArtifactMerchantRing8 instead.", true)]
         public static readonly string ArtifactMerchantRing7 = "Merchant - Level 7 Artifact Guaranteed" /*sic*/;
     }
 }

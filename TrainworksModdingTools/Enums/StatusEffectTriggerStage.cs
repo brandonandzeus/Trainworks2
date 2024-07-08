@@ -1,19 +1,16 @@
 ﻿
+using BepInEx.Logging;
+
 namespace Trainworks.Enums
 {
     public class StatusEffectTriggerStage : ExtendedByteEnum<StatusEffectTriggerStage, StatusEffectData.TriggerStage>
     {
-        private static byte InitialID = 128;
-
-        public StatusEffectTriggerStage(string Name, byte? ID = null) : base(Name, ID ?? GetNewID())
+        public StatusEffectTriggerStage(string Name, byte? ID = null) : base(Name)
         {
-
-        }
-
-        public static byte GetNewID()
-        {
-            InitialID++;
-            return InitialID;
+            if (ID.HasValue)
+            {
+                Trainworks.Log(LogLevel.Warning, "StatusEffectTriggerStage: Specific ID requested, that will be ignored");
+            }
         }
 
         public static implicit operator StatusEffectData.TriggerStage(StatusEffectTriggerStage extendedEnum)

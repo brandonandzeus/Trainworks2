@@ -9,7 +9,6 @@ namespace Trainworks.Enums
 
     public class TargetModeType : ExtendedByteEnum<TargetModeType, TargetMode>
     {
-        private static byte InitialID = 48;
         internal static readonly Dictionary<TargetMode, CharacterTargetSelectionFunc> CharacterTargetModeHandlers = new Dictionary<TargetMode, CharacterTargetSelectionFunc>();
         internal static readonly Dictionary<TargetMode, CardTargetSelectionFunc> CardTargetModeHandlers = new Dictionary<TargetMode, CardTargetSelectionFunc>();
         internal static readonly List<TargetMode> InvalidInvertedCardTargetModes = new List<TargetMode>
@@ -26,13 +25,18 @@ namespace Trainworks.Enums
             TargetMode.Pyre,
             TargetMode.LastTargetedCharacters,
         };
-#pragma warning disable CS0618 // Type or member is obsolete
-        internal static TargetMode InvertTargets = new TargetModeType("Invert", 128).GetEnum();
-#pragma warning restore CS0618 // Type or member is obsolete
 
-        [Obsolete("Please use the overload accepting (string, Action, byte?)")]
-        public TargetModeType(string Name, byte? ID = null) : base(Name, ID ?? GetNewID())
+
+        public TargetModeType(string Name, byte? ID = null) : base(Name)
         {
+            if (ID.HasValue)
+            {
+                Trainworks.Log(LogLevel.Warning, "TargetModeType: Specific ID requested, that will be ignored");
+            }
+            if (this.ID >= 128)
+            {
+                Trainworks.Log(LogLevel.Error, "Too many TargetModeTypes have been created, ID's > 128 are reserved for Inverted TargetModes");
+            }
         }
 
         /// <summary>
@@ -44,9 +48,17 @@ namespace Trainworks.Enums
         /// The second parameter being all available targets in the room (no need for filtering out Phased, subtypes, etc that's already done). **DO NOT** iterate over this list with a foreach loop.
         /// The third parameter is to be filled with the selected targets.
         /// </param>
-        /// <param name="ID">Optional assigned ID.</param>
-        public TargetModeType(string Name, CharacterTargetSelectionFunc func, byte? ID = null) : base(Name, ID ?? GetNewID())
+        /// <param name="ID">DO NOT USE. ID Assignment is disabled.</param>
+        public TargetModeType(string Name, CharacterTargetSelectionFunc func, byte? ID = null) : base(Name)
         {
+            if (ID.HasValue)
+            {
+                Trainworks.Log(LogLevel.Warning, "TargetModeType: Specific ID requested, that will be ignored");
+            }
+            if (this.ID >= 128)
+            {
+                Trainworks.Log(LogLevel.Error, "Too many TargetModeTypes have been created, ID's > 128 are reserved for Inverted TargetModes");
+            }
             CharacterTargetModeHandlers.Add(this.GetEnum(), func);
         }
 
@@ -58,9 +70,17 @@ namespace Trainworks.Enums
         /// The first parameter being a CollectTargetsData which contains all of the parameters.
         /// The second parameter is to be filled with the selected target cards.
         /// </param>
-        /// <param name="ID">Optional assigned ID.</param>
-        public TargetModeType(string Name, CardTargetSelectionFunc func, byte? ID = null) : base(Name, ID ?? GetNewID())
+        /// <param name="ID">DO NOT USE. ID Assignment is disabled.</param>
+        public TargetModeType(string Name, CardTargetSelectionFunc func, byte? ID = null) : base(Name)
         {
+            if (ID.HasValue)
+            {
+                Trainworks.Log(LogLevel.Warning, "TargetModeType: Specific ID requested, that will be ignored");
+            }
+            if (this.ID >= 128)
+            {
+                Trainworks.Log(LogLevel.Error, "Too many TargetModeTypes have been created, ID's > 128 are reserved for Inverted TargetModes");
+            }
             CardTargetModeHandlers.Add(this.GetEnum(), func);
         }
 
@@ -97,16 +117,6 @@ namespace Trainworks.Enums
         public static implicit operator TargetMode(TargetModeType extendedEnum)
         {
             return extendedEnum.GetEnum();
-        }
-
-        public static byte GetNewID()
-        {
-            InitialID++;
-            if (InitialID >= 128)
-            {
-                Trainworks.Log(LogLevel.Error, "Too many TargetModeTypes have been created");
-            }
-            return InitialID;
         }
     }
 

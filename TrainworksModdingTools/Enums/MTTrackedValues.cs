@@ -1,25 +1,23 @@
-﻿namespace Trainworks.Enums
+﻿using BepInEx.Logging;
+
+namespace Trainworks.Enums
 {
     /// <summary>
     /// An Extended Enum.
     /// </summary>
     public class TrackedValueType : ExtendedEnum<TrackedValueType, CardStatistics.TrackedValueType>
     {
-        private static int NumTrackedValues = 576;
-
-        public TrackedValueType(string Name, int? ID = null) : base(Name, ID ?? GetNewCharacterGUID())
+        public TrackedValueType(string Name, int? ID = null) : base(Name)
         {
+            if (ID.HasValue)
+            {
+                Trainworks.Log(LogLevel.Warning, "TrackedValueType: Specific ID requested, that will be ignored");
+            }            
         }
 
         public static implicit operator CardStatistics.TrackedValueType(TrackedValueType extendedEnum)
         {
             return extendedEnum.GetEnum();
-        }
-
-        public static int GetNewCharacterGUID()
-        {
-            NumTrackedValues++;
-            return NumTrackedValues;
         }
     }
 }

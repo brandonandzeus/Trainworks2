@@ -26,28 +26,45 @@ namespace Trainworks.Enums
         }
 
         /// <summary>
+        /// Base Constructor for creating an Extended Enumerator.
+        /// The ID is determined by the Backing Enum type to avoid collisions with the base game and other mods.
+        /// Do not depend on the ID being a specific value, since it changes based on what other Enums have been added
+        /// by this class.
+        /// 
+        /// THe ID assignment is global meaning you can have as many ExtendedEnum sublasses (but why would you...?)
+        /// </summary>
+        /// <param name="name">Name of the Enum, it is shared across the Enum type.</param>
+        public ExtendedEnum(string name)
+        {
+            Name = name;
+            var GlobalEnumMap = GlobalEnumRecord<TEnum>.Instance;
+            if (GlobalEnumMap.ContainsName(Name))
+            {
+                Trainworks.Log(LogLevel.Warning, $"Name: {Name} Conflict in domain, {typeof(TEnum).Name}");
+            }
+            this.ID = GlobalEnumMap.Add(Name);
+            NameToExtendedEnumMap[Name] = (TExtendedEnum)this;
+            IntToExtendedEnumMap[ID] = (TExtendedEnum)this;
+        }
+
+        /// <summary>
         /// Base Constructor for creating an Extended Enumerator
         /// </summary>
         /// <param name="Name">Name of new Enum Value</param>
         /// <param name="ID">ID of new Enum Value</param>
+        [Obsolete("ExtendedEnum(string, int) is deprecated, The ID will be ignored. Please use the ExtendedEnum(string) overload.")]
         public ExtendedEnum(string Name, int ID)
         {
-            this.ID = ID;
             this.Name = Name;
-            if (NameToExtendedEnumMap.ContainsKey(this.Name))
+            var GlobalEnumMap = GlobalEnumRecord<TEnum>.Instance;
+
+            if (GlobalEnumMap.ContainsName(this.Name))
             {
-                Trainworks.Log(LogLevel.Warning, $"Name: {this.Name} Conflict in domain, {typeof(TExtendedEnum).Name}");
+                Trainworks.Log(LogLevel.Warning, $"Name: {this.Name} Conflict in domain, {typeof(TEnum).Name}");
             }
-            if (IntToExtendedEnumMap.ContainsKey(this.ID))
-            {
-                Trainworks.Log(LogLevel.Warning, $"ID#{this.ID} Conflict between {Name} and {IntToExtendedEnumMap[this.ID].Name} in domain, {typeof(TExtendedEnum).Name}");
-            }
-            if (ReservedIDs.Contains(this.ID))
-            {
-                Trainworks.Log(LogLevel.Warning, $"ID#{this.ID} is Reserved and can't be set for {Name}");
-            }
+            this.ID = GlobalEnumMap.Add(Name);
             NameToExtendedEnumMap[Name] = (TExtendedEnum)this;
-            IntToExtendedEnumMap[ID] = (TExtendedEnum)this;
+            IntToExtendedEnumMap[this.ID] = (TExtendedEnum)this;
         }
 
         /// <summary>
@@ -87,6 +104,7 @@ namespace Trainworks.Enums
         /// </summary>
         /// <param name="enum"></param>
         /// <returns></returns>
+        [Obsolete("Usage of this function is unnecessary (you should never need to convert a BaseGame Enum Type to an ExtendedEnum instance), and calls can be removed. (Also this function has a bug)")]
         public static TExtendedEnum Convert(TEnum @enum)
         {
             int id = System.Convert.ToInt32((Enum)@enum);

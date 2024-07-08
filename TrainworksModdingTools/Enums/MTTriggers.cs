@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using BepInEx.Logging;
+using System;
+using System.Collections.Generic;
 
 namespace Trainworks.Enums.MTTriggers
 {
@@ -7,20 +9,17 @@ namespace Trainworks.Enums.MTTriggers
     /// </summary>
     public class CardTrigger : ExtendedEnum<CardTrigger, CardTriggerType>
     {
-        private static int NumCardTriggers = 576;
-
-        public CardTrigger(string localizationKey, int? ID = null) : base(localizationKey, ID ?? GetNewCardGUID())
+        public CardTrigger(string localizationKey, int? ID = null) : base(localizationKey)
         {
+            if (ID.HasValue)
+            {
+                Trainworks.Log(LogLevel.Warning, "CardTrigger: Specific ID requested, that will be ignored");
+            }
             Dictionary<CardTriggerType, string> dict = (Dictionary<CardTriggerType, string>)typeof(CardTriggerTypeMethods).GetField("TriggerToLocalizationExpression", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null);
             dict[this.GetEnum()] = localizationKey;
         }
 
-        public static int GetNewCardGUID()
-        {
-            NumCardTriggers++;
-            return NumCardTriggers;
-        }
-
+        [Obsolete("This function is unneccessary and has a bug")]
         public static implicit operator CardTrigger(CardTriggerType cardTriggerType)
         {
             return CardTrigger.Convert(cardTriggerType);
@@ -37,19 +36,16 @@ namespace Trainworks.Enums.MTTriggers
     /// </summary>
     public class CharacterTrigger : ExtendedEnum<CharacterTrigger, CharacterTriggerData.Trigger>
     {
-        private static int NumCharTriggers = 576;
-
-        public CharacterTrigger(string localizationKey, int? ID = null) : base(localizationKey, ID ?? GetNewCharacterGUID())
+        public CharacterTrigger(string localizationKey, int? ID = null) : base(localizationKey)
         {
+            if (ID.HasValue)
+            {
+                Trainworks.Log(LogLevel.Warning, "CharacterTrigger: Specific ID requested, that will be ignored");
+            }
             CharacterTriggerData.TriggerToLocalizationExpression[this.GetEnum()] = localizationKey;
         }
 
-        public static int GetNewCharacterGUID()
-        {
-            NumCharTriggers++;
-            return NumCharTriggers;
-        }
-
+        [Obsolete("This function is unneccessary and has a bug")]
         public static implicit operator CharacterTrigger(CharacterTriggerData.Trigger trigger)
         {
             return CharacterTrigger.Convert(trigger);

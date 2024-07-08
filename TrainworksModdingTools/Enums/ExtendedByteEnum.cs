@@ -25,29 +25,40 @@ namespace Trainworks.Enums
             private set { this.name = value; }
         }
 
+        public ExtendedByteEnum(string name)
+        {
+            Name = name;
+            var GlobalEnumMap = GlobalByteEnumRecord<TEnum>.Instance;
+            if (GlobalEnumMap.ContainsName(Name))
+            {
+                Trainworks.Log(LogLevel.Warning, $"Name: {Name} Conflict in domain, {typeof(TEnum).Name}");
+            }
+            ID = GlobalEnumMap.Add(Name);
+            NameToExtendedEnumMap[Name] = (TExtendedEnum)this;
+            ByteToExtendedEnumMap[ID] = (TExtendedEnum)this;
+
+            Trainworks.Log(LogLevel.All, typeof(TEnum).Name + " Name " + Name + " ID " + this.ID);
+        }
+
         /// <summary>
         /// Base Constructor for creating an Extended Enumerator
         /// </summary>
         /// <param name="Name">Name of new Enum Value</param>
         /// <param name="ID">ID of new Enum Value</param>
+        [Obsolete("ExtendedByteEnum(string, int) is deprecated, The ID will be ignored. Please use ExtendedByteEnum(string) overload.")]
         public ExtendedByteEnum(string Name, byte ID)
         {
-            this.ID = ID;
             this.Name = Name;
-            if (NameToExtendedEnumMap.ContainsKey(this.Name))
+            var GlobalEnumMap = GlobalByteEnumRecord<TEnum>.Instance;
+            if (GlobalEnumMap.ContainsName(this.Name))
             {
-                Trainworks.Log(LogLevel.Warning, $"Name: {this.Name} Conflict in domain, {typeof(TExtendedEnum).Name}");
+                Trainworks.Log(LogLevel.Warning, $"Name: {this.Name} Conflict in domain, {typeof(TEnum).Name}");
             }
-            if (ByteToExtendedEnumMap.ContainsKey(this.ID))
-            {
-                Trainworks.Log(LogLevel.Warning, $"ID#{this.ID} Conflict between {Name} and {ByteToExtendedEnumMap[this.ID].Name} in domain, {typeof(TExtendedEnum).Name}");
-            }
-            if (ReservedIDs.Contains(this.ID))
-            {
-                Trainworks.Log(LogLevel.Warning, $"ID#{this.ID} is Reserved and can't be set for {Name}");
-            }
+            this.ID = GlobalEnumMap.Add(Name);
             NameToExtendedEnumMap[Name] = (TExtendedEnum)this;
-            ByteToExtendedEnumMap[ID] = (TExtendedEnum)this;
+            ByteToExtendedEnumMap[this.ID] = (TExtendedEnum)this;
+
+            Trainworks.Log(LogLevel.All, typeof(TEnum).Name + " Name " + Name + " ID " + this.ID);
         }
 
         /// <summary>
@@ -81,29 +92,5 @@ namespace Trainworks.Enums
         /// <param name="Key">int key to get value</param>
         /// <returns></returns>
         public static TExtendedEnum GetValueOrDefault(byte Key) => ByteToExtendedEnumMap.GetValueOrDefault(Key);
-
-        /// <summary>
-        /// Returns a generated variant of TEnum that can be used for Trainworks functions
-        /// </summary>
-        /// <param name="enum"></param>
-        /// <returns></returns>
-        public static TExtendedEnum Convert(TEnum @enum)
-        {
-            byte id = System.Convert.ToByte((Enum)@enum);
-            if (ByteToExtendedEnumMap.ContainsKey(id))
-            {
-                TExtendedEnum @extendedEnum = (TExtendedEnum)Activator.CreateInstance(typeof(TExtendedEnum));
-                @extendedEnum.ID = id;
-                @extendedEnum.Name = "Generated_" + Enum.GetName(typeof(TEnum), @enum);
-                NameToExtendedEnumMap[@extendedEnum.Name] = @extendedEnum;
-                ByteToExtendedEnumMap[@extendedEnum.ID] = @extendedEnum;
-                return @extendedEnum;
-            }
-            else
-            {
-                return ByteToExtendedEnumMap[id];
-            }
-        }
     }
-
 }

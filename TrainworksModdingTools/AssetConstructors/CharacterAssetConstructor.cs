@@ -167,6 +167,7 @@ namespace Trainworks.AssetConstructors
         /// <param name="assetRef">Reference containing the asset information</param>
         /// <param name="sprite">Sprite to create character with</param>
         /// <param name="skeletonData">GameObject containing the necessary Spine animation data</param>
+        /// <param name="bundleInfo"></param>
         /// <returns>The GameObject for the character</returns>
         private static GameObject CreateCharacterGameObject(AssetReference assetRef, Sprite sprite, GameObject skeletonData, BundleAssetLoadingInfo bundleInfo)
         {
@@ -244,7 +245,7 @@ namespace Trainworks.AssetConstructors
         /// <param name="assetRef">Reference containing the asset information</param>
         /// <param name="sprite">Sprite to create character with</param>
         /// <param name="animations">Dictionary of Spine Animation GameObjects</param>
-        /// <param name="name">Base name to give the newly created GameObjects</param>
+        /// <param name="bundleInfo"></param>
         /// <returns>The GameObject for the character</returns>
         private static GameObject CreateCharacterGameObject(AssetReference assetRef, Sprite sprite, IDictionary<CharacterUI.Anim, GameObject> animations, BundleAssetLoadingInfo bundleInfo)
         {

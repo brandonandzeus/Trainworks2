@@ -30,6 +30,7 @@ namespace Trainworks.Managers
         /// <param name="fireTriggersData">Additional Parameters for controlling how the trigger is fired</param>
         /// <param name="triggerCount">Number of Times to Trigger</param>
         /// <returns>Returns Whether it succeeded at Queuing a trigger internally</returns>
+        [Obsolete("CustomTriggerManager's functions are deprecated. Just call QueueTrigger from CombatManager, Most objects have a reference to CombatManager which you can get through Harmony, but if for some reason it doesn't then grab a reference through ProvidierManager.")]
         public static void QueueTrigger(CharacterTrigger charTrigger, CharacterState character, bool canAttackOrHeal = true, bool canFireTriggers = true, CharacterState.FireTriggersData fireTriggersData = null, int triggerCount = 1)
         {
             if (ProviderManager.TryGetProvider<CombatManager>(out CombatManager combatManager))
@@ -55,6 +56,7 @@ namespace Trainworks.Managers
         /// <param name="fireTriggersData">Additional Parameters for controlling how the trigger is fired</param>
         /// <param name="triggerCount">Number of Times to Trigger</param>
         /// <returns></returns>
+        [Obsolete("CustomTriggerManager's functions are deprecated. Just call QueueTrigger from CombatManager, Most objects have a reference to CombatManager which you can get through Harmony, but if for some reason it doesn't then grab a reference through ProvidierManager.")]
         public static void QueueTrigger(CharacterTrigger charTrigger, CharacterState[] characters, bool canAttackOrHeal = true, bool canFireTriggers = true, CharacterState.FireTriggersData fireTriggersData = null, int triggerCount = 1)
         {
             if (ProviderManager.TryGetProvider<CombatManager>(out CombatManager combatManager))
@@ -83,6 +85,7 @@ namespace Trainworks.Managers
         /// <param name="fireTriggersData">Additional Parameters for controlling how the trigger is fired</param>
         /// <param name="triggerCount">Number of Times to Trigger</param>
         /// <returns></returns>
+        [Obsolete("CustomTriggerManager's functions are deprecated. Just call QueueTrigger from CombatManager, Most objects have a reference to CombatManager which you can get through Harmony, but if for some reason it doesn't then grab a reference through ProvidierManager.")]
         public static void QueueTrigger<Manager>(CharacterTrigger charTrigger, bool canAttackOrHeal = true, bool canFireTriggers = true, CharacterState.FireTriggersData fireTriggersData = null, int triggerCount = 1) where Manager : ICharacterManager, IProvider
         {
             if (ProviderManager.TryGetProvider<CombatManager>(out CombatManager combatManager) && ProviderManager.TryGetProvider<Manager>(out Manager characterManager))
@@ -111,6 +114,7 @@ namespace Trainworks.Managers
         /// <param name="fireTriggersData">Additional Parameters for controlling how the trigger is fired</param>
         /// <param name="triggerCount">Number of Times to Trigger</param>
         /// <returns></returns>
+        [Obsolete("CustomTriggerManager's functions are deprecated. Just call QueueAndRunTrigger from CombatManager, Most objects have a reference to CombatManager which you can get through Harmony, but if for some reason it doesn't then grab a reference through ProvidierManager.")]
         public static void QueueAndRunTrigger(CharacterTrigger charTrigger, CharacterState character, bool canAttackOrHeal = true, bool canFireTriggers = true, CharacterState.FireTriggersData fireTriggersData = null, int triggerCount = 1)
         {
             QueueTrigger(charTrigger, character, canAttackOrHeal, canFireTriggers, fireTriggersData, triggerCount);
@@ -127,6 +131,7 @@ namespace Trainworks.Managers
         /// <param name="fireTriggersData">Additional Parameters for controlling how the trigger is fired</param>
         /// <param name="triggerCount">Number of Times to Trigger</param>
         /// <returns></returns>
+        [Obsolete("CustomTriggerManager's functions are deprecated. Just call QueueTrigger from CombatManager, Most objects have a reference to CombatManager which you can get through Harmony, but if for some reason it doesn't then grab a reference through ProvidierManager.")]
         public static void QueueAndRunTrigger(CharacterTrigger charTrigger, CharacterState[] characters, bool canAttackOrHeal = true, bool canFireTriggers = true, CharacterState.FireTriggersData fireTriggersData = null, int triggerCount = 1)
         {
             QueueTrigger(charTrigger, characters, canAttackOrHeal, canFireTriggers, fireTriggersData, triggerCount);
@@ -143,6 +148,7 @@ namespace Trainworks.Managers
         /// <param name="fireTriggersData">Additional Parameters for controlling how the trigger is fired</param>
         /// <param name="triggerCount">Number of Times to Trigger</param>
         /// <returns></returns>
+        [Obsolete("CustomTriggerManager's functions are deprecated. Just call QueueAndRunTrigger from CombatManager, Most objects have a reference to CombatManager which you can get through Harmony, but if for some reason it doesn't then grab a reference through ProvidierManager.")]
         public static void QueueAndRunTrigger<Manager>(CharacterTrigger charTrigger, bool canAttackOrHeal = true, bool canFireTriggers = true, CharacterState.FireTriggersData fireTriggersData = null, int triggerCount = 1) where Manager : IProvider, ICharacterManager
         {
             QueueTrigger<Manager>(charTrigger, canAttackOrHeal, canFireTriggers, fireTriggersData, triggerCount);
@@ -153,6 +159,7 @@ namespace Trainworks.Managers
         /// Remotely Runs the Trigger Queue of the CombatManager
         /// </summary>
         /// <returns></returns>
+        [Obsolete("CustomTriggerManager's functions are deprecated. Just call RunTriggerQueue from CombatManager, Most objects have a reference to CombatManager which you can get through Harmony, but if for some reason it doesn't then grab a reference through ProvidierManager.")]
         public static void RunTriggerQueueRemote()
         {
             if (ProviderManager.TryGetProvider<CombatManager>(out CombatManager combatManager))
@@ -172,6 +179,7 @@ namespace Trainworks.Managers
         /// <param name="triggeredCharacter">Character used to determine how many times Card Trigger should be applied</param>
         /// <param name="cardTriggerFiredCallback">Action to take after applying trigger</param>
         /// <returns></returns>
+        [Obsolete("CustomTriggerManager's functions are deprecated. Just call ApplyCardTriggers from CombatManager, Most objects have a reference to CombatManager which you can get through Harmony, but if for some reason it doesn't then grab a reference through ProvidierManager.")]
         public static void ApplyCardTriggers(CardTrigger cardTrigger, CardState playedCard, bool fireAllMonsterTriggersInRoom = false, int roomIndex = -1, bool ignoreDeadInTargeting = true, CharacterState triggeredCharacter = null, Action cardTriggerFiredCallback = null)
         {
             Trainworks.Log(LogLevel.Info, $"Applying {cardTrigger.Name}");
@@ -203,6 +211,7 @@ namespace Trainworks.Managers
         /// <param name="fireCount">how many times the trigger fires</param>
         /// <param name="cardTriggerFiredCallback">Action to call after function is called</param>
         /// <returns></returns>
+        [Obsolete("CustomTriggerManager's functions are deprecated. Just call FireCardTriggers from CombatManager, Most objects have a reference to CombatManager which you can get through Harmony, but if for some reason it doesn't then grab a reference through ProvidierManager.")]
         public static void FireCardTriggers(CardTrigger cardTrigger, CardState playedCard, int roomIndex = -1, bool ignoreDeadInTargeting = true, CharacterState triggeredCharacter = null, int fireCount = 1, Action cardTriggerFiredCallback = null)
         {
             if (ProviderManager.TryGetProvider<CombatManager>(out CombatManager combatManager))

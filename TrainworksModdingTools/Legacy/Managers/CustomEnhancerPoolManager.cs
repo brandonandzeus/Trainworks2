@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 // Deprecated in favor of Trainworks.BuildersV2.EnhancerDataBuilder and Trainworks.Managers.CustomEnhancerManager
 // This class has a bug in that it doesn't add the Enhancers to AllGameData.
 // As of Trainwroks 2.5.0 This class is defunct Do not use as it does nothing.
 namespace Trainworks.Managers
 {
+    [Obsolete("Please use CustomEnhancerManager's functions instead")]
     public class CustomEnhancerPoolManager
     {
         /// <summary>

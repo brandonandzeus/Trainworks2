@@ -1,7 +1,9 @@
 ﻿using HarmonyLib;
+using System;
 
 namespace Trainworks.Builders
 {
+    [Obsolete("Trainworks.Builders.SubtypeDataBuilder is deprecated and will no longer be unsupported. Please do not use if making a new mod. Trainworks.BuildersV2.SubtypeDataBuilder should be used for newer mods. See: https://github.com/brandonandzeus/Trainworks2/wiki/Upgrade-Trainworks-Tutorial")]
     public class SubtypeDataBuilder
     {
         public string _Subtype { get; set; }

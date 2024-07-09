@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -9,6 +10,7 @@ using UnityEngine.AddressableAssets;
 
 namespace Trainworks.Builders
 {
+    [Obsolete("Trainworks.Builders.CharacterDataBuilder is deprecated and will no longer be unsupported. Please do not use if making a new mod. Trainworks.BuildersV2.CharacterDataBuilder should be used for newer mods. See: https://github.com/brandonandzeus/Trainworks2/wiki/Upgrade-Trainworks-Tutorial")]
     public class CharacterDataBuilder
     {
         /// <summary>

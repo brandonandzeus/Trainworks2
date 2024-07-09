@@ -7,6 +7,7 @@ using static StatusEffectData;
 
 namespace Trainworks.Builders
 {
+    [Obsolete("Trainworks.Builders.StatusEffectDataBuilder is deprecated and will no longer be unsupported. Please do not use if making a new mod. Trainworks.BuildersV2.StatusEffectDataBuilder should be used for newer mods. See: https://github.com/brandonandzeus/Trainworks2/wiki/Upgrade-Trainworks-Tutorial")]
     public class StatusEffectDataBuilder
     {
         /// <summary>

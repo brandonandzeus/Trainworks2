@@ -12,6 +12,7 @@ namespace Trainworks.Builders
     /// <summary>
     /// Builder class to aid in creating custom clans.
     /// </summary>
+    [Obsolete("Trainworks.Builders.ClassDataBuilder is deprecated and will no longer be unsupported. Please do not use if making a new mod. Trainworks.BuildersV2.ClassDataBuilder should be used for newer mods. See: https://github.com/brandonandzeus/Trainworks2/wiki/Upgrade-Trainworks-Tutorial")]
     public class ClassDataBuilder
     {
         /// <summary>

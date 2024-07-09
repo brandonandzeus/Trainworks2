@@ -74,6 +74,7 @@ namespace Trainworks.Builders
         /// Builder for CharacterData parameter; exact purpose depends on the effect type specified in EffectStateName.
         /// Calling Build() will also build this parameter recursively.
         /// </summary>
+        [Obsolete]
         public CharacterDataBuilder ParamCharacterDataBuilder { get; set; }
         /// <summary>
         /// RoomData parameter; exact purpose depends on the effect type specified in EffectStateName.
@@ -159,10 +160,12 @@ namespace Trainworks.Builders
         /// <returns>The newly created CardEffectData</returns>
         public CardEffectData Build()
         {
+#pragma warning disable CS0612 // Type or member is obsolete
             if (this.ParamCharacterDataBuilder != null)
             {
                 this.ParamCharacterData = this.ParamCharacterDataBuilder.BuildAndRegister();
             }
+#pragma warning restore CS0612 // Type or member is obsolete
             CardEffectData cardEffectData = new CardEffectData();
 
             ContentValidator.PreBuild(this);

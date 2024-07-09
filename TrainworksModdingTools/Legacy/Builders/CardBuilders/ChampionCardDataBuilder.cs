@@ -6,8 +6,10 @@ using UnityEngine;
 
 namespace Trainworks.Builders
 {
+    [Obsolete("Trainworks.Builders.ChampionCardDataBuilder is deprecated and will no longer be unsupported. Please do not use if making a new mod. Trainworks.BuildersV2.ChampionCardDataBuilder should be used for newer mods. See: https://github.com/brandonandzeus/Trainworks2/wiki/Upgrade-Trainworks-Tutorial")]
     public class ChampionCardDataBuilder : CardDataBuilder
     {
+        [Obsolete]
         public CharacterDataBuilder Champion { get; set; }
         public CardData StarterCardData { get; set; }
         public CardUpgradeTreeDataBuilder UpgradeTree { get; set; }

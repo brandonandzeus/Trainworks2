@@ -1,10 +1,12 @@
 ﻿using HarmonyLib;
+using System;
 using System.Reflection;
 using Trainworks.Managers;
 using UnityEngine;
 
 namespace Trainworks.Builders
 {
+    [Obsolete("Trainworks.Builders.DraftRewardDataBuilder is deprecated and will no longer be unsupported. Please do not use if making a new mod. Trainworks.BuildersV2.DraftRewardDataBuilder should be used for newer mods. See: https://github.com/brandonandzeus/Trainworks2/wiki/Upgrade-Trainworks-Tutorial")]
     public class DraftRewardDataBuilder : IRewardDataBuilder
     {
         public string DraftRewardID { get; set; }
@@ -110,7 +112,7 @@ namespace Trainworks.Builders
             AccessTools.Field(typeof(RewardData), "_showCancelOverride").SetValue(rewardData, this._ShowCancelOverride);
             AccessTools.Field(typeof(RewardData), "_showRewardFlowInEvent").SetValue(rewardData, this._ShowRewardFlowInEvent);
 
-            /// Trainworks2 Backport. Should fix Clan Banners on restart.
+            // Trainworks2 Backport. Should fix Clan Banners on restart.
             CustomRewardManager.RegisterCustomReward(rewardData);
 
             return rewardData;

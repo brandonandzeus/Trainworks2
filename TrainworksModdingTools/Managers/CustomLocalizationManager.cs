@@ -9,19 +9,42 @@ using System.Text;
 
 namespace Trainworks.Managers
 {
+    using DynamicLocalizationParameterFunction = Func<string, ILocalizationParameterContext, string>;
+
     /// <summary>
     /// Handles loading of custom localized strings.
     /// </summary>
-    public class CustomLocalizationManager
+    public class CustomLocalizationManager : ILocalizationParamsManager
     {
         // Separator to CSV File Path.
         private static Dictionary<char, HashSet<String>> SeparatorsToCsvFiles = new Dictionary<char, HashSet<String>>();
         // Replacement strings currently in use
         internal static Dictionary<string, ReplacementStringData> ReplacementStrings;
+        // Dynamic localization paremeter functions.
+        internal static Dictionary<string, DynamicLocalizationParameterFunction> DynamicLocalizationParameters = new Dictionary<string, DynamicLocalizationParameterFunction>();
+        // Static localization parameters
+        internal static Dictionary<string, string> LocalizationParameters = new Dictionary<string, string>();
         // Single localization lines added.
         private static readonly Dictionary<string, string> CSVLineStrings = new Dictionary<string, string>();
         // Flag to specify that Localization Data has already been loaded and further changes are ignored.
         public static bool HasBeenLoaded { get; private set; }
+
+        internal static CustomLocalizationManager instance = new CustomLocalizationManager();
+
+        static CustomLocalizationManager()
+        {
+
+        }
+
+        private CustomLocalizationManager()
+        {
+
+        }
+
+        internal static CustomLocalizationManager Instance()
+        {
+            return instance;
+        }
 
         // Required because the library just chokes. When we need plural support, we can reimplement this.
         // The existing issue was that LocalizationUtil.GetPluralsUsedByLanguages() returns one less than mTerm.Languages.Length
@@ -213,7 +236,7 @@ namespace Trainworks.Managers
         /// </summary>
         /// <param name="keyword"></param>
         /// <param name="replacement">Localized text key for replacement</param>
-        /// <returns></returns>
+        /// <returns>True if a Replacement String was added</returns>
         public static bool AddReplacementString(string keyword, string replacement)
         {
             if (ReplacementStrings.ContainsKey(keyword))
@@ -229,6 +252,64 @@ namespace Trainworks.Managers
         }
 
         /// <summary>
+        /// Registers a Dynamic Localization Parameter.
+        /// 
+        /// This allows for a parameter to be passed when text is localized which allows for changing a part of a translation
+        /// with some runtime values from in game.
+        /// 
+        /// To use in your CSV file include the text {[PARAMETER]}, calling this function passing "PARAMETER" and a function
+        /// that takes in a string and returns a string. The string passed in will be the paramter(s) registered with the function
+        /// and you are to return the replacement text.
+        /// 
+        /// Note that if your text resolves to something within the base game that needs to be processed normally i.e. [effect0.status0.power]
+        /// Then the function `LocalizationManager.ApplyLocalizationParams(ref text)` needs to be called within your function before the text is returned.
+        /// 
+        /// </summary>
+        /// <param name="param">Localization Param</param>
+        /// <param name="func">Function that handles returning the runtime text to replace the param with</param>
+        /// <returns></returns>
+        public static bool AddDynamicParameter(string param, DynamicLocalizationParameterFunction func)
+        {
+            if (DynamicLocalizationParameters.ContainsKey(param))
+            {
+                Trainworks.Log(LogLevel.Warning, "Attempt to add duplicate Dynamic Parameter: " + param);
+                return false;
+            }
+            if (LocalizationParameters.ContainsKey(param))
+            {
+                Trainworks.Log(LogLevel.Warning, "Can't assign parameter to be both dynamic and static: " + param);
+                return false;
+            }
+
+            DynamicLocalizationParameters.Add(param, func);
+            return true;
+        }
+
+        /// <summary>
+        /// Sets a Parameter to be a static string.
+        /// 
+        /// This function can be called multiple times if you want to change the Parameter's value.
+        /// 
+        /// To use in your CSV file include the text {[PARAMETER]}, calling this function passing "PARAMETER" with a string
+        /// will replace the {[PARAMETER]} text with the value passed in.
+        /// 
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool SetParameterValue(string param, string value)
+        {
+            if (DynamicLocalizationParameters.ContainsKey(param))
+            {
+                Trainworks.Log(LogLevel.Warning, "Can't assign parameter to be both dynamic and static: " + param);
+                return false;
+            }
+
+            LocalizationParameters[param] = value;
+            return true;
+        }
+
+        /// <summary>
         /// Marks a Custom Card Trait class as one that has a tooltip
         /// </summary>
         /// <param name="cardTraitClass"></param>
@@ -239,6 +320,24 @@ namespace Trainworks.Managers
             // The first will always be the fully qualified assembly name the second since it is direct access will be the class name.
             traits.Add(cardTraitClass.Name);
             traits.Add(cardTraitClass.AssemblyQualifiedName);
+        }
+
+        public string GetParameterValue(string Param, ILocalizationParameterContext context)
+        {
+            if (DynamicLocalizationParameters.ContainsKey(Param))
+            {
+                return DynamicLocalizationParameters[Param].Invoke(Param, context);
+            }
+            else if (LocalizationParameters.ContainsKey(Param))
+            {
+                return LocalizationParameters[Param];
+            }
+            return null;
+        }
+
+        public int? GetParameterPluralAmount(string param, ILocalizationParameterContext context)
+        {
+            return null;
         }
     }
 }

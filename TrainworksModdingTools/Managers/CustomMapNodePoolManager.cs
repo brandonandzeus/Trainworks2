@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Malee;
 using System.Collections.Generic;
+using Trainworks.ConstantsV2;
 
 namespace Trainworks.Managers
 {
@@ -12,6 +13,8 @@ namespace Trainworks.Managers
         /// </summary>
         public static IDictionary<string, List<RewardNodeData>> CustomRewardNodeData { get; } = new Dictionary<string, List<RewardNodeData>>();
         public static IDictionary<string, List<MapNodeData>> CustomMapNodeData { get; } = new Dictionary<string, List<MapNodeData>>();
+        internal static RandomMapDataContainer RandomChosenMainClassUnit;
+        internal static RandomMapDataContainer RandomChosenSubClassUnit;
 
         /// <summary>
         /// Add the map node to the map node pools with given IDs.
@@ -28,10 +31,17 @@ namespace Trainworks.Managers
                 {
                     CustomRewardNodeData[mapNodePoolID] = new List<RewardNodeData>();
                 }
+                
                 CustomRewardNodeData[mapNodePoolID].Add(rewardNodeData);
+                AddCustomMapNodesToBucket(mapNodePoolID, rewardNodeData);
             }
         }
 
+        /// <summary>
+        /// Registers a custom merchant
+        /// </summary>
+        /// <param name="merchantData">MerchantData</param>
+        /// <param name="mapNodePoolIDs">Possible map nodes to add the merchant to.</param>
         public static void RegisterCustomMerchant(MerchantData merchantData, List<string> mapNodePoolIDs)
         {
             var mapNodeDatas = (List<MapNodeData>)AccessTools.Field(typeof(AllGameData), "mapNodeDatas").GetValue(ProviderManager.SaveManager.GetAllGameData());
@@ -47,57 +57,70 @@ namespace Trainworks.Managers
             }
         }
 
-        /// <summary>
-        /// Gets a list of all reward nodes added to the given map node pool by mods,
-        /// then adds them to the list passed in.
-        /// Reward nodes which naturally appear in the pool will not be returned.
-        /// </summary>
-        /// <param name="mapNodePoolID">ID of the map node pool to get nodes for</param>
-        /// <param name="mapNodes">List of map nodes to add the nodes to</param>
-        /// <param name="classTypeOverride">Whether or not only nodes matching the main/subclass should be added</param>
-        /// <returns>A list of reward nodes added to the map node pool with given ID by mods</returns>
-        public static void AddRewardNodesForPool(string mapNodePoolID, List<MapNodeData> mapNodes, RunState.ClassType classTypeOverride)
+        public static void AddCustomMapNodesToBucket(string mapNodePoolID, MapNodeData data)
         {
-            if (CustomRewardNodeData.ContainsKey(mapNodePoolID))
+            // Banner Pools have to be handled separately since they are setup differently.
+            if (mapNodePoolID == VanillaMapNodePoolIDs.RandomChosenMainClassUnit)
             {
-                var validMapNodes = new List<MapNodeData>();
-                var possibleMapNodes = CustomRewardNodeData[mapNodePoolID];
-
-                foreach (MapNodeData mapNodeData in possibleMapNodes)
+                AddRewardNodeToMainClassBanner(data);
+            }
+            else if (mapNodePoolID == VanillaMapNodePoolIDs.RandomChosenSubClassUnit)
+            {
+                AddRewardNodeToSubClassBanner(data);
+            }
+            else
+            {
+                var bucketList = FindMapNodeBucketList(mapNodePoolID);
+                if (bucketList == null)
                 {
-                    RewardNodeData rewardNodeData;
-                    if ((rewardNodeData = (mapNodeData as RewardNodeData)) != null && rewardNodeData.RequiredClass != null)
-                    {
-                        if (classTypeOverride == RunState.ClassType.MainClass && ProviderManager.SaveManager.GetMainClass() != rewardNodeData.RequiredClass)
-                        {
-                            continue;
-                        }
-                        else if (classTypeOverride == RunState.ClassType.SubClass && ProviderManager.SaveManager.GetSubClass() != rewardNodeData.RequiredClass)
-                        {
-                            continue;
-                        }
-                    }
-                    validMapNodes.Add(mapNodeData);
+                    Trainworks.Log("Could not find MapNodeBucketContainer with id " + mapNodePoolID + " ignoring.");
+                    return;
                 }
-
-                mapNodes.AddRange(validMapNodes);
+                var containerList = (ReorderableArray<MapNodeBucketData>)AccessTools.Field(typeof(MapNodeBucketContainer), "mapNodeBucketContainerList").GetValue(bucketList);
+                containerList[0].MapNodes.Add(data);
             }
         }
 
-        public static void AddCustomMapNodesToBucket(string mapNodePoolID, MapNodeData data)
+        private static MapNodeBucketContainer FindMapNodeBucketList(string id)
         {
             var runData = ProviderManager.SaveManager.GetAllGameData().GetBalanceData().GetRunData(false);
             var mnbl = (ReorderableArray<MapNodeBucketList>)AccessTools.Field(typeof(RunData), "mapNodeBucketLists").GetValue(runData);
 
             foreach (var bucketList in mnbl[0].BucketList)
             {
-                var id = (string)AccessTools.Field(typeof(MapNodeBucketContainer), "id").GetValue(bucketList);
-                if (id == mapNodePoolID)
+                var bucketId = (string)AccessTools.Field(typeof(MapNodeBucketContainer), "id").GetValue(bucketList);
+                if (bucketId == id)
                 {
-                    var containerList = (ReorderableArray<MapNodeBucketData>)AccessTools.Field(typeof(MapNodeBucketContainer), "mapNodeBucketContainerList").GetValue(bucketList);
-                    containerList[0].MapNodes.Add(data);
+                    return bucketList;
                 }
             }
+            return null;
+        }
+
+        internal static void AddRewardNodeToMainClassBanner(MapNodeData data)
+        {
+            if (RandomChosenMainClassUnit == null)
+            {
+                var mnbl = FindMapNodeBucketList(VanillaMapNodePoolIDs.LimboBannerMain);
+                var containerList = (ReorderableArray<MapNodeBucketData>)AccessTools.Field(typeof(MapNodeBucketContainer), "mapNodeBucketContainerList").GetValue(mnbl);
+                RandomChosenMainClassUnit = containerList[0].MapNodes[0] as RandomMapDataContainer;
+            }
+
+            var dataList = (ReorderableArray<MapNodeData>)AccessTools.Field(typeof(RandomMapDataContainer), "mapNodeDataList").GetValue(RandomChosenMainClassUnit);
+            dataList.Add(data);
+        }
+
+        internal static void AddRewardNodeToSubClassBanner(MapNodeData data)
+        {
+            if (RandomChosenSubClassUnit == null)
+            {
+                var mnbl = FindMapNodeBucketList(VanillaMapNodePoolIDs.LimboBannerSub);
+                var containerList = (ReorderableArray<MapNodeBucketData>)AccessTools.Field(typeof(MapNodeBucketContainer), "mapNodeBucketContainerList").GetValue(mnbl);
+                RandomChosenSubClassUnit = containerList[0].MapNodes[0] as RandomMapDataContainer;
+            }
+
+            var dataList = (ReorderableArray<MapNodeData>)AccessTools.Field(typeof(RandomMapDataContainer), "mapNodeDataList").GetValue(RandomChosenSubClassUnit);
+            dataList.Add(data);
         }
     }
 }

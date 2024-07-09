@@ -3,7 +3,7 @@ using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Trainworks.Builders;
+using Trainworks.BuildersV2;
 using Trainworks.Utilities;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -96,7 +96,7 @@ namespace Trainworks.Managers
         /// <param name="ID">The key used for assigning the subtype, and for its localization</param>
         public static void RegisterSubtype(string ID)
         {
-            CustomSubtypeData.Add(ID, new SubtypeDataBuilder { _Subtype = ID }.Build());
+            CustomSubtypeData.Add(ID, new SubtypeDataBuilder { Subtype = ID }.Build());
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Trainworks.Managers
         /// <param name="name">The subtype text in all languages</param>
         public static void RegisterSubtype(string ID, string name)
         {
-            CustomSubtypeData.Add(ID, new SubtypeDataBuilder { _Subtype = ID }.Build());
+            CustomSubtypeData.Add(ID, new SubtypeDataBuilder { Subtype = ID }.Build());
             CustomLocalizationManager.ImportSingleLocalization(ID, "Text", "", "", "", "", name, name, name, name, name, name);
         }
 

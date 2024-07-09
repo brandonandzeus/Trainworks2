@@ -1,4 +1,5 @@
 using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Trainworks.Managers;
@@ -7,6 +8,7 @@ using UnityEngine;
 
 namespace Trainworks.Builders
 {
+    [Obsolete("Trainworks.Builders.EnhancerDataBuilder is deprecated and will no longer be unsupported. Please do not use if making a new mod. Trainworks.BuildersV2.EnhancerDataBuilder should be used for newer mods. See: https://github.com/brandonandzeus/Trainworks2/wiki/Upgrade-Trainworks-Tutorial")]
     public class EnhancerDataBuilder
     {
         /// <summary>
@@ -79,12 +81,8 @@ namespace Trainworks.Builders
         public EnhancerData BuildAndRegister()
         {
             var enhancerData = this.Build();
-            /// Trainworks2 Backport. Should fix Merchants on restart.
+            // Trainworks2 Backport. Should fix Merchants on restart.
             CustomEnhancerManager.RegisterEnhancer(enhancerData, EnhancerPoolIDs);
-            /*foreach (var pool in EnhancerPoolIDs)
-            {
-                CustomEnhancerPoolManager.AddEnhancerToPool(enhancerData, pool);
-            }*/
             return enhancerData;
         }
 

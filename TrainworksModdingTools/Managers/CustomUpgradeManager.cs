@@ -10,6 +10,7 @@ namespace Trainworks.ManagersV2
     public static class CustomUpgradeManager
     {
         public static IDictionary<string, CardUpgradeData> CustomUpgradeData = new Dictionary<string, CardUpgradeData>();
+        internal static IDictionary<string, CardUpgradeData> CustomOldUpgradeData = new Dictionary<string, CardUpgradeData>();
 
         public static void RegisterCustomUpgrade(CardUpgradeData upgrade)
         {
@@ -18,13 +19,24 @@ namespace Trainworks.ManagersV2
                 CustomUpgradeData.Add(upgrade.GetID(), upgrade);
 
                 var upgradeList = ProviderManager.SaveManager.GetAllGameData().GetAllCardUpgradeData();
-                var existingEntry = upgradeList.Where(u => upgrade.GetID() == u.GetID()).FirstOrDefault();
+                upgradeList.Add(upgrade);
 
-                if (existingEntry != null)
-                {
-                    upgradeList.Remove(existingEntry);
-                }
+                ContentValidator.Validate(upgrade);
+            }
+            else
+            {
+                Trainworks.Log(LogLevel.Warning, "Attempted to register duplicate upgrade data with name: " + upgrade.name);
+            }
+        }
 
+        internal static void RegisterOldVersionCustomUpgrade(CardUpgradeData upgrade)
+        {
+            // GetID doesn't return a ID from GUIDGenerator, so safer to separate these upgrades from the V2 ones.
+            if (!CustomOldUpgradeData.ContainsKey(upgrade.GetID()))
+            {
+                CustomOldUpgradeData.Add(upgrade.GetID(), upgrade);
+
+                var upgradeList = ProviderManager.SaveManager.GetAllGameData().GetAllCardUpgradeData();
                 upgradeList.Add(upgrade);
 
                 ContentValidator.Validate(upgrade);
@@ -42,11 +54,16 @@ namespace Trainworks.ManagersV2
         /// <returns>The CardUpgradeData for the given ID</returns>
         public static CardUpgradeData GetCardUpgradeByID(string upgradeID)
         {
-            // Search for custom mutator matching ID
+            // Search for custom upgrade matching ID
             var guid = GUIDGenerator.GenerateDeterministicGUID(upgradeID);
             if (CustomUpgradeData.TryGetValue(guid, out CardUpgradeData value))
             {
                 return value;
+            }
+            // Old upgrades don't set the ID using GUIDGenerator
+            if (CustomOldUpgradeData.TryGetValue(upgradeID, out CardUpgradeData value2))
+            {
+                return value2;
             }
 
             // No custom upgrade found; search for vanilla upgrade matching ID

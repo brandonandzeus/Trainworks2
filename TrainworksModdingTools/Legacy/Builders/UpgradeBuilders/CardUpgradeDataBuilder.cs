@@ -1,16 +1,20 @@
+using BepInEx.Logging;
 using HarmonyLib;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 using Trainworks.Managers;
+using Trainworks.ManagersV2;
 using UnityEngine;
 
 namespace Trainworks.Builders
 {
     public class CardUpgradeDataBuilder
     {
-        // Note: add status effect adder, it's different than the one in BuilderUtils
-
+        private static HashSet<string> UsedUpgradeTitles = new HashSet<string>();
         /// <summary>
         /// Don't set directly; use UpgradeTitle instead.
         /// </summary>
@@ -140,6 +144,27 @@ namespace Trainworks.Builders
                 this.UpgradesToRemove.Add(builder.Build());
             }
 
+
+            var UpgradeID = UpgradeTitleKey;
+            if (UpgradeID == null)
+            {
+                StackFrame frame = new StackFrame(1);
+                var method = frame.GetMethod();
+                var type = method.DeclaringType;
+                var name = method.Name;
+                var baseUpgradeID = string.Format("{0}.{1}", type, name);
+                
+                UpgradeID = baseUpgradeID;
+                int seen = 0;
+                while (UsedUpgradeTitles.Contains(UpgradeID))
+                {
+                    seen++;
+                    UpgradeID = string.Format("{0}.{1}", baseUpgradeID, seen);
+                }
+
+                Trainworks.Log(LogLevel.Error, "UpgradeTitleKey not set. Setting the name/id of this CardUpgrade to " + UpgradeID + ". If this CardUpgrade is meant to be permanent upgrade on a card, please set UpgradeTitleKey for this upgrade otherwise Run History Data will be incorrect.");
+            }
+
             AccessTools.Field(typeof(CardUpgradeData), "bonusDamage").SetValue(cardUpgradeData, this.BonusDamage);
             AccessTools.Field(typeof(CardUpgradeData), "bonusHeal").SetValue(cardUpgradeData, this.BonusHeal);
             AccessTools.Field(typeof(CardUpgradeData), "bonusHP").SetValue(cardUpgradeData, this.BonusHP);
@@ -168,22 +193,10 @@ namespace Trainworks.Builders
             AccessTools.Field(typeof(CardUpgradeData), "isUnitSynthesisUpgrade").SetValue(cardUpgradeData, IsUnitSynthesisUpgrade);
             AccessTools.Field(typeof(CardUpgradeData), "sourceSynthesisUnit").SetValue(cardUpgradeData, SourceSynthesisUnit);
 
-            cardUpgradeData.name = UpgradeTitleKey;
-            Traverse.Create(cardUpgradeData).Field("id").SetValue(UpgradeTitleKey);
+            cardUpgradeData.name = UpgradeTitleKey ?? UpgradeID;
+            Traverse.Create(cardUpgradeData).Field("id").SetValue(UpgradeTitleKey ?? UpgradeID);
 
-            // If CardUpgrades are not added to allGameData, there are many troubles.
-            var field = Traverse.Create(ProviderManager.SaveManager.GetAllGameData()).Field("cardUpgradeDatas");
-            var upgradeList = field.GetValue<List<CardUpgradeData>>();
-
-            // If upgrade already exists, update it by removing the previously added version
-            // This might happen if Build() is called twice (e.g. when defining a synthesis for a unit and calling Build())
-            var existingEntry = upgradeList
-                .Where(u => UpgradeTitleKey == (string)AccessTools.Field(typeof(CardUpgradeData), "upgradeTitleKey").GetValue(u))
-                .FirstOrDefault();
-
-            upgradeList.Remove(existingEntry);
-
-            upgradeList.Add(cardUpgradeData);
+            CustomUpgradeManager.RegisterOldVersionCustomUpgrade(cardUpgradeData);
 
             return cardUpgradeData;
         }

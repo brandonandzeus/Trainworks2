@@ -1,7 +1,11 @@
 ﻿using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Xml.Linq;
 using Trainworks.Builders;
+using Trainworks.Managers;
 
 namespace Trainworks.Utilities
 {
@@ -14,6 +18,8 @@ namespace Trainworks.Utilities
             "CardTraitScalingUpgradeUnitSize",
             "CardTraitScalingUpgradeUnitStatusEffect",
         };
+
+        private static HashSet<string> UsedV1UpgradeTitles = new HashSet<string>();
 
         public static void Validate(CardData card)
         {
@@ -76,6 +82,60 @@ namespace Trainworks.Utilities
         // ===================================
         // = Old builder fixes
         // ===================================
+        public static void PreBuild(Builders.CardUpgradeDataBuilder oldBuilder)
+        {
+            // Fixes for null UpgradeTitleKeys which lead to a null id which can lead to SaveData corruption bugs.
+            var oldUpgradeTitleKey = oldBuilder.UpgradeTitleKey;
+
+            var UpgradeID = oldBuilder.UpgradeTitleKey;
+            // Null UpgradeTitleKeys will be overwritten with the Type.Method of the caller.
+            // This should work since ChampionUpgrades through CardUpgradeTreeDataBuilder require an UpgradeTitleKey
+            // This is for random CardUpgrades that aren't Enhancers or Champion upgrades.
+            if (UpgradeID == null)
+            {
+                StackFrame frame = new StackFrame(2);
+                var method = frame.GetMethod();
+                var type = method.DeclaringType;
+                var mname = method.Name;
+                var baseUpgradeID = string.Format("{0}.{1}", type, mname);
+
+                UpgradeID = baseUpgradeID;
+                int seen = 0;
+                while (UsedV1UpgradeTitles.Contains(UpgradeID))
+                {
+                    seen++;
+                    UpgradeID = string.Format("{0}.{1}", baseUpgradeID, seen);
+                }
+
+                UsedV1UpgradeTitles.Add(UpgradeID);
+                Trainworks.Log(LogLevel.Warning, "UpgradeTitleKey not set. Setting the name of this CardUpgrade to " + UpgradeID + ". Since this was automatically generated please do not rename the type or method this CardUpgrade is built in." +
+                                                 "Otherwise please set UpgradeTitleKey and Call IDMigrationManager.MigrateCardUpgradeID(\"" + UpgradeID + "\", <your new UpgradeTitleKey>) after the CardUpgradeData is built to preserve SaveData/RunHistory.");
+                oldBuilder.UpgradeTitleKey = UpgradeID;
+            }
+
+            // Make Migrating from Builders -> BuildersV2 without having RunHistories be broken since Builders version did not generate a proper guid for the Upgrade.
+            if (oldUpgradeTitleKey != null)
+            {
+                // All old CardUpgradeData ID changes so previous run histories will be wrong.
+                var guid = GUIDGenerator.GenerateDeterministicGUID(UpgradeID);
+                GameDataMigrationManager.MigrateOldCardUpgradeID(oldUpgradeTitleKey, guid);
+            }
+
+            // SaveData compatibility (and not wrecking CustomUpgradeManager) for Custom Clan Helper.
+            if (oldBuilder.UpgradeTitleKey == "SuccClan.Cards.UnitCards.ShadowWarrior.BuildUnit")
+            {
+                var old = oldBuilder.UpgradeTitleKey;
+                oldBuilder.UpgradeTitleKey = "Shadow_Warrior_Permanent_Fanatic_Upgrade_ID";
+                Trainworks.Log(LogLevel.Warning, "Overriding ShadowWarrior's Fanatic Upgrade UpgradeTitleKey to match CustomClanHelper. OldUpgradeID: " + old + " NewUpgradeID: " + oldBuilder.UpgradeTitleKey);
+            }
+            if (oldBuilder.UpgradeTitleKey == "SuccClan.Cards.UnitCards.ShadowWarrior.BuildUpgrade")
+            {
+                var old = oldBuilder.UpgradeTitleKey;
+                oldBuilder.UpgradeTitleKey = "Shadow_Warrior_Permanent_Essence_Upgrade_ID";
+                Trainworks.Log(LogLevel.Warning, "Overriding ShadowWarrior's Essence Fanatic Upgrade UpgradeTitleKey to match CustomClanHelper. OldUpgradeID: " + old + " NewUpgradeID: " + oldBuilder.UpgradeTitleKey);
+            }
+        }
+
         public static void PreBuild(Builders.CardTraitDataBuilder oldBuilder)
         {
             // TraitStateName's that include Assembly Info when it shouldn't.
@@ -136,7 +196,7 @@ namespace Trainworks.Utilities
                 // If there's a change (if the above function doesn't return a Fully Qualified Name) return the name only.
                 if (className != EffectStateName2)
                 {
-                    Trainworks.Log(LogLevel.Debug, "Changed " + className + " to " +  EffectStateName2 + " the fully QualifiedAssemblyName is only required for CustomEFfects");
+                    Trainworks.Log(LogLevel.Warning, "Updated " + className + " to " +  EffectStateName2 + " the fully QualifiedAssemblyName is only required for Custom Effect classes");
                     return EffectStateName2;
                 }
             }

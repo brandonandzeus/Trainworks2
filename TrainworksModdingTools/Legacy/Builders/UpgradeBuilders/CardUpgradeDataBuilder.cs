@@ -8,13 +8,13 @@ using System.Reflection;
 using System.Xml.Linq;
 using Trainworks.Managers;
 using Trainworks.ManagersV2;
+using Trainworks.Utilities;
 using UnityEngine;
 
 namespace Trainworks.Builders
 {
     public class CardUpgradeDataBuilder
     {
-        private static HashSet<string> UsedUpgradeTitles = new HashSet<string>();
         /// <summary>
         /// Don't set directly; use UpgradeTitle instead.
         /// </summary>
@@ -117,6 +117,9 @@ namespace Trainworks.Builders
 
         public CardUpgradeData Build()
         {
+            // See associated function.
+            ContentValidator.PreBuild(this);
+
             CardUpgradeData cardUpgradeData = ScriptableObject.CreateInstance<CardUpgradeData>();
 
             foreach (var builder in this.TraitDataUpgradeBuilders)
@@ -144,26 +147,7 @@ namespace Trainworks.Builders
                 this.UpgradesToRemove.Add(builder.Build());
             }
 
-
-            var UpgradeID = UpgradeTitleKey;
-            if (UpgradeID == null)
-            {
-                StackFrame frame = new StackFrame(1);
-                var method = frame.GetMethod();
-                var type = method.DeclaringType;
-                var name = method.Name;
-                var baseUpgradeID = string.Format("{0}.{1}", type, name);
-                
-                UpgradeID = baseUpgradeID;
-                int seen = 0;
-                while (UsedUpgradeTitles.Contains(UpgradeID))
-                {
-                    seen++;
-                    UpgradeID = string.Format("{0}.{1}", baseUpgradeID, seen);
-                }
-
-                Trainworks.Log(LogLevel.Error, "UpgradeTitleKey not set. Setting the name/id of this CardUpgrade to " + UpgradeID + ". If this CardUpgrade is meant to be permanent upgrade on a card, please set UpgradeTitleKey for this upgrade otherwise Run History Data will be incorrect.");
-            }
+            string name = UpgradeTitleKey;
 
             AccessTools.Field(typeof(CardUpgradeData), "bonusDamage").SetValue(cardUpgradeData, this.BonusDamage);
             AccessTools.Field(typeof(CardUpgradeData), "bonusHeal").SetValue(cardUpgradeData, this.BonusHeal);
@@ -193,10 +177,11 @@ namespace Trainworks.Builders
             AccessTools.Field(typeof(CardUpgradeData), "isUnitSynthesisUpgrade").SetValue(cardUpgradeData, IsUnitSynthesisUpgrade);
             AccessTools.Field(typeof(CardUpgradeData), "sourceSynthesisUnit").SetValue(cardUpgradeData, SourceSynthesisUnit);
 
-            cardUpgradeData.name = UpgradeTitleKey ?? UpgradeID;
-            Traverse.Create(cardUpgradeData).Field("id").SetValue(UpgradeTitleKey ?? UpgradeID);
+            cardUpgradeData.name = name;
+            var guid = GUIDGenerator.GenerateDeterministicGUID(name);
+            Traverse.Create(cardUpgradeData).Field("id").SetValue(guid);
 
-            CustomUpgradeManager.RegisterOldVersionCustomUpgrade(cardUpgradeData);
+            CustomUpgradeManager.RegisterCustomUpgrade(cardUpgradeData);
 
             return cardUpgradeData;
         }

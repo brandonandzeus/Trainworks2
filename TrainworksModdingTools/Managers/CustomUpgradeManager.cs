@@ -10,31 +10,13 @@ namespace Trainworks.ManagersV2
     public static class CustomUpgradeManager
     {
         public static IDictionary<string, CardUpgradeData> CustomUpgradeData = new Dictionary<string, CardUpgradeData>();
-        internal static IDictionary<string, CardUpgradeData> CustomOldUpgradeData = new Dictionary<string, CardUpgradeData>();
+        internal static HashSet<CardUpgradeData> AllCardUpgrades = new HashSet<CardUpgradeData>();
 
         public static void RegisterCustomUpgrade(CardUpgradeData upgrade)
         {
             if (!CustomUpgradeData.ContainsKey(upgrade.GetID()))
             {
                 CustomUpgradeData.Add(upgrade.GetID(), upgrade);
-
-                var upgradeList = ProviderManager.SaveManager.GetAllGameData().GetAllCardUpgradeData();
-                upgradeList.Add(upgrade);
-
-                ContentValidator.Validate(upgrade);
-            }
-            else
-            {
-                Trainworks.Log(LogLevel.Warning, "Attempted to register duplicate upgrade data with name: " + upgrade.name);
-            }
-        }
-
-        internal static void RegisterOldVersionCustomUpgrade(CardUpgradeData upgrade)
-        {
-            // GetID doesn't return a ID from GUIDGenerator, so safer to separate these upgrades from the V2 ones.
-            if (!CustomOldUpgradeData.ContainsKey(upgrade.GetID()))
-            {
-                CustomOldUpgradeData.Add(upgrade.GetID(), upgrade);
 
                 var upgradeList = ProviderManager.SaveManager.GetAllGameData().GetAllCardUpgradeData();
                 upgradeList.Add(upgrade);
@@ -60,12 +42,6 @@ namespace Trainworks.ManagersV2
             {
                 return value;
             }
-            // Old upgrades don't set the ID using GUIDGenerator
-            if (CustomOldUpgradeData.TryGetValue(upgradeID, out CardUpgradeData value2))
-            {
-                return value2;
-            }
-
             // No custom upgrade found; search for vanilla upgrade matching ID
             var vanillaUpgrade = ProviderManager.SaveManager.GetAllGameData().FindCardUpgradeData(upgradeID);
             if (vanillaUpgrade == null)

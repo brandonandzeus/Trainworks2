@@ -6,7 +6,7 @@ namespace TrainworksModdingTools.Legacy.Managers
     /// <summary>
     /// DEFUNCT. Do not use.
     /// </summary>
-    [Obsolete("Please use CustomCollectableRelicManager's functions instead")]
+    [Obsolete("This class is no longer in use, Relics are added directly to the MegaRelicPool now so no need to call anything for that.", true)]
     public class CustomRelicPoolManager
     {
         /// <summary>

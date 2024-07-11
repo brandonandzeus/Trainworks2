@@ -6,7 +6,7 @@ using System.Collections.Generic;
 // As of Trainwroks 2.5.0 This class is defunct Do not use as it does nothing.
 namespace Trainworks.Managers
 {
-    [Obsolete("Please use CustomEnhancerManager's functions instead")]
+    [Obsolete("Please use CustomEnhancerManager's functions instead, Enhancers are directly added to the EnhancerPools they belong to, so calls to get Enhancers are no longer necessary", true)]
     public class CustomEnhancerPoolManager
     {
         /// <summary>

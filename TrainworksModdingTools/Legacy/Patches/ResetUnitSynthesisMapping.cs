@@ -7,17 +7,17 @@ namespace Trainworks.Patches
 {
     public class AccessUnitSynthesisMapping
     {
-        [Obsolete("AccessUnitSynthesisMapping.FindUnitSynthesisMappingInstanceToStub is deprecated and calls should be removed.")]
+        [Obsolete("AccessUnitSynthesisMapping.FindUnitSynthesisMappingInstanceToStub is deprecated and calls should be removed.", true)]
         public static void FindUnitSynthesisMappingInstanceToStub()
         {
-            Trainworks.Log(LogLevel.Warning, "This function is deprecated and calls should be removed.");
+            Trainworks.Log(LogLevel.Warning, "The function AccessUnitSynthesisMapping.FindUnitSynthesisMappingInstanceToStub is deprecated and calls should be removed.");
         }
     }
 
 
     class RecallingCollectMappingData
     {
-        [Obsolete("RecallingCollectMappingData.CollectMappingDataStub is deprecated and calls should be removed.")]
+        [Obsolete("RecallingCollectMappingData.CollectMappingDataStub is deprecated and calls should be removed.", true)]
         public static void CollectMappingDataStub(object instance)
         {
             // It's a stub so it has no initial content

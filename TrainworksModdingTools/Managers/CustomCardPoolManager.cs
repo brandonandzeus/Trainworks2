@@ -118,7 +118,7 @@ namespace Trainworks.Managers
 
         
         // TODO remove once CustomClanHelper doesn't use this anymore.
-        [Obsolete("UNSUPPORTED DO NOT USE. Call GetCustomCardPoolByID(id) or GetVanillaCardPool(id) then GetAllChoices()")]
+        [Obsolete("UNSUPPORTED DO NOT USE. Call GetCustomCardPoolByID(id) or GetVanillaCardPool(id) then GetAllChoices(). Cards are directly added to the CardPools they belong to so this function doesn't do anything", true)]
         public static List<CardData> GetCardsForPool(string pool)
         {
             return EMPTY;

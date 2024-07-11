@@ -32,10 +32,12 @@ namespace Trainworks.Managers
         }
 
         /// <summary>
-        /// Internal only. Old style CardUpgrades had their ID change as part of making conversion from old style CardUpgradeDataBuilder to BuildersV2.CardUpgradeDataBuilder easier w/o breaking RunHistory.
+        /// Please do not call this function unless you are migrating a CardUpgradeData off Builders.CardUpgradeDataBuilder to BuildersV2.CardUpgradeDataBuilder.
+        /// 
+        /// Old style CardUpgrades had their ID change as part of making conversion from old style CardUpgradeDataBuilder to BuildersV2.CardUpgradeDataBuilder easier w/o breaking RunHistory.
         /// oldID == UpgradeTitleKey -> GuidGenerator.GenerateDeterministicGUID(UpgradeTitleKey). Use UpgradeTitleKey as UpgradeID.
         /// </summary>
-        internal static void MigrateOldCardUpgradeID(string oldID, string guid)
+        public static void MigrateOldCardUpgradeID(string oldID, string guid)
         {
             MigratedCardUpgradeIDs[oldID] = guid;
         }

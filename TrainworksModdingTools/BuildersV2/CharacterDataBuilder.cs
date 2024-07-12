@@ -149,8 +149,10 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public List<string> SubtypeKeys { get; set; }
         /// <summary>
-        /// Sound effects for the Character.
-        /// Note no Builder currently exists for this object. So reflection must be used to create a CharacterSoundData.
+        /// Unused by the codebase.
+        /// Sound effects are actually handled via ShinyShoe.Audio.CoreSoundEffectData
+        /// and are directly associated with the CharacterData GameObject prefabs which
+        /// is cloned.
         /// </summary>
         public CharacterSoundData CharacterSoundData { get; set; }
         /// <summary>

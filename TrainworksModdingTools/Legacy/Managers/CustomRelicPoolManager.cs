@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TrainworksModdingTools.Legacy.Managers
+namespace Trainworks.Managers
 {
     /// <summary>
     /// DEFUNCT. Do not use.

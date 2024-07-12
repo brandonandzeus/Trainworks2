@@ -126,29 +126,51 @@ namespace Trainworks.ManagersV2
             }
 
             var allGameData = ProviderManager.SaveManager.GetAllGameData();
+            EnhancerPool enhancerPool = null;
 
-            foreach (var merchantID in MerchantIDs)
+            if (enhancerID == VanillaEnhancerPoolIDs.DraftUpgradePool)
             {
-                var mapNode = allGameData.FindMapNodeData(merchantID);
-                if (mapNode is MerchantData merchant)
+                CollectableRelicData capriciousReflection = CustomCollectableRelicManager.GetRelicDataByID(VanillaRelicIDs.CapriciousReflection);
+                var effect = capriciousReflection?.GetFirstRelicEffectData<RelicEffectAddStartingUpgradeToCardDrafts>();
+                enhancerPool = effect?.GetParamEnhancerPool();
+            }
+            else if (enhancerID == VanillaEnhancerPoolIDs.WurmkinInfusedPool)
+            {
+                var classData = allGameData.FindClassData(VanillaClanIDs.Wurmkin);
+                enhancerPool = classData.GetRandomDraftEnhancerPool();
+            }
+            else
+            {
+                foreach (var merchantID in MerchantIDs)
                 {
-                    for (int i = 0; i < merchant.GetNumRewards(); i++)
+                    var mapNode = allGameData.FindMapNodeData(merchantID);
+                    if (mapNode is MerchantData merchant)
                     {
-                        RewardData reward = merchant.GetReward(i).RewardData;
-                        if (reward is EnhancerPoolRewardData enhancerPoolReward)
+                        for (int i = 0; i < merchant.GetNumRewards(); i++)
                         {
-                            var enhancerPool = (EnhancerPool)AccessTools.Field(typeof(EnhancerPoolRewardData), "relicPool").GetValue(enhancerPoolReward);
-                            if (enhancerPool.name == enhancerID)
+                            RewardData reward = merchant.GetReward(i).RewardData;
+                            if (reward is EnhancerPoolRewardData enhancerPoolReward)
                             {
-                                VanillaEnhancerPoolCache.Add(enhancerID, enhancerPool);
-                                return enhancerPool;
+                                var foundEnhancerPool = (EnhancerPool)AccessTools.Field(typeof(EnhancerPoolRewardData), "relicPool").GetValue(enhancerPoolReward);
+                                if (foundEnhancerPool.name == enhancerID)
+                                {
+                                    enhancerPool = foundEnhancerPool;
+                                    break;
+                                }
                             }
                         }
                     }
+                    if (enhancerPool != null)
+                        break;
                 }
             }
 
-            return null;
+            if (enhancerPool != null) 
+            {
+                VanillaEnhancerPoolCache.Add(enhancerID, enhancerPool);
+            }
+
+            return enhancerPool;
         }
 
         /// <summary>

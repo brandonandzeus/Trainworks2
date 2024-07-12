@@ -33,5 +33,17 @@
         /// The uncommon slot in the Divine Temple. The +30 Magic Power, -2 Cost, and Spellchain are here. 
         /// </summary>
         public static readonly string SpellUpgradePoolDarkPactUncommon = "SpellUpgradePoolDarkPactUncommon";
+        /// <summary>
+        /// An Enhancer Pool used by CapriciousReflection and Mutator UpgradedDrafts.
+        /// Contents: Powerstone Surgestone Emberstone x2 Stackstone Freezestone Keepstone Eternalstone Immortalstone x3 
+        ///           Largestone x3 Thornstone x2 Furystone x2 Wickstone Runestone x2 Shieldstone x2 Frenzystone x3 Speedstone x3
+        ///           Strengthstone x2 Battlestone x2 Heartstone x2
+        /// </summary>
+        public static readonly string DraftUpgradePool = "DraftUpgradePool";
+        /// <summary>
+        /// EnhancerPool used by Wurmkin (in ClassData) to apply Infused to a random card draft.
+        /// Contents: Corruptstone
+        /// </summary>
+        public static readonly string WurmkinInfusedPool = "Class6CorruptEnhancerPool";
     }
 }

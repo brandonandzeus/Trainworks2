@@ -175,6 +175,7 @@
         public static readonly string Emberstone = "7301ebb3-4d99-46b9-b4bd-aeabf530fd0a";
         /// <summary>
         /// Asset name: SpellUpgradeTraitAddCorrupt
+        /// Not really a true Enhancer in that it doesn't take up an upgrade slot and not sold in stores.
         /// </summary>
         public static readonly string Corruptstone = "c172bdb3-bbb2-4332-9248-8f0eb023dcc1";
         /// <summary>

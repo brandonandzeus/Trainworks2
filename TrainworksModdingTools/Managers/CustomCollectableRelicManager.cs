@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using Trainworks.ConstantsV2;
 using Trainworks.Utilities;
-using TrainworksModdingTools.Legacy.Managers;
 
 namespace Trainworks.Managers
 {

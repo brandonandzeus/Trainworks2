@@ -126,9 +126,9 @@ namespace Trainworks.Managers
 
         /// <summary>
         /// Marks a custom card pool for preloading when a run starts.
-        /// This is necessary if for instance you have an artifact that has the RelicEffectAddBattleCard or RelicEffectSpawnRandomUnitStartOfCombat
-        /// Custom Assets are only loaded when they are needed (in contrast with standard assets which are all loaded only if the clan is selected at the start of a run).
-        /// So if you somehow get a card or spawn a character outside of a card draft it will not be loaded due to how the codebase works.
+        /// This is necessary if for instance you have an artifact that has the RelicEffectAddBattleCard or RelicEffectSpawnRandomUnitStartOfCombat.
+        /// 
+        /// As of Trainworks 2.5.0 You don't need to call this function for cards within the MegaPool or UnitsAllBanner.
         ///
         /// You don't need to call this function for card unlocks, these are done automatically. Card Unlocks also aren't preloaded.
         /// 
@@ -144,9 +144,9 @@ namespace Trainworks.Managers
 
         /// <summary>
         /// Marks a custom card pool for preloading when a run starts.
-        /// This is necessary if for instance you have an artifact that has the RelicEffectAddBattleCard or RelicEffectSpawnRandomUnitStartOfCombat
-        /// Custom Assets are only loaded when they are needed (in contrast with standard assets which are all loaded only if the clan is selected at the start of a run).
-        /// So if you somehow get a card or spawn a character outside of a card draft it will not be loaded due to how the codebase works.
+        /// This is necessary if for instance you have an artifact that has the RelicEffectAddBattleCard or RelicEffectSpawnRandomUnitStartOfCombat.
+        /// 
+        /// As of Trainworks 2.5.0 You don't need to call this function for cards within the MegaPool or UnitsAllBanner.
         ///
         /// You don't need to call this function for card unlocks, these are done automatically. Card Unlocks also aren't preloaded.
         /// 
@@ -211,8 +211,17 @@ namespace Trainworks.Managers
             VanillaCardPools.Add(VanillaCardPoolIDs.MorselPoolStarter, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.AbandonedAntumbra)?.GetFirstRelicEffectData<RelicEffectAddBattleCardToHand>()?.GetParamCardPool());
             VanillaCardPools.Add(VanillaCardPoolIDs.Class5MorselMinerOnly, allGameData.FindCardData(VanillaCardIDs.MakingofaMorsel)?.GetEffects()[0]?.GetParamCardPool());
 
+            var assetLoadingManager = AssetLoadingManager.GetInst();
+            var assetLoadingData = (AssetLoadingData)AccessTools.Field(typeof(AssetLoadingManager), "_assetLoadingData").GetValue(assetLoadingManager);
+            foreach (var pool in assetLoadingData.CardPoolsAll)
+            {
+                if (pool.name == VanillaCardPoolIDs.LevelableUnits)
+                {
+                    VanillaCardPools.Add(VanillaCardPoolIDs.LevelableUnits, pool);
+                    break;
+                }
+            }
 
-            VanillaCardPools.Add(VanillaCardPoolIDs.LevelableUnits, null);
             VanillaCardPools.Add(VanillaCardPoolIDs.UmbraBlazingArrows2, allGameData.FindCardData(VanillaCardIDs.BlazingBolts)?.GetEffects()[1]?.GetParamCardPool());
             VanillaCardPools.Add(VanillaCardPoolIDs.UmbraBlazingArrows3, allGameData.FindCardData(VanillaCardIDs.BlazingBolts2)?.GetEffects()[2]?.GetParamCardPool());
 

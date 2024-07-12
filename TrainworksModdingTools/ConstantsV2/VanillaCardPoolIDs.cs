@@ -95,10 +95,15 @@
         /// </summary>
         public static readonly string MorselPoolStarter = "Class5StarterFoodCard";
         /// <summary>
-        /// DO NOT USE, if specified on a card will be ignored since there's no references to the CardPool on any object.
+        /// DO NOT USE. The only references to this card pool are for the preloading system in AssetLoadingData.
+        /// No reason to use this as cards will be preloaded if they are in the MegaPool or UnitsAllBanner.
+        /// The union of those two sets should cover all of the cards in your clan.
         /// 
         /// Unknown. Assumed to be for the card level up system, that appears to have been scrapped.
-        /// Banner units will appear in this card Pool.
+        ///
+        /// Contents: Husk Hermit, Awoken Hollow, Animus of Will, Horned Warrior, Steelworker, Demon Fiend,
+        /// Parrafin Thug, Lady of the Reformed, Wickless Baron, Siren of the Sea, Coldcaelia, Titan Sentry,
+        /// Morsel Maker, Shadoweater, Crucible Warden.
         /// </summary>
         public static readonly string LevelableUnits = "LevelableUnits";
         /// <summary>

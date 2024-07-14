@@ -36,8 +36,6 @@ namespace Trainworks.Enums
             ID = GlobalEnumMap.Add(Name);
             NameToExtendedEnumMap[Name] = (TExtendedEnum)this;
             ByteToExtendedEnumMap[ID] = (TExtendedEnum)this;
-
-            Trainworks.Log(LogLevel.All, typeof(TEnum).Name + " Name " + Name + " ID " + this.ID);
         }
 
         /// <summary>
@@ -57,8 +55,6 @@ namespace Trainworks.Enums
             this.ID = GlobalEnumMap.Add(Name);
             NameToExtendedEnumMap[Name] = (TExtendedEnum)this;
             ByteToExtendedEnumMap[this.ID] = (TExtendedEnum)this;
-
-            Trainworks.Log(LogLevel.All, typeof(TEnum).Name + " Name " + Name + " ID " + this.ID);
         }
 
         /// <summary>

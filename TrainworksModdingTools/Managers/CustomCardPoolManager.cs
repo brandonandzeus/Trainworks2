@@ -238,15 +238,15 @@ namespace Trainworks.Managers
             VanillaCardPools.Add(VanillaCardPoolIDs.JunkPoolT1, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.Reconciler)?.GetTriggers()[0]?.GetEffects()[0]?.GetParamCardPool());
             VanillaCardPools.Add(VanillaCardPoolIDs.JunkPoolT2, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.Absolver)?.GetTriggers()[0]?.GetEffects()[0]?.GetParamCardPool());
             VanillaCardPools.Add(VanillaCardPoolIDs.JunkPoolT3, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.Purifier)?.GetTriggers()[0]?.GetEffects()[0]?.GetParamCardPool());
-            VanillaCardPools.Add(VanillaCardPoolIDs.JunkPoolUltimate, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.FeltheWingsofLightJunk).GetBossActionData()[0].GetActions()[0].GetActionEffectData()[0].GetParamCardPool());
-            VanillaCardPools.Add(VanillaCardPoolIDs.SpreadingSpores, allGameData.FindCardData(VanillaCardIDs.SpreadingSpores).GetEffects()[2].GetParamCardPool());
-            VanillaCardPools.Add(VanillaCardPoolIDs.AutomaticRailspikes, allGameData.FindCardData(VanillaCardIDs.AutomaticRailspikes).GetUpgradeData()[0].GetCardTriggerUpgrades()[0].GetCardEffects()[0].GetParamCardPool());
-            VanillaCardPools.Add(VanillaCardPoolIDs.SpikedriverColony, allGameData.FindCardData(VanillaCardIDs.SpikedriverColony).GetUpgradeData()[0].GetTriggerUpgrades()[0].GetEffects()[0].GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.JunkPoolUltimate, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.FeltheWingsofLightJunk)?.GetBossActionData()[0]?.GetActions()[0]?.GetActionEffectData()[0]?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.SpreadingSpores, allGameData.FindCardData(VanillaCardIDs.SpreadingSpores)?.GetEffects()[2]?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.AutomaticRailspikes, allGameData.FindCardData(VanillaCardIDs.AutomaticRailspikes)?.GetUpgradeData()[0]?.GetCardTriggerUpgrades()[0]?.GetCardEffects()[0]?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.SpikedriverColony, allGameData.FindCardData(VanillaCardIDs.SpikedriverColony)?.GetUpgradeData()[0]?.GetTriggerUpgrades()[0]?.GetEffects()[0]?.GetParamCardPool());
 
             var smrd = (allGameData.FindRewardData(VanillaRewardIDs.SpellMergeReward) as SpellMergeRewardData);
-            VanillaCardPools.Add(VanillaCardPoolIDs.IgnoredFromNexusSpike, AccessTools.Field(typeof(SpellMergeRewardData), "cardsToIgnore").GetValue(smrd) as CardPool);
+            VanillaCardPools.Add(VanillaCardPoolIDs.IgnoredFromNexusSpike, AccessTools.Field(typeof(SpellMergeRewardData), "cardsToIgnore")?.GetValue(smrd) as CardPool);
 
-            mask = allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.Powerstone).GetFilters()[1];
+            mask = allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.Powerstone)?.GetFilters()[1];
             pools = AccessTools.Field(typeof(CardUpgradeMaskData), "disallowedCardPools").GetValue(mask) as List<CardPool>;
             // UnleashTheWildwoodOnlyPool, AdaptiveMutationOnlyPool
             foreach (var pool in pools)
@@ -255,36 +255,36 @@ namespace Trainworks.Managers
             }
 
 
-            VanillaCardPools.Add(VanillaCardPoolIDs.CalcifiedEmberOnlyPool, allGameData.FindMutatorData(VanillaMutatorIDs.JunkedUp).GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>().GetParamCardPool());
-            VanillaCardPools.Add(VanillaCardPoolIDs.DantesCandleOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.MonsterDanteSynthesis).GetTriggerUpgrades()[0].GetEffects()[0].GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.CalcifiedEmberOnlyPool, allGameData.FindMutatorData(VanillaMutatorIDs.JunkedUp)?.GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>()?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.DantesCandleOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.MonsterDanteSynthesis)?.GetTriggerUpgrades()[0]?.GetEffects()[0]?.GetParamCardPool());
 
-            VanillaCardPools.Add(VanillaCardPoolIDs.DraffOnlyPool, allGameData.FindCardData(VanillaCardIDs.SacrificialResurrection).GetEffects()[1].GetParamCardPool());
-            mask = allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.Furystone).GetFilters()[0];
-            pools = AccessTools.Field(typeof(CardUpgradeMaskData), "disallowedCardPools").GetValue(mask) as List<CardPool>;
+            VanillaCardPools.Add(VanillaCardPoolIDs.DraffOnlyPool, allGameData.FindCardData(VanillaCardIDs.SacrificialResurrection)?.GetEffects()[1]?.GetParamCardPool());
+            mask = allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.Furystone)?.GetFilters()[0];
+            pools = AccessTools.Field(typeof(CardUpgradeMaskData), "disallowedCardPools")?.GetValue(mask) as List<CardPool>;
             VanillaCardPools.Add(VanillaCardPoolIDs.EelGorgonOnlyPool, pools[0]);
-            VanillaCardPools.Add(VanillaCardPoolIDs.ExcavatedEmberOnlyPool, allGameData.FindCardData(VanillaCardIDs.EmberCache).GetEffects()[0].GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.ExcavatedEmberOnlyPool, allGameData.FindCardData(VanillaCardIDs.EmberCache)?.GetEffects()[0]?.GetParamCardPool());
 
-            VanillaCardPools.Add(VanillaCardPoolIDs.ImpStarterOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.ImpParade).GetTriggerUpgrades()[0].GetEffects()[0].GetParamCardPool());
-            VanillaCardPools.Add(VanillaCardPoolIDs.FledglingImpOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.ImpParadeII).GetTriggerUpgrades()[0].GetEffects()[0].GetParamCardPool());
-            VanillaCardPools.Add(VanillaCardPoolIDs.WelderHelperOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.ImpParadeIII).GetTriggerUpgrades()[0].GetEffects()[1].GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.ImpStarterOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.ImpParade)?.GetTriggerUpgrades()[0]?.GetEffects()[0]?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.FledglingImpOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.ImpParadeII)?.GetTriggerUpgrades()[0]?.GetEffects()[0]?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.WelderHelperOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.ImpParadeIII)?.GetTriggerUpgrades()[0]?.GetEffects()[1]?.GetParamCardPool());
 
-            VanillaCardPools.Add(VanillaCardPoolIDs.LodestoneOnlyPool, allGameData.FindMutatorData(VanillaMutatorIDs.Heavy).GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>().GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.LodestoneOnlyPool, allGameData.FindMutatorData(VanillaMutatorIDs.Heavy)?.GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>()?.GetParamCardPool());
 
-            mask = allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.Stackstone).GetFilters()[4];
+            mask = allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.Stackstone)?.GetFilters()[4];
             pools = AccessTools.Field(typeof(CardUpgradeMaskData), "disallowedCardPools").GetValue(mask) as List<CardPool>;
             VanillaCardPools.Add(VanillaCardPoolIDs.ExcludedFromStackstone, pools[0]);
-            mask = allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.Stackstone).GetFilters()[5];
+            mask = allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.Stackstone)?.GetFilters()[5];
             pools = AccessTools.Field(typeof(CardUpgradeMaskData), "disallowedCardPools").GetValue(mask) as List<CardPool>;
             VanillaCardPools.Add(VanillaCardPoolIDs.SoulSiphonOnlyPool, pools[0]);
 
-            VanillaCardPools.Add(VanillaCardPoolIDs.StingOnlyPool, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.Thornfruit).GetFirstRelicEffectData<RelicEffectAddBattleCardToHand>().GetParamCardPool());
-            var csb = allGameData.FindCovenantData(VanillaCovenentIDs.Ascension01StrongerEnemies).GetFirstRelicEffectData<RelicEffectAddCardSetStartOfRun>().GetParamCardSetBuilder();
+            VanillaCardPools.Add(VanillaCardPoolIDs.StingOnlyPool, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.Thornfruit)?.GetFirstRelicEffectData<RelicEffectAddBattleCardToHand>()?.GetParamCardPool());
+            var csb = allGameData.FindCovenantData(VanillaCovenentIDs.Ascension01StrongerEnemies)?.GetFirstRelicEffectData<RelicEffectAddCardSetStartOfRun>()?.GetParamCardSetBuilder();
             var cpulls = AccessTools.Field(typeof(CardSetBuilder), "paramCardPulls").GetValue(csb) as List<CardPull>;
             VanillaCardPools.Add(VanillaCardPoolIDs.TrainStewardOnly, AccessTools.Field(typeof(CardPull), "cardPool").GetValue(cpulls[2]) as CardPool);
 
-            VanillaCardPools.Add(VanillaCardPoolIDs.VengefulShardOnlyPool, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.SeraphtheDiligent).GetBossActionData()[0].GetActions()[0].GetActionEffectData()[0].GetParamCardPool());
-            VanillaCardPools.Add(VanillaCardPoolIDs.VineGraspOnlyPool, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.CursedVines).GetFirstRelicEffectData<RelicEffectAddBattleCardToHand>().GetParamCardPool());
-            VanillaCardPools.Add(VanillaCardPoolIDs.TrainSteward2, allGameData.FindMutatorData(VanillaMutatorIDs.AtYourService).GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>().GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.VengefulShardOnlyPool, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.SeraphtheDiligent)?.GetBossActionData()[0]?.GetActions()[0]?.GetActionEffectData()[0]?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.VineGraspOnlyPool, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.CursedVines)?.GetFirstRelicEffectData<RelicEffectAddBattleCardToHand>()?.GetParamCardPool());
+            VanillaCardPools.Add(VanillaCardPoolIDs.TrainSteward2, allGameData.FindMutatorData(VanillaMutatorIDs.AtYourService)?.GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>()?.GetParamCardPool());
         }
     }
 }

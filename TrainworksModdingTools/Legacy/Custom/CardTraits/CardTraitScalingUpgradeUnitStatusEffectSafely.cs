@@ -1,7 +1,9 @@
-﻿namespace Trainworks.Custom.CardTraits
+﻿using System;
+
+namespace Trainworks.CustomCardTraits
 {
     /// <summary>
-    /// Card Trait that handles scaling a Unit's size, safely.
+    /// Card Trait that handles scaling a Unit's status effects, safely.
     /// This CardTrait should only be used on Cards which spawn units.
     /// The issue with using a CardTrait on a Unit card which scales is that it indiscrimanitely scales
     /// *every* upgrade the unit applies to itself (or others), which may not be the intended effect.
@@ -15,12 +17,14 @@
     /// card modify the upgrade applied, not the Card traits on the unit on which the upgrade is applied to.
     /// 
     /// Required Params:
-    ///     ParamTrackedValue - TrackedValue statistic to use
+    ///     ParamTrackedValue - TrackedValue statistic to use.
     ///     ParamEntryDuration - Duration for the TrackedValue statistic.
     ///     ParamInt - Size multiplier applied to the tracked value and added to the upgrade.
     ///     ParamCardUpgradeData - CardUpgradeData that this card trait should apply to.
+    ///     ParamStatusEffects - Status Effects to add. Note that if the status effect is not present in the upgrade it will be added.
     /// </summary>
-    public sealed class CardTraitScalingUpgradeUnitSizeSafely : CardTraitState
+    [Obsolete("This class has switched namespaces to keep consistency. The namespace was moved from Trainworks.CustomCardTraits to Trainworks.Custom.CardTraits")]
+    public sealed class CardTraitScalingUpgradeUnitStatusEffectSafely : CardTraitState
     {
         public override void OnApplyingCardUpgradeToUnit(CardState thisCard, CharacterState targetUnit, CardUpgradeState upgradeState, CardManager cardManager)
         {
@@ -28,20 +32,22 @@
             {
                 return;
             }
-            int additionalSize = upgradeState.GetAdditionalSize();
-            int additionalSize2 = GetAdditionalSize(cardManager.GetCardStatistics(), setForPreviewText: false);
-            upgradeState.SetAdditionalSize(additionalSize + additionalSize2);
+            int additionalStacks = GetAdditionalStacks(cardManager.GetCardStatistics());
+            StatusEffectStackData[] array = GetParamStatusEffects();
+            foreach (StatusEffectStackData statusEffectStackData in array)
+            {
+                upgradeState.AddStatusEffectUpgradeStacks(statusEffectStackData.statusId, additionalStacks);
+            }
         }
 
-        private int GetAdditionalSize(CardStatistics cardStatistics, bool setForPreviewText)
+        private int GetAdditionalStacks(CardStatistics cardStatistics)
         {
-            CardStatistics.StatValueData statValueData = default(CardStatistics.StatValueData);
+            CardStatistics.StatValueData statValueData = default;
             statValueData.cardState = GetCard();
             statValueData.trackedValue = GetParamTrackedValue();
             statValueData.entryDuration = GetParamEntryDuration();
             statValueData.cardTypeTarget = GetParamCardType();
             statValueData.paramSubtype = GetParamSubtype();
-            statValueData.forPreviewText = setForPreviewText;
             CardStatistics.StatValueData statValueData2 = statValueData;
             int statValue = cardStatistics.GetStatValue(statValueData2);
             return GetParamInt() * statValue;
@@ -49,11 +55,12 @@
 
         public override string GetCurrentEffectText(CardStatistics cardStatistics, SaveManager saveManager, RelicManager relicManager)
         {
-            if (cardStatistics != null && cardStatistics.GetStatValueShouldDisplayOnCardNow(base.StatValueData))
+            if (cardStatistics != null && cardStatistics.GetStatValueShouldDisplayOnCardNow(StatValueData))
             {
-                return string.Format("CardTraitScalingUpgradeUnitSize_CurrentScaling_CardText".Localize(), GetAdditionalSize(cardStatistics, setForPreviewText: true));
+                return string.Format("CardTraitScalingAddStatusEffect_CurrentScaling_CardText".Localize(), GetAdditionalStacks(cardStatistics));
             }
             return string.Empty;
         }
     }
+
 }

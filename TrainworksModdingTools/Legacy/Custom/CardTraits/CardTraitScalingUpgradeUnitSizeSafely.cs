@@ -1,4 +1,6 @@
-﻿namespace Trainworks.Custom.CardTraits
+﻿using System;
+
+namespace Trainworks.CustomCardTraits
 {
     /// <summary>
     /// Card Trait that handles scaling a Unit's size, safely.
@@ -20,6 +22,7 @@
     ///     ParamInt - Size multiplier applied to the tracked value and added to the upgrade.
     ///     ParamCardUpgradeData - CardUpgradeData that this card trait should apply to.
     /// </summary>
+    [Obsolete("This class has switched namespaces to keep consistency. The namespace was moved from Trainworks.CustomCardTraits to Trainworks.Custom.CardTraits")]
     public sealed class CardTraitScalingUpgradeUnitSizeSafely : CardTraitState
     {
         public override void OnApplyingCardUpgradeToUnit(CardState thisCard, CharacterState targetUnit, CardUpgradeState upgradeState, CardManager cardManager)
@@ -35,7 +38,7 @@
 
         private int GetAdditionalSize(CardStatistics cardStatistics, bool setForPreviewText)
         {
-            CardStatistics.StatValueData statValueData = default(CardStatistics.StatValueData);
+            CardStatistics.StatValueData statValueData = default;
             statValueData.cardState = GetCard();
             statValueData.trackedValue = GetParamTrackedValue();
             statValueData.entryDuration = GetParamEntryDuration();
@@ -49,7 +52,7 @@
 
         public override string GetCurrentEffectText(CardStatistics cardStatistics, SaveManager saveManager, RelicManager relicManager)
         {
-            if (cardStatistics != null && cardStatistics.GetStatValueShouldDisplayOnCardNow(base.StatValueData))
+            if (cardStatistics != null && cardStatistics.GetStatValueShouldDisplayOnCardNow(StatValueData))
             {
                 return string.Format("CardTraitScalingUpgradeUnitSize_CurrentScaling_CardText".Localize(), GetAdditionalSize(cardStatistics, setForPreviewText: true));
             }

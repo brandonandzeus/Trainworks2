@@ -1,4 +1,4 @@
-﻿namespace Trainworks.CustomCardTraits
+﻿namespace Trainworks.Custom.CardTraits
 {
     /// <summary>
     /// Card Trait that handles scaling a Unit's status effects, safely.

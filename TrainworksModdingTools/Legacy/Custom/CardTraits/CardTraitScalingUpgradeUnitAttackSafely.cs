@@ -1,7 +1,9 @@
-﻿namespace Trainworks.Custom.CardTraits
+﻿using System;
+
+namespace Trainworks.CustomCardTraits
 {
     /// <summary>
-    /// Card Trait that handles scaling a Unit's size, safely.
+    /// Card Trait that handles scaling a Unit's attack stat, safely.
     /// This CardTrait should only be used on Cards which spawn units.
     /// The issue with using a CardTrait on a Unit card which scales is that it indiscrimanitely scales
     /// *every* upgrade the unit applies to itself (or others), which may not be the intended effect.
@@ -14,13 +16,14 @@
     /// Note that Spell cards which applies upgrades are unaffected since the CardTraits on the played
     /// card modify the upgrade applied, not the Card traits on the unit on which the upgrade is applied to.
     /// 
-    /// Required Params:
-    ///     ParamTrackedValue - TrackedValue statistic to use
-    ///     ParamEntryDuration - Duration for the TrackedValue statistic.
-    ///     ParamInt - Size multiplier applied to the tracked value and added to the upgrade.
-    ///     ParamCardUpgradeData - CardUpgradeData that this card trait should apply to.
+    /// Required Params: 
+    ///     ParamTrackedValue - TrackedValue statistic to use.
+    ///     ParamEntryDuration - Duration for the TrackedValue statistic
+    ///     ParamInt - Attack multiplier applied to the tracked value and added to the upgrade.
+    ///     ParamCardUpgradeData - CardUpgradeData this Trait applies to.
     /// </summary>
-    public sealed class CardTraitScalingUpgradeUnitSizeSafely : CardTraitState
+    [Obsolete("This class has switched namespaces to keep consistency. The namespace was moved from Trainworks.CustomCardTraits to Trainworks.Custom.CardTraits")]
+    public sealed class CardTraitScalingUpgradeUnitAttackSafely : CardTraitState
     {
         public override void OnApplyingCardUpgradeToUnit(CardState thisCard, CharacterState targetUnit, CardUpgradeState upgradeState, CardManager cardManager)
         {
@@ -28,14 +31,14 @@
             {
                 return;
             }
-            int additionalSize = upgradeState.GetAdditionalSize();
-            int additionalSize2 = GetAdditionalSize(cardManager.GetCardStatistics(), setForPreviewText: false);
-            upgradeState.SetAdditionalSize(additionalSize + additionalSize2);
+            int attackDamage = upgradeState.GetAttackDamage();
+            int additionalDamage = GetAdditionalDamage(cardManager.GetCardStatistics(), setForPreviewText: false);
+            upgradeState.SetAttackDamage(attackDamage + additionalDamage);
         }
 
-        private int GetAdditionalSize(CardStatistics cardStatistics, bool setForPreviewText)
+        private int GetAdditionalDamage(CardStatistics cardStatistics, bool setForPreviewText)
         {
-            CardStatistics.StatValueData statValueData = default(CardStatistics.StatValueData);
+            CardStatistics.StatValueData statValueData = default;
             statValueData.cardState = GetCard();
             statValueData.trackedValue = GetParamTrackedValue();
             statValueData.entryDuration = GetParamEntryDuration();
@@ -49,9 +52,9 @@
 
         public override string GetCurrentEffectText(CardStatistics cardStatistics, SaveManager saveManager, RelicManager relicManager)
         {
-            if (cardStatistics != null && cardStatistics.GetStatValueShouldDisplayOnCardNow(base.StatValueData))
+            if (cardStatistics != null && cardStatistics.GetStatValueShouldDisplayOnCardNow(StatValueData))
             {
-                return string.Format("CardTraitScalingUpgradeUnitSize_CurrentScaling_CardText".Localize(), GetAdditionalSize(cardStatistics, setForPreviewText: true));
+                return string.Format("CardTraitScalingUpgradeUnitAttack_CurrentScaling_CardText".Localize(), GetAdditionalDamage(cardStatistics, setForPreviewText: true));
             }
             return string.Empty;
         }

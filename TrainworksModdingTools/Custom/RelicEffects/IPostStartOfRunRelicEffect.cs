@@ -1,4 +1,4 @@
-﻿namespace Trainworks.CustomRelicEffects
+﻿namespace Trainworks.Custom.RelicEffects
 {
     /// <summary>
     /// Interface for a RelicEffect that runs its effects after a new run has been setup.
@@ -11,7 +11,7 @@
     /// remove all cards and then add the appropriate starter deck afterward thus negating any modifications 
     /// you did to the starter deck.
     /// </summary>
-    interface IPostStartOfRunRelicEffect : IRelicEffect
+    public interface IPostStartOfRunRelicEffect : IRelicEffect
     {
         void ApplyEffect(RelicEffectParams param);
     }

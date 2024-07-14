@@ -18,7 +18,6 @@ namespace Trainworks.Managers
         /// </summary>
         internal static Dictionary<string, string> MigratedCardUpgradeIDs = new Dictionary<string, string>();
 
-
         /// <summary>
         /// Migrates an Existing CardUpgradeData to use a new ID. When CardUpgradeData is searched if an ID matches it will be replaced with the new ID specified preventing a CardUpgrade from not being found.
         /// </summary>

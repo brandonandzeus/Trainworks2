@@ -19,7 +19,9 @@ namespace Trainworks.Patches
         {
             if (GameDataMigrationManager.MigratedCardUpgradeIDs.ContainsKey(id))
             {
+                var oldID = id;
                 id = GameDataMigrationManager.MigratedCardUpgradeIDs[id];
+                Trainworks.Log("Intercepted finding CardUpgrade with ID " + oldID + " fetching ID: " + id + " instead.");
             }
         }
     }

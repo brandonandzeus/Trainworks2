@@ -187,7 +187,6 @@ namespace Trainworks.Managers
             VanillaCardPools.Add(VanillaCardPoolIDs.UnitsAllBanner, (allGameData.FindRewardData(VanillaRewardIDs.CardDraftLevelUpUnitMainOrAllied) as DraftRewardData)?.GetDraftPool());
             VanillaCardPools.Add(VanillaCardPoolIDs.ChampionPool, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.BlankPages)?.GetFirstRelicEffectData<RelicEffectAddChampionCardToHand>()?.GetParamCardPool());
 
-
             VanillaCardPools.Add(VanillaCardPoolIDs.HellhornedBanner, (allGameData.FindRewardData(VanillaRewardIDs.CardDraftLevelUpUnitHellhorned) as DraftRewardData)?.GetDraftPool());
             VanillaCardPools.Add(VanillaCardPoolIDs.AwokenBanner, (allGameData.FindRewardData(VanillaRewardIDs.CardDraftLevelUpUnitAwoken) as DraftRewardData)?.GetDraftPool());
             VanillaCardPools.Add(VanillaCardPoolIDs.StygianBanner, (allGameData.FindRewardData(VanillaRewardIDs.CardDraftLevelUpUnitStygian) as DraftRewardData)?.GetDraftPool());
@@ -254,7 +253,6 @@ namespace Trainworks.Managers
                 VanillaCardPools.Add(pool.name, pool);
             }
 
-
             VanillaCardPools.Add(VanillaCardPoolIDs.CalcifiedEmberOnlyPool, allGameData.FindMutatorData(VanillaMutatorIDs.JunkedUp)?.GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>()?.GetParamCardPool());
             VanillaCardPools.Add(VanillaCardPoolIDs.DantesCandleOnlyPool, allGameData.FindCardUpgradeData(VanillaCardUpgradeDataIDs.MonsterDanteSynthesis)?.GetTriggerUpgrades()[0]?.GetEffects()[0]?.GetParamCardPool());
 
@@ -285,6 +283,15 @@ namespace Trainworks.Managers
             VanillaCardPools.Add(VanillaCardPoolIDs.VengefulShardOnlyPool, CustomCharacterManager.GetCharacterDataByID(VanillaCharacterIDs.SeraphtheDiligent)?.GetBossActionData()[0]?.GetActions()[0]?.GetActionEffectData()[0]?.GetParamCardPool());
             VanillaCardPools.Add(VanillaCardPoolIDs.VineGraspOnlyPool, allGameData.FindCollectableRelicData(VanillaCollectableRelicIDs.CursedVines)?.GetFirstRelicEffectData<RelicEffectAddBattleCardToHand>()?.GetParamCardPool());
             VanillaCardPools.Add(VanillaCardPoolIDs.TrainSteward2, allGameData.FindMutatorData(VanillaMutatorIDs.AtYourService)?.GetFirstRelicEffectData<RelicEffectAddCardsStartOfRun>()?.GetParamCardPool());
+
+            foreach (var id_pool in VanillaCardPools)
+            {
+                if (id_pool.Value == null)
+                {
+                    Trainworks.Log(LogLevel.Error, "[CATASTROPHIC] Could not find VanillaCardPool id: " + id_pool.Key);
+                }
+            }
+            Trainworks.Log("Gathered all Vanilla CardPools successfully.");
         }
     }
 }

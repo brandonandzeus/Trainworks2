@@ -18,7 +18,7 @@ namespace Trainworks
     {
         public const string GUID = "tools.modding.trainworks";
         public const string NAME = "Trainworks Modding Tools";
-        public const string VERSION = "2.4.2";
+        public const string VERSION = "2.5.0";
 
         /// <summary>
         /// The framework's logging source.
@@ -34,10 +34,10 @@ namespace Trainworks
         /// <param name="msg">The message to log</param>
         public static void Log(LogLevel lvl, string msg)
         {
-            //Assembly assembly = Assembly.GetCallingAssembly();
-            //string guid = PluginManager.AssemblyNameToPluginGUID[assembly.FullName];
-            //if (guid != GUID || lvl != LogLevel.All)
-            //    lvl = LogLevel.None;
+            /*Assembly assembly = Assembly.GetCallingAssembly();
+            string guid = PluginManager.AssemblyNameToPluginGUID[assembly.FullName];
+            if (guid != GUID || lvl != LogLevel.All)
+                lvl = LogLevel.None;*/
 
             logger.Log(lvl, string.Format("[{0}] {1}", DateTime.UtcNow.ToString("HH:mm:ss.ffffff"), msg));
         }

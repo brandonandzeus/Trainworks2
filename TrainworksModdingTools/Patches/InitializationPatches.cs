@@ -39,7 +39,15 @@ namespace Trainworks.Patches
         {
             Trainworks.Log("[START] Loading all Trainworks Plugins");
 
-            CustomCardPoolManager.GatherAllVanillaCardPools();
+            try
+            {
+                CustomCardPoolManager.GatherAllVanillaCardPools();
+            }
+            catch (Exception e)
+            {
+                Trainworks.Log(LogLevel.Error, string.Format("[CATASTROPHIC] Could not gather all card pools {0}", e.Message));
+            }
+                
 
             var clm = CustomLocalizationManager.Instance();
             if (!LocalizationManager.ParamManagers.Contains(clm))
@@ -51,8 +59,8 @@ namespace Trainworks.Patches
             // Ensure that unlockable cards are loaded, otherwise they will never be loaded.
             // (UnlockScreen doesn't have a call to LoadAdditionalCards).
             // All others are OK since in DraftRewardData the assets are loaded right then.
-            // Loading all assets is quite time intensive increasing the load time by 200%
             // For other preloaded assets see CustomCardPoolManager.MarkCardPoolForPreloading.
+            // TODO check if this is still necessary since the MegaPool and UnitsAllBanner cards are all loaded.
             ____assetLoadingData.CardPoolsAll.Add(CustomCardManager.UnlockableCustomCardsPool);
 
             // Initialize replacement string dict by grabbing a reference to LocalizationGlobalParameterHandle.
@@ -101,17 +109,6 @@ namespace Trainworks.Patches
                 CustomLocalizationManager.ImportLocalizationData();
                 HasBuiltSpriteAssets = true;
                 Trainworks.Log("[END] All Trainworks Plugins are loaded.");
-
-                /*if (AssetLoadingManagerInitializationPatch.FailedToLoadMods.Count != 0)
-                {
-                    foreach (var type_ex in AssetLoadingManagerInitializationPatch.FailedToLoadMods)
-                    {
-                        StringBuilder stringBuilder = new StringBuilder();
-                        stringBuilder.AppendLine(string.Format("{0} failed to load due to the following Exception.", type_ex.Key.Name));
-                        stringBuilder.AppendLine(type_ex.Value.ToString());
-                        ____screenManager.ShowNotificationDialog(stringBuilder.ToString());
-                    }
-                }*/
             }
             // Do not add any code here, as this function is called multiple times in different locations.
         }

@@ -132,6 +132,12 @@ namespace Trainworks.Managers
                 pool = GetBossPool();
             else if (id == VanillaRelicPoolIDs.BossPoolLevel6)
                 pool = GetLevel6BossPool();
+            else if (id == VanillaRelicPoolIDs.DivineRelicPoolA)
+                pool = GetDivineArtifactPoolA();
+            else if (id == VanillaRelicPoolIDs.DivineRelicPoolB)
+                pool = GetDivineArtifactPoolB();
+            else if (id == VanillaRelicPoolIDs.DivineRelicPoolC)
+                pool = GetDivineArtifactPoolC();
 
             if (pool != null)
             {
@@ -169,6 +175,39 @@ namespace Trainworks.Managers
             if (reward == null)
             {
                 Trainworks.Log(LogLevel.Error, "Could not get BossPoolLevel6 Instance");
+                return null;
+            }
+            return AccessTools.Field(typeof(RelicDraftRewardData), "draftPool").GetValue(reward) as RelicPool;
+        }
+
+        internal static RelicPool GetDivineArtifactPoolA()
+        {
+            var reward = ProviderManager.SaveManager.GetAllGameData().FindRewardData(VanillaRewardIDs.ShardEvent_BlessingDraftReward_1);
+            if (reward == null)
+            {
+                Trainworks.Log(LogLevel.Error, "Could not get DivineArtifactPoolA Instance");
+                return null;
+            }
+            return AccessTools.Field(typeof(RelicDraftRewardData), "draftPool").GetValue(reward) as RelicPool;
+        }
+
+        internal static RelicPool GetDivineArtifactPoolB()
+        {
+            var reward = ProviderManager.SaveManager.GetAllGameData().FindRewardData(VanillaRewardIDs.ShardEvent_BlessingDraftReward_2);
+            if (reward == null)
+            {
+                Trainworks.Log(LogLevel.Error, "Could not get DivineArtifactPoolB Instance");
+                return null;
+            }
+            return AccessTools.Field(typeof(RelicDraftRewardData), "draftPool").GetValue(reward) as RelicPool;
+        }
+
+        internal static RelicPool GetDivineArtifactPoolC()
+        {
+            var reward = ProviderManager.SaveManager.GetAllGameData().FindRewardData(VanillaRewardIDs.ShardEvent_BlessingDraftReward_3);
+            if (reward == null)
+            {
+                Trainworks.Log(LogLevel.Error, "Could not get DivineArtifactPoolC Instance");
                 return null;
             }
             return AccessTools.Field(typeof(RelicDraftRewardData), "draftPool").GetValue(reward) as RelicPool;

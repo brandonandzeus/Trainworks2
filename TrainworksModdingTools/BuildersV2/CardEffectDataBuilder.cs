@@ -53,7 +53,11 @@ namespace Trainworks.BuildersV2
         /// <summary>
         /// CardUpgradeMaskData parameter.
         /// 
-        /// This is unused in the base game. 
+        /// This isn't set by any cards in the base game. 
+        /// Technically used by CardEffectAddBattle/RunCard
+        /// If set, this parameter interacts with ParamCardPool
+        /// and will filter cards out of the CardPool specified.
+        /// see: CardEffectData.GetFilteredCardListFromPool
         /// </summary>
         public CardUpgradeMaskData ParamCardFilter { get; set; }
         /// <summary>

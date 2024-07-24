@@ -1,4 +1,6 @@
-﻿namespace Trainworks.ConstantsV2
+﻿using System;
+
+namespace Trainworks.ConstantsV2
 {
     /// <summary>
     /// Provides easy access to all of the base game's enhancer IDs
@@ -24,13 +26,14 @@
         /// <summary>
         /// Asset name: SpellUpgradeReduceCost
         /// </summary>
+        [Obsolete("DEPRECATED Use Emberstone instead")]
         public static readonly string EmberstoneSpell = "7301ebb3-4d99-46b9-b4bd-aeabf530fd0a";
         /// <summary>
         /// Asset name: SpellUpgradeReduceCostCopyDEPRECATED
         /// </summary>
         public static readonly string EmberstoneDEPRECATED = "3a1021b3-807e-462d-a3aa-45d3a5356b97";
         /// <summary>
-        /// Asset name: SpellUpgradeTraitAddIntrinsicDEPRECATED
+        /// Asset name: SpellUpgradeTraitAddIntrinsic
         /// </summary>
         public static readonly string Seekstone = "51277981-c504-434e-9698-1277dd5bc1f4";
         /// <summary>
@@ -42,7 +45,7 @@
         /// </summary>
         public static readonly string Freezestone = "a13a7545-0bc8-4c30-aa0e-da651894cebb";
         /// <summary>
-        /// Asset name: SpellUpgradeTraitAddPiercingDEPRECATED
+        /// Asset name: SpellUpgradeTraitAddPiercing
         /// </summary>
         public static readonly string Truestone = "fb9ac600-7c4c-4a48-8951-91d354394169";
         /// <summary>
@@ -52,6 +55,7 @@
         /// <summary>
         /// Asset name: SpellUpgradeTraitRemoveConsume
         /// </summary>
+        [Obsolete("DEPRECATED Use Eternalstone instead")]
         public static readonly string EternalstoneRemoveConsume = "4cd37328-eb6e-4c4e-aa61-53492dfe8035";
         /// <summary>
         /// Asset name: UnitDuplicator
@@ -60,6 +64,7 @@
         /// <summary>
         /// Asset name: UnitUpgradeAddEndlessRemnant
         /// </summary>
+        [Obsolete("DEPRECATED Use Immortalstone instead")]
         public static readonly string EternalstoneAddEndless = "2ce018b5-2b43-4ecf-8567-696d4fd8c119";
         /// <summary>
         /// Asset name: UnitUpgradeBiggerUmbra
@@ -91,6 +96,7 @@
         public static readonly string Summonstone = "90a9bd0f-a35a-49e1-80c6-7228505c725b";
         /// <summary>
         /// Asset name: UnitUpgradeLowerCost
+        /// This is unused in the base game.
         /// </summary>
         public static readonly string EmberstoneUnit = "d27a11b4-84b5-4082-b75a-d20badf0ca31";
         /// <summary>
@@ -119,6 +125,9 @@
         public static readonly string Heartstone = "f0c610cd-0b6b-48af-8c61-9d23dbdfea34";
         /// <summary>
         /// Asset name: UnitUpgradeTrampleUmbra
+        /// Unused.
+        /// Note that this doesn't give Trample. It points to the same CardUpgrade as Largestone.
+        /// The only difference between this and Largestone is that LinkedClass is set to Umbra.
         /// </summary>
         public static readonly string TrampleUmbra = "d11e1174-521a-4aa1-bc78-538645c2ce94";
         /// <summary>

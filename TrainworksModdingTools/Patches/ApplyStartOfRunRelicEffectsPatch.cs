@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using Trainworks.CustomRelicEffects;
+using Trainworks.Custom.RelicEffects;
 
 namespace Trainworks.Patches
 {

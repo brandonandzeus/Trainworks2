@@ -229,6 +229,12 @@ namespace Trainworks.Managers
             var full_icon_path = base_path + "/" + icon_path;
 
             var class_name = BuildersV2.BuilderUtils.GetEffectClassName(RoomModifierClassType);
+            if (CustomRoomModifierIcons.ContainsKey(class_name))
+            {
+                Trainworks.Log(LogLevel.Error, class_name + " already has a Custom Room Modifier icon. Ignoring.");
+                return;
+            }
+
             Sprite sprite = CustomAssetManager.LoadSpriteFromPath(full_icon_path);
             CustomRoomModifierIcons.Add(class_name, sprite);
 
@@ -254,6 +260,12 @@ namespace Trainworks.Managers
             var statusManager = StatusEffectManager.Instance;
             var displayData = (StatusEffectsDisplayData)AccessTools.Field(typeof(StatusEffectManager), "displayData").GetValue(statusManager);
             var triggerIcons = (StatusEffectsDisplayData.TriggerSpriteDict)AccessTools.Field(typeof(StatusEffectsDisplayData), "triggerIcons").GetValue(displayData);
+
+            if (triggerIcons.ContainsKey(trigger))
+            {
+                Trainworks.Log(LogLevel.Error, trigger + " already has a Custom Trigger icon. Ignoring.");
+                return;
+            }
 
             var assembly = Assembly.GetCallingAssembly();
             var base_path = PluginManager.PluginGUIDToPath[PluginManager.AssemblyNameToPluginGUID[assembly.FullName]];

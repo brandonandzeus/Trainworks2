@@ -108,7 +108,9 @@ namespace Trainworks.BuildersV2
         /// </summary>
         public Vector3 ParamTimingDelays { get; set; }
         /// <summary>
-        /// Trigger parameter.
+        /// Trigger Parameter. 
+        /// This can be used for overriding the TriggerUI in supported CardEffects. (see: CardTooltipContainer.EffectsSupportedInTooltips)
+        /// Otherwise it is used as a required parameter for CardEffectPlayUnitTrigger and CardEffectReplayTrigger.
         /// </summary>
         public CharacterTriggerData.Trigger ParamTrigger { get; set; }
         /// <summary>

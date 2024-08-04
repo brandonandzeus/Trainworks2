@@ -104,18 +104,14 @@ namespace Trainworks.ManagersV2
                 return CustomEnhancers[guid];
             }
 
-            foreach (var enhancer in ProviderManager.SaveManager.GetAllGameData().GetAllEnhancerData())
+            var vanillaEnhancer = ProviderManager.SaveManager.GetAllGameData().FindEnhancerData(enhancerID);
+            if (vanillaEnhancer == null)
             {
-                if (enhancer.GetID() == guid || enhancer.name == enhancerID)
-                {
-                    return enhancer;
-                }
+                Trainworks.Log(LogLevel.Error, "Couldn't find enhancer: " + enhancerID + " - This will cause crashes.");
+                Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
             }
 
-            Trainworks.Log(LogLevel.Error, "Couldn't find enhancer: " + enhancerID + " - This will cause crashes.");
-            Trainworks.Log(LogLevel.Debug, "Stacktrace: " + Environment.StackTrace);
-
-            return null;
+            return vanillaEnhancer;
         }
 
         private static EnhancerPool GetVanillaEnhancerPool(string enhancerID)

@@ -172,7 +172,7 @@
         /// <summary>
         /// Single Card CardPool containing Calcified Ember for the Junked Up Mutator.
         /// 
-        /// Probably shouldn't touch this one unless you are messing witht he associated mutator.
+        /// Probably shouldn't touch this one unless you are messing with the associated mutator.
         /// </summary>
         public static readonly string CalcifiedEmberOnlyPool = "CalcifiedEmberOnlyPool";
         /// <summary>

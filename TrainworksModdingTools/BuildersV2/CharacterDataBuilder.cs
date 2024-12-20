@@ -314,6 +314,12 @@ namespace Trainworks.BuildersV2
             triggers.AddRange(Triggers);
             foreach (var builder in TriggerBuilders)
             {
+                if (builder.TriggerID == null && builder.DescriptionKey == null && builder.Description != null)
+                {
+                    var computedID = CharacterID + builder.Trigger;
+                    Trainworks.Log(LogLevel.Warning, CharacterID + " Trigger: " + builder.Trigger + " has no TriggerID set yet it has set a Description. Setting TriggerID to " + computedID);
+                    builder.TriggerID = computedID;
+                }
                 triggers.Add(builder.Build());
             }
 

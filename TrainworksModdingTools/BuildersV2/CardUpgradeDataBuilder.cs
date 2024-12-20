@@ -293,6 +293,12 @@ namespace Trainworks.BuildersV2
             triggers.AddRange(TriggerUpgrades);
             foreach (var builder in TriggerUpgradeBuilders)
             {
+                if (builder.TriggerID == null && builder.DescriptionKey == null && builder.Description != null)
+                {
+                    var computedID = UpgradeID + builder.Trigger;
+                    Trainworks.Log(LogLevel.Warning, UpgradeID + " Trigger: " + builder.Trigger + " has no TriggerID set yet it has set a Description. Setting TriggerID to " + computedID);
+                    builder.TriggerID = computedID;
+                }
                 triggers.Add(builder.Build());
             }
 
